@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Javad\\Source\\Repos\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj": {}
+    "D:\\react\\Iris\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Javad\\Source\\Repos\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj": {
+    "D:\\react\\Iris\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Javad\\Source\\Repos\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj",
+        "projectUniqueName": "D:\\react\\Iris\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj",
         "projectName": "IrisAPI",
-        "projectPath": "C:\\Users\\Javad\\Source\\Repos\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj",
-        "packagesPath": "C:\\Users\\Javad\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Javad\\Source\\Repos\\Iris_Messenger\\Back\\WebApplication1\\obj\\",
+        "projectPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\WebApplication1\\IrisAPI.csproj",
+        "packagesPath": "C:\\Users\\AmirReza\\.nuget\\packages\\",
+        "outputPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Javad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\AmirReza\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -35,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -100,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
