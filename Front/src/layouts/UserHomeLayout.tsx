@@ -5,11 +5,11 @@ import userContext from '../contexts/userContext';
 const HomeLayout = () => {
   const {user ,  isLoading} = useContext(userContext);
   const navigate = useNavigate();
-  useEffect(() => {
-    if(!isLoading && !user){
-      navigate("/logIn");
-    }
-  },[isLoading])
+  // useEffect(() => {
+  //   if(!isLoading && !user){
+  //     navigate("/logIn");
+  //   }
+  // },[isLoading])
   return (
     <div>
 {

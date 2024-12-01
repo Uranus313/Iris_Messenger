@@ -2,20 +2,25 @@
   "format": 1,
   "restore": {
     "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
+    "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
   },
   "projects": {
     "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
+    "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
       "version": "1.0.0",
       "restore": {
         "projectUniqueName": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+        "projectUniqueName": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
         "projectName": "IrisAPI",
         "projectPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
         "packagesPath": "C:\\Users\\AmirReza\\.nuget\\packages\\",
         "outputPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
+        "projectPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+        "packagesPath": "C:\\Users\\Hico\\.nuget\\packages\\",
+        "outputPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\AmirReza\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Hico\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
