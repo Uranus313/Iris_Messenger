@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleLogin = (e: { preventDefault: () => void; }) => {
+  const handleLogin = (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     // Simple validation
