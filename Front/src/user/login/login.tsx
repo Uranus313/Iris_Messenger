@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const handleLogin = (e: { preventDefault: () => void; }) => {
+  const handleLogin = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     alert(`Email: ${email}, Remember Me: ${rememberMe}`);
   };
@@ -31,7 +31,10 @@ const Login = () => {
       >
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-3">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-300 mb-3"
+          >
             Email Address
           </label>
           <input
@@ -67,7 +70,6 @@ const Login = () => {
           Next
         </button>
       </form>
-
     </div>
   );
 };
