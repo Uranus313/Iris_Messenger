@@ -1,7 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
     "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
   },
   "projects": {
@@ -13,34 +12,17 @@
         "projectPath": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
         "packagesPath": "C:\\Users\\Javad\\.nuget\\packages\\",
         "outputPath": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
-=======
-    "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
-    "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
-  },
-  "projects": {
-    "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
-    "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
-        "projectUniqueName": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
-        "projectName": "IrisAPI",
-        "projectPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
-        "packagesPath": "C:\\Users\\AmirReza\\.nuget\\packages\\",
-        "outputPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
-        "projectPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
-        "packagesPath": "C:\\Users\\Hico\\.nuget\\packages\\",
-        "outputPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
->>>>>>> 1ab18f80bdb6035a87d5de1387d87975eb1c6e4f
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Hico\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Javad\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -53,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -117,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
