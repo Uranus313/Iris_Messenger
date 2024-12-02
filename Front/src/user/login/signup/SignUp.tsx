@@ -1,11 +1,56 @@
+import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { IAM_api_Link } from "../../../consts/APILink";
+import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+interface Props{
+  goToPreviousStage : () => void,
+  email : string
+}
+
+const SignUp = ({email , goToPreviousStage} : Props) => {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [bio, setBio] = useState("");
-
+  const {
+    register,
+    // setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [error , setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const signUpMutate = useMutation({
+    mutationFn: async (signUpObject : {email : string , FirstName : string , LastName? : string | null , Bio? : string | null  }) => {
+       
+        const result = await fetch(IAM_api_Link + `users`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(signUpObject),
+      });
+      const jsonResult = await result.json();
+    //   console.log(jsonResult)
+      if(result.ok){
+          return jsonResult;
+      }else{
+          throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: ( result,sentData) =>{
+        console.log(sentData);
+        console.log(result);
+        navigate("/user");
+        // goToNextStage();
+        
+    },
+    onError: (error) =>{
+        setError(error.message)  
+        setSubmitLoading(false);
+    }
+}); 
   const handleImageUpload = (e: any) => {
     const file = e.target.files[0];
     if (file) {
@@ -14,14 +59,9 @@ const SignUp = () => {
     }
   };
 
-  const handleSignUp = (e: FormEvent) => {
-    e.preventDefault();
-    alert(`
-      Profile Picture: ${profilePicture ? "Uploaded" : "Not Uploaded"}
-      First Name: ${firstName}
-      Last Name: ${lastName}
-      Bio: ${bio}
-    `);
+  const handleSignUp = (data : any) => {
+    setSubmitLoading(true);
+    signUpMutate.mutate({...data, Email: email})
   };
 
   return (
@@ -29,16 +69,16 @@ const SignUp = () => {
       {/* Header */}
       <div className="text-center mb-6">
         <h1 className="text-xl font-bold text-white">
-          Create Your Account with email@example.com
+          Create Your Account with signUp@example.com
         </h1>
         <p className="text-sm text-gray-400 mt-2">
           Fill out the form below to create your account.
         </p>
       </div>
-
+      {error && error}
       {/* Form */}
       <form
-        onSubmit={handleSignUp}
+        onSubmit={submitLoading? (e) => e.preventDefault() : handleSubmit(handleSignUp)}
         className="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-md space-y-6"
       >
         {/* Profile Picture */}
@@ -68,56 +108,48 @@ const SignUp = () => {
         {/* First Name */}
         <div>
           <label
-            htmlFor="firstName"
             className="block text-sm font-medium text-gray-300 mb-2"
           >
             First Name
-          </label>
           <input
             type="text"
-            id="firstName"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            {...register("FirstName")}
             placeholder="Enter your first name"
             required
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+          </label>
         </div>
 
         {/* Last Name */}
         <div>
           <label
-            htmlFor="lastName"
             className="block text-sm font-medium text-gray-300 mb-2"
           >
             Last Name
-          </label>
           <input
             type="text"
-            id="lastName"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
             placeholder="Enter your last name"
-            required
+            {...register("LastName")}
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+          </label>
+
         </div>
 
         {/* Bio */}
         <div>
           <label
-            htmlFor="bio"
             className="block text-sm font-medium text-gray-300 mb-2"
           >
             Bio
-          </label>
           <textarea
-            id="bio"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
+            {...register("Bio")}
             placeholder="Tell us a bit about yourself"
             className="textarea textarea-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 h-32"
           ></textarea>
+          </label>
+
         </div>
 
         {/* Submit Button */}
@@ -125,7 +157,7 @@ const SignUp = () => {
           type="submit"
           className="btn btn-primary w-full bg-indigo-600 text-white hover:bg-indigo-500"
         >
-          Sign Up
+          {submitLoading? <span className="loading loading-spinner loading-md"></span>:"Sign Up"}
         </button>
       </form>
     </div>
