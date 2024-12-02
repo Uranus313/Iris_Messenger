@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AddAdmin from "./admin/addAdmin/AddAdmin";
+import AddAdmin from "../addAdmin/AddAdmin";
 
 
 const AdminPanel: React.FC = () => {

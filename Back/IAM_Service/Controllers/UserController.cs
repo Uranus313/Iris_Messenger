@@ -54,12 +54,25 @@ namespace IrisAPI.Controllers
 
             return Ok(_mapper.Map<UserDTO>(user));
         }
-
+        [Authorize(Roles="IncompeleteUser")]
         [HttpPost]
         public async Task<ActionResult<UserDTO>> CreateUser(UserCreateDTO userCreate)
         {
             try
             {
+                var userRoleClaim = User.FindFirst("role");
+                var userEmailClaim = User.FindFirst("email");
+                if (userRoleClaim == null || userRoleClaim.Value != "IncompeleteUser" )
+                {
+                    return Unauthorized();
+                }
+                if(userEmailClaim == null){
+                    return BadRequest("wrong email");
+
+                }
+                if(userEmailClaim.Value != userCreate.Email ){
+                    return BadRequest("wrong email");
+                }
                 var user = _mapper.Map<User>(userCreate);
                 user = await _userCRUDl.CreateUser(user);
                 return Ok(_mapper.Map<UserDTO>(user));

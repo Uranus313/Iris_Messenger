@@ -1,12 +1,57 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { FormEvent, useRef, useState } from "react";
+import { APILink } from "../../consts/APILink";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const emailRef = useRef<HTMLInputElement>(null);
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [stage , setStage] = useState<"login" | "signUp">("login");
 
-  const handleLogin = (e: { preventDefault: () => void }) => {
+  const loginMutate = useMutation({
+    mutationFn: async (operation : any) => {
+        console.log("tesssst")
+        console.log(operation)
+        const result = await fetch(APILink + "operations/", {
+            method: "POST",
+            credentials: 'include',
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(operation),
+      });
+      const jsonResult = await result.json();
+    //   console.log(jsonResult)
+      if(result.ok){
+          return jsonResult;
+      }else{
+          throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: (savedOperation, operation) =>{
+
+        console.log(savedOperation);
+        console.log(operation);
+        setSubmitLoading(false);
+
+
+    },
+    onError: (error) =>{
+        console.log("error12");
+        console.log(error);
+        // console.log(error.message);
+        // let errorText = 'error';
+        setError(error.message);
+        setSubmitLoading(false);
+    }
+}); 
+  const handleLogin = (e: FormEvent) => {
     e.preventDefault();
-    alert(`Email: ${email}, Remember Me: ${rememberMe}`);
+    alert(`Email: ${emailRef.current?.value}, Remember Me: ${rememberMe}`);
+
   };
 
   return (
@@ -40,8 +85,6 @@ const Login = () => {
           <input
             type="email"
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             required
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"

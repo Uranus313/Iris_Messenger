@@ -7,6 +7,7 @@ using IrisAPI.CRUD.AdminCRUD;
 using IrisAPI.CRUD.UserCRUD;
 using IrisAPI.CRUD.SuperAdminCRUD;
 using IrisAPI.CRUD.OTPCRUD;
+using System.Net;
 
 namespace IrisAPI.Controllers
 {
@@ -41,12 +42,31 @@ namespace IrisAPI.Controllers
             {
                 return Unauthorized();
             }
-
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretKey"]));
+            var signingCredientals = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var userStatus = "NewUser";
 
             var user = await _userCRUD.ValidateUser(email);
             if (user == null)
             {
+                var incomepleteClaimForToken = new List<Claim>
+            {
+                new("email", email),
+                new(ClaimTypes.Role, "IncompeleteUser")
+
+            };
+
+                var incompeleteJwtSecurityToken = new JwtSecurityToken(
+                    _configuration["Authentication:Issuer"],
+                    _configuration["Authentication:Audience"],
+                    incomepleteClaimForToken,
+                    DateTime.UtcNow,
+                    DateTime.UtcNow.AddMinutes(30),
+                    signingCredientals
+                    );
+                var incompeleteToken = new JwtSecurityTokenHandler().WriteToken(incompeleteJwtSecurityToken);
+
+                Response.Headers.Add("Token", incompeleteToken);
                 return Ok(new
                 {
                     UserState = userStatus
@@ -55,8 +75,7 @@ namespace IrisAPI.Controllers
 
             userStatus = "OldUser";
 
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Authentication:SecretKey"]));
-            var signingCredientals = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
 
             var claimForToken = new List<Claim>
             {
@@ -74,11 +93,12 @@ namespace IrisAPI.Controllers
                 );
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwrSecurityToken);
+            Response.Headers.Add("Token", token);
 
             return Ok(new
-            { 
-                Token = token,
-                UserState = userStatus
+            {
+                UserState = userStatus,
+                User = user
             });
         }
 
