@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IrisAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4578c071742bc9a1bf3f6bb361cfac0221a68a4b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1550c1076b1873b1c8f3c746f431f1faf91677bf")]
 [assembly: System.Reflection.AssemblyProductAttribute("IrisAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IrisAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
