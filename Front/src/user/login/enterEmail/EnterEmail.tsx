@@ -46,7 +46,7 @@ const EnterEmail = ({goToNextStage } : Props) => {
   const handleEmailSend = (e: FormEvent) => {
     e.preventDefault();
     setSubmitLoading(true);
-
+    console.log("test email")
     if(!emailRef.current?.value){
       return;
     }
@@ -84,6 +84,7 @@ const EnterEmail = ({goToNextStage } : Props) => {
             type="email"
             placeholder="you@example.com"
             required
+            ref={emailRef}
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           </label>

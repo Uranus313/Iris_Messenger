@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { IAM_api_Link } from "../../../consts/APILink";
 import { useNavigate } from "react-router-dom";
 
@@ -12,11 +12,32 @@ interface Props{
 }
 
 
+
+
 const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Props) => {
   const verificationCodeRef = useRef<HTMLInputElement>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [resendCodeLoading, setResendCodeLoading] = useState<boolean>(false);
   const [error , setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [time, setTime] = useState(120); // 2 minutes = 120 seconds
+
+  useEffect(() => {
+    if (time > 0) {
+      const timerId = setInterval(() => {
+        if(time > 0){
+          setTime(prevTime => prevTime - 1);
+        }
+      }, 1000);
+      return () => clearInterval(timerId);
+    }
+  }, [time]);
+
+  const formatTime = (seconds : number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
   const verificationCodeMutate = useMutation({
     mutationFn: async (verificationCodeObject : {email : string , verificationCode : string}) => {
        
@@ -69,7 +90,38 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
     verificationCodeMutate.mutate({email : email , verificationCode : verificationCodeRef.current?.value });
 
   };
+  const resendVerificationCodeMutate = useMutation({
+    mutationFn: async (emailObject : {email : string }) => {
+       
+        const result = await fetch(IAM_api_Link + `authentication/CreateOTP`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(emailObject),
+      });
+      const jsonResult = await result.json();
+    //   console.log(jsonResult)
+      if(result.ok){
+          return jsonResult;
+      }else{
+          throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: ( result,sentData) =>{
+        console.log(sentData);
+        console.log(result);
+        setResendCodeLoading(false);
+        setTime(120);
 
+    },
+    onError: (error) =>{
+        setError(error.message)  
+        setResendCodeLoading(false);
+        setTime(0);
+    }
+}); 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <form onSubmit={submitLoading ? (e) => {e.preventDefault()} : handleVerificationCodeSend} className="text-center">
@@ -117,9 +169,14 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         {/* Resend Code Option */}
         <p className="text-gray-400 mt-4 text-sm">
           Didn't receive the code?{" "}
-          <button type="button" className="text-blue-400 hover:underline">
-            Resend Code
-          </button>
+          {resendCodeLoading ? <span className="loading loading-spinner loading-md"></span>:
+            (time > 0 ? formatTime(time) : <button type="button" className="text-blue-400 hover:underline">
+              Resend Code
+            </button>
+            )
+          }
+          
+          
         </p>
       </form>
     </div>
