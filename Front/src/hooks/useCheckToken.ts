@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { APILink } from "../consts/APILink";
+import { IAM_api_Link } from "../consts/APILink";
 import { User } from "../interfaces/interfaces";
 function useUserCheckToken(){
     return useQuery({
         queryKey : ['user'],
         queryFn : async () => {
-            const result = await fetch(APILink+"user/", {
+            const result = await fetch(IAM_api_Link+"user/", {
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem("auth-token")}`
                             },

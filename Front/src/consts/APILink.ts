@@ -1,1 +1,1 @@
-export const APILink = "http://185.133.125.163:8000/api/";
+export const IAM_api_Link = "http://192.168.42.43:5187/IAM_api/";
