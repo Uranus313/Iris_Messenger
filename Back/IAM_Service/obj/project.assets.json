@@ -3921,24 +3921,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Hico\\.nuget\\packages\\": {}
+    "C:\\Users\\AmirReza\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+      "projectUniqueName": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
       "projectName": "IrisAPI",
-      "projectPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
-      "packagesPath": "C:\\Users\\Hico\\.nuget\\packages\\",
-      "outputPath": "E:\\Madareke Mehrbod\\important\\iris2\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
+      "projectPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+      "packagesPath": "C:\\Users\\AmirReza\\.nuget\\packages\\",
+      "outputPath": "D:\\react\\Iris\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Hico\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\AmirReza\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
