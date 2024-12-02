@@ -149,6 +149,7 @@ D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\IrisAPI
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\IrisAPI.dll
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\IrisAPI.pdb
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\AutoMapper.dll
+D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\BCrypt.Net-Next.dll
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\Humanizer.dll
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -285,4 +286,3 @@ D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\obj\Debug\net8.0\refint\
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\obj\Debug\net8.0\IrisAPI.pdb
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\obj\Debug\net8.0\IrisAPI.genruntimeconfig.cache
 D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\obj\Debug\net8.0\ref\IrisAPI.dll
-D:\Projects\C#.Projects\Iris_Messenger\Back\IAM_Service\bin\Debug\net8.0\BCrypt.Net-Next.dll
