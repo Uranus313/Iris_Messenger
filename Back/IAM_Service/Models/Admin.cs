@@ -5,23 +5,23 @@ using Microsoft.EntityFrameworkCore;
 namespace IrisAPI.Models
 {
     [Index(nameof(Email), IsUnique = true)]
-    [Index(nameof(Username), IsUnique = true)]
     public class Admin
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public required int Id { set; get; }
-
-        [MaxLength(50)]
-        public string? Username { set; get; }
+        public int Id { set; get; }
 
         [EmailAddress]
         public required string Email { set; get; }
 
         [MaxLength(50)]
-        public string? TwoStepPassword { set; get; }
+        public required string Password { set; get; }
 
         public bool IsOnline { set; get; } = true;
+
+        public bool IsBanned { set; get; } = false;
+
+        public bool IsDeleted { set; get; } = false;
 
         public DateTime LastSeen { set; get; } = DateTime.UtcNow;
 
@@ -30,9 +30,6 @@ namespace IrisAPI.Models
 
         [MaxLength(100)]
         public string? LastName { set; get; }
-
-        [MaxLength(500)]
-        public string? Bio { set; get; }
 
         public DateTime CreationTime { get; } = DateTime.UtcNow;
     }

@@ -7,5 +7,7 @@ namespace IrisAPI.DbContexts
     {
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Admin> Admins { get; set; } = null!;
+        public DbSet<SuperAdmin> SuperAdmins { get; set; } = null!;
+        public DbSet<OTP> OTPs { get; set; } = null!;
     }
 }

@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "lRtEc0FLGV8=",
+  "dgSpecHash": "8KOool3iHSw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+  "projectFilePath": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Javad\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\Javad\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Javad\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Javad\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.11\\microsoft.aspnetcore.authentication.jwtbearer.8.0.11.nupkg.sha512",
     "C:\\Users\\Javad\\.nuget\\packages\\microsoft.aspnetcore.cors\\2.1.1\\microsoft.aspnetcore.cors.2.1.1.nupkg.sha512",

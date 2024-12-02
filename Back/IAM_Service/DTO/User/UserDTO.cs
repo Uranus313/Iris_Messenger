@@ -12,6 +12,8 @@ namespace IrisAPI.DTO.User
         public required string Email { set; get; }
         [MaxLength(100)]
         public required bool IsOnline { set; get; }
+        public required bool IsBanned { set; get; }
+        public required bool IsDeleted { set; get; }
         public required DateTime LastSeen { set; get; }
         public required string FirstName { set; get; }
         [MaxLength(100)]

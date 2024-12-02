@@ -44,7 +44,7 @@ namespace IrisAPI.CRUD.UserCRUD
             var user = await GetUser(userId);
             if (user != null)
             {
-                _context.Users.Remove(user);
+                user.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
             return user;

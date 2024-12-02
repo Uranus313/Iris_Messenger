@@ -9,6 +9,8 @@ namespace IrisAPI.DTO.Admin
         [EmailAddress]
         public required string Email { set; get; }
         public required bool IsOnline { set; get; }
+        public bool IsBanned { set; get; }
+        public bool IsDeleted { set; get; }
         public required DateTime LastSeen { set; get; }
         [MaxLength(100)]
         public required string FirstName { set; get; }

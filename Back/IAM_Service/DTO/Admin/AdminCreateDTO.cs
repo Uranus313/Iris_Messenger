@@ -8,6 +8,8 @@ namespace IrisAPI.DTO.Admin
 
         [MaxLength(50)]
         public string? Username { set; get; }
+        [MaxLength(50)]
+        public required string Password { set; get; }
         [EmailAddress]
         public required string Email { set; get; }
         [MaxLength(100)]

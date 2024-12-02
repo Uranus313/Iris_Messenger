@@ -4,6 +4,9 @@ using System.Text;
 using IrisAPI.CRUD.AdminCRUD;
 using IrisAPI.CRUD.UserCRUD;
 using IrisAPI.DbContexts;
+using IrisAPI.CRUD.SuperAdminCRUD;
+using IrisAPI.CRUD.OTPCRUD;
+using IrisAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IAdminCRUD, AdminCRUD>();
 builder.Services.AddScoped<IUserCRUD, UserCRUD>();
+builder.Services.AddScoped<ISuperAdminCRUD, SuperAdminCRUD>();
+builder.Services.AddScoped<IOTPCRUD, OTPCRUD>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddDbContext<IAMDbContext>(option => {
     option.UseNpgsql(builder.Configuration["ConnectionStrings:IrisContext"]);
 });

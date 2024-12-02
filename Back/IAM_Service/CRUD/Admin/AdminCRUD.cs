@@ -25,6 +25,7 @@ namespace IrisAPI.CRUD.AdminCRUD
         }
         public async Task<Admin> CreateAdmin(Admin admin)
         {
+            admin.Password = BCrypt.Net.BCrypt.HashPassword(admin.Password);
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
             return admin;
@@ -44,14 +45,21 @@ namespace IrisAPI.CRUD.AdminCRUD
             var admin = await GetAdmin(adminId);
             if (admin != null)
             {
-                _context.Admins.Remove(admin);
+                admin.IsDeleted = true;
                 await _context.SaveChangesAsync();
             }
             return admin;
         }
-        public async Task<Admin?> ValidateAdmin(string email)
+        public async Task<Admin?> ValidateAdmin(string email, string password)
         {
-            return await _context.Admins.Where(admin => admin.Email == email).FirstOrDefaultAsync();
+            var admin = await _context.Admins.Where(admin => admin.Email == email).FirstOrDefaultAsync();
+
+            if (admin != null && BCrypt.Net.BCrypt.Verify(password, admin.Password))
+            {
+                return admin;
+            }
+
+            return null;
         }
     }
 

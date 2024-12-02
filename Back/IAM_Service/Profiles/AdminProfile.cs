@@ -7,9 +7,8 @@ namespace IrisAPI.Profiles
         public AdminProfile()
         {
             CreateMap<Models.Admin, DTO.Admin.AdminDTO>();
-            CreateMap<Models.Admin, DTO.Admin.AdminUpdateDTO>();
             CreateMap<DTO.Admin.AdminCreateDTO, Models.Admin>();
-            CreateMap<DTO.Admin.AdminUpdateDTO, Models.Admin>();
+            CreateMap<DTO.Admin.AdminUpdateDTO, Models.Admin>().ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

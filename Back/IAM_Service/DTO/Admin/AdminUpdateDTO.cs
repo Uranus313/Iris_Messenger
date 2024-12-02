@@ -10,7 +10,7 @@ namespace IrisAPI.DTO.Admin
         public string? Username { set; get; }
         [EmailAddress]
         public string? Email { set; get; }
-        public bool? IsOnline { set; get; }
+        [MaxLength(50)]
         public DateTime? LastSeen { set; get; }
         [MaxLength(100)]
         public string? FirstName { set; get; }

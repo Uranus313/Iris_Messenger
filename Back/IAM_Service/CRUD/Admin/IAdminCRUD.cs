@@ -11,6 +11,6 @@ namespace IrisAPI.CRUD.AdminCRUD
         Task<Admin> CreateAdmin(Admin admin);
         Task<Admin?> UpdateAdmin(int adminId, AdminUpdateDTO adminUpdateDTO);
         Task<Admin?> DeleteAdmin(int adminId);
-        Task<Admin?> ValidateAdmin(string email);
+        Task<Admin?> ValidateAdmin(string email, string password);
     }
 }

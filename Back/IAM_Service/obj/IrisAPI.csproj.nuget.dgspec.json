@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
+    "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
+    "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+        "projectUniqueName": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
         "projectName": "IrisAPI",
-        "projectPath": "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
+        "projectPath": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\IrisAPI.csproj",
         "packagesPath": "C:\\Users\\Javad\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Javad\\Source\\Repos\\Uranus313\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
+        "outputPath": "D:\\Projects\\C#.Projects\\Iris_Messenger\\Back\\IAM_Service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Javad\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -49,6 +49,10 @@
             "AutoMapper": {
               "target": "Package",
               "version": "[13.0.1, )"
+            },
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

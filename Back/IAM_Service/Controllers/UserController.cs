@@ -70,7 +70,7 @@ namespace IrisAPI.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "User")]
         [HttpPut("{id}")]
         public async Task<ActionResult<UserDTO>> UpdateUser(int id, UserUpdateDTO userUpdate)
         {
