@@ -1,16 +1,18 @@
 import { findSuperAdminWithPassword } from "../infrastructure/superAdmin.js";
 import jwt from "jsonwebtoken";
-
+import { comparePassword } from "./utilities/hashing.js";
 
 export const superAdminLogIn = async(req,res)=>{
     try {
-        const superAdmin = await findSuperAdminWithPassword(undefined,{email: req.body.email});
-        if(superAdmin){
+        console.log(req.body)
+        const superAdmin = await findSuperAdminWithPassword( req.body.email);
+        if(!superAdmin){
         res.status(404).send({message:"superAdmin not found"});
         return;
         }
-        const passwordCheck = await comparePassword(req.body.password , superAdmin.password);
-        if(!passwordCheck){
+        // const passwordCheck = await comparePassword(req.body.password , superAdmin.password);
+
+        if(req.body.password != superAdmin.password){
             res.status(401).send({message:"wrong password"});
             return result;
         }
@@ -26,7 +28,7 @@ export const superAdminLogIn = async(req,res)=>{
         // });
         res.setHeader("auth-token",token);
 
-        res.send(superAdmin);
+        res.send({...superAdmin,status: "superAdmin"});
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});

@@ -1,33 +1,63 @@
-import React, { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { FormEvent, useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { IAM_api_Link } from "../../consts/APILink"
+import { useNavigate } from "react-router-dom";
+import userContext from "../../contexts/userContext";
 
-const SuperAdminLogin: React.FC = () => {
-  // Define state types
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // Handle form submission
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
 
-    // Basic validation
-    if (!email || !password) {
-      setErrorMessage("❌ Please fill in all fields.");
-      return;
+const SuperAdminLogin = () => {
+  const {
+    register,
+    // setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [error , setError] = useState<string | null>(null);
+  const {user,setUser} = useContext(userContext);
+  const navigate = useNavigate();
+  const logInMutate = useMutation({
+    mutationFn: async (logInObject : any) => {
+       console.log(localStorage.getItem('Authorization'));
+       console.log("test")
+        const result = await fetch(IAM_api_Link + `superAdmin/logIn`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token" : localStorage.getItem("auth-token") || ""
+            },
+            body: JSON.stringify(logInObject),
+      });
+      const jsonResult = await result.json();
+      localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
+    //   console.log(jsonResult)
+      if(result.ok){
+          return jsonResult;
+      }else{
+          throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: ( result,sentData) =>{
+        console.log(sentData);
+        console.log(result);
+        setSubmitLoading(false);
+        setUser(result)
+        navigate("/superAdmin/");
+        // goToNextStage();
+        
+    },
+    onError: (error) =>{
+        setError(error.message)  
+        setSubmitLoading(false);
     }
+}); 
 
-    if (!email.includes("@")) {
-      setErrorMessage("❌ Please enter a valid email address.");
-      return;
-    }
-
-    // Mock superadmin authentication logic
-    if (email === "superadmin@example.com" && password === "supersecurepassword") {
-      alert("✅ Login successful! Redirecting to the dashboard...");
-      // Redirect logic (e.g., React Router)
-    } else {
-      setErrorMessage("❌ Invalid superadmin credentials.");
-    }
+  const handleSuperAdminLogin = (data : any) => {
+    setSubmitLoading(true);
+    logInMutate.mutate(data);
   };
 
   return (
@@ -39,35 +69,35 @@ const SuperAdminLogin: React.FC = () => {
         </h1>
 
         {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={submitLoading ?(e)=> e.preventDefault() : handleSubmit(handleSuperAdminLogin)} className="space-y-6">
           {/* Email Input */}
           <div className="form-control">
             <label className="label">
               <span className="label-text text-gray-400">Email Address</span>
-            </label>
             <input
               type="email"
               placeholder="Enter your email"
               className="input input-bordered w-full text-black"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
               required
             />
+            </label>
+
           </div>
 
           {/* Password Input */}
           <div className="form-control">
             <label className="label">
               <span className="label-text text-gray-400">Password</span>
-            </label>
             <input
               type="password"
               placeholder="Enter your password"
               className="input input-bordered w-full text-black"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
               required
             />
+          </label>
+
           </div>
 
           {/* Login Button */}
@@ -80,8 +110,8 @@ const SuperAdminLogin: React.FC = () => {
         </form>
 
         {/* Error Message */}
-        {errorMessage && (
-          <div className="mt-4 text-center text-red-500">{errorMessage}</div>
+        {error && (
+          <div className="mt-4 text-center text-red-500">{error}</div>
         )}
 
         {/* Footer */}
@@ -94,3 +124,4 @@ const SuperAdminLogin: React.FC = () => {
 };
 
 export default SuperAdminLogin;
+

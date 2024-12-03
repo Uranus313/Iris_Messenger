@@ -6,6 +6,10 @@ import UserHomeLayout from "../layouts/UserHomeLayout"
 import Verification from "../user/verification/Verification"
 import AdminLogin from "../admin/adminLogin/AdminLogin"
 import SuperAdminLogin from "../admin/superAdminLogin/SuperAdminLogin"
+import AdminHomeLayout from "../layouts/AdminHomeLayout"
+import SuperAdminHomeLayout from "../layouts/SuperAdminHomeLayout"
+import AdminPanel from "../admin/adminPanel/AdminPanel"
+import SuperAdminPanel from "../admin/superAdminPanel/SuperAdminPanel"
 
 
 
@@ -19,14 +23,14 @@ const router = createBrowserRouter([
                 ]},
                 {path: 'admin/',children:[
                         {path:'logIn',element: <AdminLogin  />},
-                        {path:'' , element: <UserHomeLayout /> , children:[
-                                {path: '', element: <App/>}
+                        {path:'' , element: <AdminHomeLayout /> , children:[
+                                {path: '', element: <AdminPanel/>}
                         ]}
                 ]},
                 {path: 'superAdmin/',children:[
                         {path:'logIn',element: <SuperAdminLogin  />},
-                        {path:'' , element: <UserHomeLayout /> , children:[
-                                {path: '', element: <App/>}
+                        {path:'' , element: <SuperAdminHomeLayout /> , children:[
+                                {path: '', element: <SuperAdminPanel/>}
                         ]}
                 ]}
 

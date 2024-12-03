@@ -2,11 +2,11 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import userContext from '../contexts/userContext';
 
-const HomeLayout = () => {
+const AdminHomeLayout = () => {
   const {user ,  isLoading} = useContext(userContext);
   const navigate = useNavigate();
   useEffect(() => {
-     if((!isLoading && !user) ||(user && user.status != "user")){
+    if((!isLoading && !user) ||(user && user.status != "admin")){
       navigate("/logIn");
     }
   },[isLoading])
@@ -28,4 +28,4 @@ const HomeLayout = () => {
   );
 };
 
-export default HomeLayout;
+export default AdminHomeLayout;

@@ -1,4 +1,5 @@
 import { findAdminWithPassword, readAdmins } from "../infrastructure/admin.js";
+import { comparePassword } from "./utilities/hashing.js";
 
 import jwt from "jsonwebtoken";
 
@@ -61,8 +62,8 @@ export const adminDelete = async (req,res) => {
 }
 export const adminLogIn = async(req,res)=>{
     try {
-        const admin = await findAdminWithPassword(undefined,{email: req.body.email});
-        if(admin){
+        const admin = await findAdminWithPassword(req.body.email);
+        if(!admin){
         res.status(404).send({message:"admin not found"});
         return;
         }
@@ -83,7 +84,7 @@ export const adminLogIn = async(req,res)=>{
         // });
         res.setHeader("auth-token",token);
         
-        res.send(admin);
+        res.send({...admin,status: "admin"});
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});

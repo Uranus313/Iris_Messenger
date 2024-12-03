@@ -10,7 +10,7 @@ export let readSuperAdmin = async () =>{
 }
 export let findSuperAdminWithPassword = async (email) =>{
     let admin = await SuperAdmin.findOne({where:{email : email}});
-    if(!admin){
+    if(admin){
         admin = await admin.toJSON();
     }
     return admin;

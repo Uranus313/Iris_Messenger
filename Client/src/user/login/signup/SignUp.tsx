@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import { FormEvent, useState } from "react";
+import { FormEvent, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IAM_api_Link } from "../../../consts/APILink";
 import { useNavigate } from "react-router-dom";
+import userContext from "../../../contexts/userContext";
 
 interface Props{
   goToPreviousStage : () => void,
@@ -19,6 +20,8 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
   } = useForm();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [error , setError] = useState<string | null>(null);
+  const {user,setUser} = useContext(userContext);
+
   const navigate = useNavigate();
   const signUpMutate = useMutation({
     mutationFn: async (signUpObject : {email : string , firstName : string , lastName? : string | null , bio? : string | null  }) => {
@@ -45,6 +48,7 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
     onSuccess: ( result,sentData) =>{
         console.log(sentData);
         console.log(result);
+        setUser(result);
         navigate("/user");
         // goToNextStage();
         

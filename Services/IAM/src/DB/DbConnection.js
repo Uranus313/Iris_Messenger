@@ -7,7 +7,7 @@ export const sequelize = new Sequelize("Iris","postgres","admin",{
 export default async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({force: true});
+        // await sequelize.sync({force: true});
         // console.log(await readUsers());
         console.log("Authenticated");
     } catch (error) {

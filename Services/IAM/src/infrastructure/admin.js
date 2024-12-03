@@ -35,7 +35,7 @@ export let readAdmins = async (id,conditions) =>{
 
 export let findAdminWithPassword = async (email) =>{
         let admin = await Admin.findOne({where:{email : email}});
-        if(!admin){
+        if(admin){
             admin = await admin.toJSON();
         }
         return admin;

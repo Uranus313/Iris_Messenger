@@ -1,65 +1,64 @@
-import React, { useState } from "react";
 
-interface AdminData {
-  name: string;
-  email: string;
-  password: string;
-}
 
-const AddAdmin: React.FC = () => {
-  const [formData, setFormData] = useState<AdminData>({
-    name: "",
-    email: "",
-    password: "",
-  });
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
+import { useMutation } from "@tanstack/react-query";
+import { FormEvent, useContext, useState } from "react";
+import { useForm } from "react-hook-form";
+import { IAM_api_Link } from "../../consts/APILink"
+import { useNavigate } from "react-router-dom";
+import userContext from "../../contexts/userContext";
 
-  // Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
 
-    const { name, email, password } = formData;
-
-    // Basic validation
-    if (!name || !email || !password) {
-      setErrorMessage("❌ Please fill in all fields.");
-      setSuccessMessage("");
-      return;
+const AddAdmin = () => {
+  const {
+    register,
+    // setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [error , setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const logInMutate = useMutation({
+    mutationFn: async (logInObject : any) => {
+       console.log(localStorage.getItem('Authorization'));
+       console.log("test")
+        const result = await fetch(IAM_api_Link + `admins/signUp`, {
+            method: "POST",
+            credentials: 'include',
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token" : localStorage.getItem("auth-token") || ""
+            },
+            body: JSON.stringify(logInObject),
+      });
+      const jsonResult = await result.json();
+      // localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
+    //   console.log(jsonResult)
+      if(result.ok){
+          return jsonResult;
+      }else{
+          throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: ( result,sentData) =>{
+        console.log(sentData);
+        console.log(result);
+        setSubmitLoading(false);
+        // setUser(result)
+        navigate("/superAdmin/");
+        // goToNextStage();
+        
+    },
+    onError: (error) =>{
+        setError(error.message)  
+        setSubmitLoading(false);
     }
+}); 
 
-    if (!email.includes("@")) {
-      setErrorMessage("❌ Please enter a valid email address.");
-      setSuccessMessage("");
-      return;
-    }
-
-    if (password.length < 6) {
-      setErrorMessage("❌ Password must be at least 6 characters long.");
-      setSuccessMessage("");
-      return;
-    }
-
-    // Mock submission logic (Replace with real API call)
-    console.log("New Admin Added:", formData);
-    setErrorMessage("");
-    setSuccessMessage(`✅ Admin ${name} has been added successfully!`);
-
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-    });
+  const handleAddAdmin = (data : any) => {
+    setSubmitLoading(true);
+    logInMutate.mutate(data);
   };
 
   return (
@@ -71,7 +70,7 @@ const AddAdmin: React.FC = () => {
         </h1>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={submitLoading ? (e) => e.preventDefault(): handleSubmit(handleAddAdmin)} className="space-y-6">
           {/* Name Input */}
           <div className="form-control">
             <label className="label">
@@ -79,11 +78,9 @@ const AddAdmin: React.FC = () => {
             </label>
             <input
               type="text"
-              name="name"
               placeholder="Enter admin name"
               className="input input-bordered w-full text-black"
-              value={formData.name}
-              onChange={handleChange}
+              {...register("firstName")}
               required
             />
           </div>
@@ -94,12 +91,10 @@ const AddAdmin: React.FC = () => {
               <span className="label-text text-gray-400">Admin Email</span>
             </label>
             <input
-              type="email"
-              name="email"
+              
               placeholder="Enter admin email"
               className="input input-bordered w-full text-black"
-              value={formData.email}
-              onChange={handleChange}
+              {...register("email")}
               required
             />
           </div>
@@ -110,12 +105,10 @@ const AddAdmin: React.FC = () => {
               <span className="label-text text-gray-400">Password</span>
             </label>
             <input
-              type="password"
-              name="password"
+              
               placeholder="Enter admin password"
               className="input input-bordered w-full text-black"
-              value={formData.password}
-              onChange={handleChange}
+              {...register("email")}
               required
             />
           </div>
@@ -127,16 +120,12 @@ const AddAdmin: React.FC = () => {
         </form>
 
         {/* Error Message */}
-        {errorMessage && (
-          <div className="mt-4 text-center text-red-500">{errorMessage}</div>
+        {error && (
+          <div className="mt-4 text-center text-red-500">{error}</div>
         )}
 
         {/* Success Message */}
-        {successMessage && (
-          <div className="mt-4 text-center text-green-500">
-            {successMessage}
-          </div>
-        )}
+        
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-gray-500">
@@ -148,3 +137,5 @@ const AddAdmin: React.FC = () => {
 };
 
 export default AddAdmin;
+
+

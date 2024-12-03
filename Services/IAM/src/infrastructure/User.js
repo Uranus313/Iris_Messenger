@@ -33,7 +33,7 @@ export let readUsers = async (id,conditions) =>{
 }
 export let findUserWithPassword = async (email,password) =>{
     let user = await User.findOne({where:{email : email}});
-    if(!user){
+    if(user){
         user = await user.toJSON();
     }
     return user;

@@ -20,7 +20,7 @@ const OuterLayout = () => {
     setLoading(isLoading);
     if(error){
         setUser(null);
-    }else if (serverUser?.Id && !_.isEqual(serverUser,user)){
+    }else if (serverUser?.id && !_.isEqual(serverUser,user)){
         setUser(serverUser);
     }
 },[serverUser,isLoading]);

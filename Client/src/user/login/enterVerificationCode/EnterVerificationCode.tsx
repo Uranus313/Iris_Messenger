@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { IAM_api_Link } from "../../../consts/APILink";
 import { useNavigate } from "react-router-dom";
+import userContext from "../../../contexts/userContext";
 
 
 
@@ -21,6 +22,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
   const [error , setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [time, setTime] = useState(120); // 2 minutes = 120 seconds
+  const {user,setUser} = useContext(userContext);
 
   useEffect(() => {
     if (time > 0) {
@@ -78,7 +80,8 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         console.log(result);
         setSubmitLoading(false);
 
-        if(result.userStatus =="OldUser"){
+        if(result.id){
+          setUser(result);
           navigate("/user");
         }else{
           goToNextStage();

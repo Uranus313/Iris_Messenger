@@ -10,6 +10,7 @@ export interface User{
     bio? : string | null;
     isDeleted : boolean;
     isBanned : boolean;
+    status: "user" | "admin" | "superAdmin";
 }
 
 export interface Admin{

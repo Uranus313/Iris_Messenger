@@ -6,5 +6,5 @@ import { superAdminLogIn } from '../application/superAdmin.js';
 const router = express.Router();
 
 
-router.get("/logIn",superAdminLogIn);
+router.post("/logIn",superAdminLogIn);
 export default router;

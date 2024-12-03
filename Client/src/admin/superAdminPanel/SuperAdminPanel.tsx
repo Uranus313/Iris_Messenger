@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AddAdmin from "../addAdmin/AddAdmin";
 
-const AdminPanel: React.FC = () => {
+const SuperAdminPanel: React.FC = () => {
   const [activePage, setActivePage] = useState<string>("dashboard");
 
   // Menu Options
@@ -80,4 +80,4 @@ const AdminPanel: React.FC = () => {
   );
 };
 
-export default AdminPanel;
+export default SuperAdminPanel;

@@ -62,7 +62,7 @@ export const userSignUp = async (req,res) => {
         //     maxAge: 24 * 60 * 60 * 1000 *30
         // });
         res.setHeader("auth-token",token);
-        res.send(user)
+        res.send({...user,status: "user"})
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});
@@ -156,7 +156,7 @@ export const acceptOTP= async(req , res)=>{
         //     maxAge: 24 * 60 * 60 * 1000 *30
         // });
         res.setHeader("auth-token",token);
-        res.send(oldUser[0]);
+        res.send({...oldUser[0],status: "user"});
         return;
         }
         const token = jwt.sign({ email:req.body.email, status: "incompeleteUser" }, process.env.JWTSecret, { expiresIn: '1h' });

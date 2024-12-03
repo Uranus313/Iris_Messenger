@@ -2,12 +2,13 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
 import userContext from '../contexts/userContext';
 
-const HomeLayout = () => {
+const SuperAdminHomeLayout = () => {
   const {user ,  isLoading} = useContext(userContext);
   const navigate = useNavigate();
   useEffect(() => {
-     if((!isLoading && !user) ||(user && user.status != "user")){
-      navigate("/logIn");
+    console.log(user)
+    if((!isLoading && !user) || (user && user.status != "superAdmin")){
+      navigate("/superAdmin/logIn");
     }
   },[isLoading])
   return (
@@ -28,4 +29,4 @@ const HomeLayout = () => {
   );
 };
 
-export default HomeLayout;
+export default SuperAdminHomeLayout;
