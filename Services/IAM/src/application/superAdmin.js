@@ -1,8 +1,14 @@
 import { findSuperAdminWithPassword } from "../infrastructure/superAdmin.js";
 import jwt from "jsonwebtoken";
 import { comparePassword } from "./utilities/hashing.js";
+import { validateSuperAdminLogIn } from "../contracts/superAdmin.js";
 
 export const superAdminLogIn = async(req,res)=>{
+    const {error: error2} = validateSuperAdminLogIn(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         console.log(req.body)
         const superAdmin = await findSuperAdminWithPassword( req.body.email);
@@ -14,7 +20,7 @@ export const superAdminLogIn = async(req,res)=>{
 
         if(req.body.password != superAdmin.password){
             res.status(401).send({message:"wrong password"});
-            return result;
+            return ;
         }
         delete superAdmin.password;
         const token = jwt.sign({ id: superAdmin.id, status: "superAdmin" }, process.env.JWTSecret, { expiresIn: '30d' });

@@ -41,8 +41,11 @@ export let findAdminWithPassword = async (email) =>{
         return admin;
 }
 export let createAdmin = async (newadmin) =>{
-    admin.password = await hashPassword(newadmin.password);
-    let admin = await Admin.create(admin);
+    if(newadmin.password){
+        newadmin.password = await hashPassword(newadmin.password);
+
+    }
+    let admin = await Admin.create(newadmin);
     admin = await admin.toJSON();
     delete admin.password;
 

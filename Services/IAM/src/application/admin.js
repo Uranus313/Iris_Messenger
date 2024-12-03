@@ -1,7 +1,8 @@
 import { findAdminWithPassword, readAdmins } from "../infrastructure/admin.js";
 import { comparePassword } from "./utilities/hashing.js";
-
+import { createAdmin,deleteAdmin } from "../infrastructure/admin.js";
 import jwt from "jsonwebtoken";
+import { validateAdminChangeinfo, validateAdminPost } from "../contracts/admin.js";
 
 
 export const getAllAdmins = async (req,res) => {
@@ -23,6 +24,11 @@ export const getAdminByID = async (req,res) => {
     }
 }
 export const adminEdit = async (req,res) => {
+    const {error: error2} = validateAdminChangeinfo(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         const admin = await createAdmin(req.body.id,req.body);
         res.send(admin)
@@ -32,10 +38,15 @@ export const adminEdit = async (req,res) => {
     }
 }
 export const adminSignUp = async (req,res) => {
+    const {error: error2} = validateAdminPost(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         
         const admin = await createAdmin(req.body);
-        const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSecret, { expiresIn: '30d' });
+        // const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSecret, { expiresIn: '30d' });
         // res.cookie('x-auth-token', token, {
         //     httpOnly: true,
         //     // secure: process.env.NODE_ENV == "development"?null : true,
@@ -61,6 +72,11 @@ export const adminDelete = async (req,res) => {
     }
 }
 export const adminLogIn = async(req,res)=>{
+    const {error: error2} = validateAdminLogIn(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         const admin = await findAdminWithPassword(req.body.email);
         if(!admin){

@@ -1,3 +1,5 @@
+import { readAdmins } from "../../infrastructure/admin.js";
+import { readSuperAdmin } from "../../infrastructure/superAdmin.js";
 import { readUsers } from "../../infrastructure/user.js";
 import jwt from "jsonwebtoken";
 export async function auth(req,res, next, acceptedStatuses){
@@ -45,13 +47,12 @@ export async function auth(req,res, next, acceptedStatuses){
                 return;
               }
               req.user = user;
-              if(next){
               next();
-              }
+
               break;
       
               case "admin":
-                let admin = await readUsers(decoded.id);
+                let admin = await readAdmins(decoded.id);
                 // console.log(user.addresses)
                 if (!admin.id) {
                   res.status(401).send({ error: "access denied. invalid admin." });
@@ -66,12 +67,10 @@ export async function auth(req,res, next, acceptedStatuses){
                   return;
                 }
                 req.user = admin;
-                if(next){
                 next();
-                }
                 break;
                 case "superAdmin":
-                    const superAdmin = await readUsers(decoded.id);
+                    const superAdmin = await readSuperAdmin(decoded.id);
                     // console.log(superAdmin.addresses)
                     if (!superAdmin.id) {
                       res.status(401).send({ error: "access denied. invalid superAdmin." });
@@ -80,16 +79,15 @@ export async function auth(req,res, next, acceptedStatuses){
                       return;
                     }
                     req.user = superAdmin;
-                    if(next){
                     next();
-                    }
+
                     break;
             default:
               break;
           }
        
-        next();
     } catch (error) {
+      console.log(error)
         res.status(400).send({message: "invalid token" });
     }
 }

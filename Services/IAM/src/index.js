@@ -9,7 +9,7 @@ import superAdminRouter from "./presentation/superAdmin.js"
 
 import cookieParser from "cookie-parser";
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 DbConnection();
 app.use(cors({
     origin: true, // Allow all origins

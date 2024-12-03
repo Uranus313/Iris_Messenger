@@ -45,7 +45,7 @@ const AdminLogIn = () => {
         console.log(result);
         setSubmitLoading(false);
         setUser(result)
-        navigate("/superAdmin/");
+        navigate("/admin/");
         // goToNextStage();
         
     },

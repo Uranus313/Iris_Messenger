@@ -1,3 +1,4 @@
+import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
 import { readUsers , createUser } from "../infrastructure/user.js";
 import { generateRandomString } from "./utilities/randomString.js";
@@ -22,6 +23,11 @@ export const getUserByID = async (req,res) => {
     }
 }
 export const userEdit = async (req,res) => {
+    const {error: error2} = validateUserChangeinfo(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         const user = await createUser(req.user.id,req.body);
         res.send(user)
@@ -31,6 +37,11 @@ export const userEdit = async (req,res) => {
     }
 }
 export const userSignUp = async (req,res) => {
+    const {error: error2} = validateUserPost(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         console.log(1)
         // console.log(req.cookies["x-auth-token"]);
@@ -100,6 +111,11 @@ export const userDelete = async (req,res) => {
 //     }
 // }
 export const sendOTP= async(req , res)=>{
+    const {error: error2} = validateGetOTP(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         console.log("ofeopirgeweqwokqllpgejgfekolpdlkgnj")
 
@@ -131,6 +147,11 @@ export const sendOTP= async(req , res)=>{
     }
 }
 export const acceptOTP= async(req , res)=>{
+    const {error: error2} = validateSendOTP(req.body);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
     try {
         const oldOTP = await readOTPs(undefined,{email: req.body.email});
         

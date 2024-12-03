@@ -108,7 +108,7 @@ const AddAdmin = () => {
               
               placeholder="Enter admin password"
               className="input input-bordered w-full text-black"
-              {...register("email")}
+              {...register("password")}
               required
             />
           </div>
