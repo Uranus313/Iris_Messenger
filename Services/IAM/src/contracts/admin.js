@@ -16,14 +16,14 @@ export function validateAdminPost(data) {
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100).required(),
         lastName: Joi.string().min(1).max(100),
-        email : Joi.string().required(),
+        email : Joi.string().email().required(),
         password: Joi.string().required()
     });
     return schema.validate(data);
 }
 export function validateAdminLogIn(data) {
     const schema = Joi.object({
-        email : Joi.string().required(),
+        email : Joi.string().email().required(),
         password: Joi.string().required()
     });
     return schema.validate(data);

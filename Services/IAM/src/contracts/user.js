@@ -19,7 +19,7 @@ export function validateUserPost(data) {
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100).required(),
         lastName: Joi.string().min(1).max(100),
-        email : Joi.string().required(),
+        email : Joi.string().email().required(),
         bio: Joi.string()
     });
     return schema.validate(data);
@@ -27,7 +27,7 @@ export function validateUserPost(data) {
 export function validateGetOTP(data) {
     const schema = Joi.object({
         
-        email : Joi.string().required()
+        email : Joi.string().email().required()
     });
     return schema.validate(data);
 }
@@ -35,7 +35,7 @@ export function validateGetOTP(data) {
 export function validateSendOTP(data) {
     const schema = Joi.object({
         
-        email : Joi.string().required(),
+        email : Joi.string().email().required(),
         verificationCode : Joi.string().required()
     });
     return schema.validate(data);
