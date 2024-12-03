@@ -1,0 +1,1 @@
+export const IAM_api_Link = "http://localhost:3000/";
