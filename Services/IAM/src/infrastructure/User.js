@@ -54,7 +54,8 @@ export const updateUser = async (id,newUser) =>{
 export const deleteUser = async (id) =>{
     const user = await User.findOne({where:{id : id}});
     if(user){
-        await user.destroy();
+        user.isDeleted = true;
+        await user.save();
         return "deleted";
     }else{
         return null;

@@ -1,21 +1,12 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../DB/DbConnection.js";
-export const User = sequelize.define("User",{
+export const Admin = sequelize.define("Admin",{
     id:{
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    username:{
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique : true
-    },
-    bio:{
-        type: DataTypes.STRING,
-        allowNull: true,
-        unique : true
-    },
+    
     firstName:{
         type: DataTypes.STRING,
         allowNull: false
@@ -35,7 +26,7 @@ export const User = sequelize.define("User",{
         unique: true
 
     },
-    twoStepPassword : {
+    password : {
         type: DataTypes.STRING
     },
     isOnline:{

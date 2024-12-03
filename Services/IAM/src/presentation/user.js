@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, deleteUser, readUsers } from '../infrastructure/User';
+import { createUser, deleteUser, readUsers } from '../infrastructure/user.js';
 import { auth } from '../application/authorization/auth';
 import jwt from "jsonwebtoken";
 import { getAllUsers, userEdit, userSignUp } from '../application/User';

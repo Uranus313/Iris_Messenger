@@ -1,4 +1,4 @@
-import { readUsers } from "../../infrastructure/User";
+import { readUsers } from "../../infrastructure/user";
 import jwt from "jsonwebtoken";
 export async function auth(req,res, next){
     let token = req.header("auth-token");
