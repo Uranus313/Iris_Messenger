@@ -22,16 +22,19 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
   const navigate = useNavigate();
   const signUpMutate = useMutation({
     mutationFn: async (signUpObject : {email : string , FirstName : string , LastName? : string | null , Bio? : string | null  }) => {
-       
+       console.log(localStorage.getItem('Authorization'));
+       console.log("test")
         const result = await fetch(IAM_api_Link + `users`, {
             method: "POST",
             credentials: 'include',
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
             },
             body: JSON.stringify(signUpObject),
       });
       const jsonResult = await result.json();
+      localStorage.setItem("Authorization",result.headers.get("token") || "");
     //   console.log(jsonResult)
       if(result.ok){
           return jsonResult;
