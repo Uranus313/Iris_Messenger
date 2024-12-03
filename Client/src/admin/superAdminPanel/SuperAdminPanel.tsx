@@ -7,8 +7,7 @@ const AdminPanel: React.FC = () => {
   // Menu Options
   const menuItems = [
     { id: "dashboard", label: "Dashboard" },
-    { id: "manage-users", label: "manage Users" },
-    { id: "settings", label: "settings" },
+    { id: "add-admin", label: "Add Admin" },
   ];
 
   // Add Admin Form State
@@ -70,13 +69,12 @@ const AdminPanel: React.FC = () => {
           <h2 className="text-3xl font-bold mb-4">Welcome to the Dashboard!</h2>
         )}
 
-        {activePage === "manage-users" && (
-          <h2 className="text-3xl font-bold mb-4">Manage Users</h2>
+        {activePage === "add-admin" && (
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
+            <AddAdmin />
+          </div>
         )}
 
-        {activePage === "settings" && (
-          <h2 className="text-3xl font-bold mb-4">Settings</h2>
-        )}
       </main>
     </div>
   );

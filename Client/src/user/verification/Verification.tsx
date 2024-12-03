@@ -8,7 +8,7 @@ const Verification = () => {
 
         <div className="flex justify-center mb-4">
 
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s" className="w-40 h-40 rounded-full"></img>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHFmeR5ebZ8wuQKRj__rCMA4cnCscieEUYRw&s" className="w-40 h-40 rounded-full"></img>
         
         </div>
         

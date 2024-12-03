@@ -1,93 +1,59 @@
-import React, { useState } from "react";
-import AddAdmin from "./admin/addAdmin/AddAdmin";
+import React from "react";
 
-
-const AdminPanel: React.FC = () => {
-  const [activePage, setActivePage] = useState<string>("dashboard");
-
-  // Menu Options
-  const menuItems = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "add-admin", label: "Add Admin" },
-    { id: "manage-users", label: "Manage Users" },
-    { id: "settings", label: "Settings" },
-  ];
-
-  // Add Admin Form State
-  const [adminData, setAdminData] = useState({
-    name: "",
-    email: "",
-    role: "",
-  });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setAdminData({ ...adminData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!adminData.name || !adminData.email || !adminData.role) {
-      alert("Please fill all fields.");
-      return;
-    }
-    alert(
-      `Admin ${adminData.name} added successfully with role: ${adminData.role}`
-    );
-    setAdminData({ name: "", email: "", role: "" });
-  };
-
+const Verification = () => {
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <h1 className="text-2xl font-bold p-4 border-b border-gray-700 text-center">
-          Admin Panel
-        </h1>
-        <nav className="flex-grow">
-          <ul className="menu p-4">
-            {menuItems.map((item) => (
-              <li
-                key={item.id}
-                className={
-                  activePage === item.id ? "bg-gray-700 rounded-lg" : ""
-                }
-              >
-                <button
-                  className="text-left w-full p-2 hover:bg-gray-700 rounded-lg"
-                  onClick={() => setActivePage(item.id)}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+      <div className="text-center">
+        {/* Avatar Icon */}
 
-      {/* Main Content */}
-      <main className="flex-grow p-6">
-        {activePage === "dashboard" && (
-          <h2 className="text-3xl font-bold mb-4">Welcome to the Dashboard!</h2>
-        )}
+        <div className="flex justify-center mb-4">
 
-        {activePage === "add-admin" && (
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
-            <AddAdmin />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHFmeR5ebZ8wuQKRj__rCMA4cnCscieEUYRw&s" className="w-40 h-40 rounded-full"></img>
+        
+        </div>
+        
+        {/* <div className="flex justify-center mb-4">
+
+          <div className="avatar">
+            <div className="w-24 rounded-full bg-base-100">
+              <span className="text-5xl">🐵</span>
+            </div>
           </div>
-        )}
+        </div> */}
 
-        {activePage === "manage-users" && (
-          <h2 className="text-3xl font-bold mb-4">Manage Users</h2>
-        )}
+        {/* Email Display */}
+        <p className="text-xl font-semibold">example@mail.com</p>
+        <p className="text-gray-400 mt-2">
+          We have sent you a code. <br />
+           Please enter the code below to verify your email.
+        </p>
 
-        {activePage === "settings" && (
-          <h2 className="text-3xl font-bold mb-4">Settings</h2>
-        )}
-      </main>
+        {/* Code Input Field */}
+        <div className="mt-4">
+          <input
+            type="text"
+            placeholder="Enter Verification Code"
+            className="input input-bordered w-full max-w-xs bg-gray-800"
+          />
+        </div>
+
+        {/* Verify Button */}
+        <div className="mt-4">
+          <button className="btn btn-primary w-full max-w-xs">
+            Verify Code
+          </button>
+        </div>
+
+        {/* Resend Code Option */}
+        <p className="text-gray-400 mt-4 text-sm">
+          Didn't receive the code?{" "}
+          <button className="text-blue-400 hover:underline">
+            Resend Code
+          </button>
+        </p>
+      </div>
     </div>
   );
 };
 
-export default AdminPanel;
+export default Verification;
