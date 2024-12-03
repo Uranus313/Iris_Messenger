@@ -9,7 +9,7 @@ interface Props{
   setEmail : (email :string) => void;
 }
 
-const EnterEmail = ({goToNextStage } : Props) => {
+const EnterEmail = ({goToNextStage , setEmail } : Props) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [error , setError] = useState<string | null>(null);
@@ -20,11 +20,14 @@ const EnterEmail = ({goToNextStage } : Props) => {
             method: "POST",
             credentials: 'include',
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
             },
             body: JSON.stringify(emailObject),
       });
       const jsonResult = await result.json();
+      setEmail(emailObject.email)
+
     //   console.log(jsonResult)
       if(result.ok){
           return jsonResult;

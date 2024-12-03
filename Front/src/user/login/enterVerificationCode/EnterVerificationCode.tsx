@@ -43,13 +43,25 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
        
         const result = await fetch(IAM_api_Link + `authentication/authenticateUser`, {
             method: "POST",
-            credentials: 'include',
+            
             headers: {
               "Content-Type": "application/json"
+              // 'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
             },
             body: JSON.stringify(verificationCodeObject),
+            
       });
       const jsonResult = await result.json();
+      console.log(1);
+      console.log(3);
+      console.log(jsonResult);
+      console.log(result.headers);
+      result.headers.forEach( (value , name) => {
+        console.log(`${name}: ${value}`);
+      })
+      console.log(2);
+      localStorage.setItem("Authorization",jsonResult.token || "");
+
     //   console.log(jsonResult)
       if(result.ok){
           return jsonResult;
@@ -61,6 +73,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         console.log(sentData);
         console.log(result);
         setSubmitLoading(false);
+
         if(result.userStatus =="OldUser"){
           navigate("/user");
         }else{
@@ -170,7 +183,9 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         <p className="text-gray-400 mt-4 text-sm">
           Didn't receive the code?{" "}
           {resendCodeLoading ? <span className="loading loading-spinner loading-md"></span>:
-            (time > 0 ? formatTime(time) : <button type="button" className="text-blue-400 hover:underline">
+            (time > 0 ? formatTime(time) : <button onClick={() => {
+              setResendCodeLoading(true);
+              resendVerificationCodeMutate.mutate({email : email})}} type="button" className="text-blue-400 hover:underline">
               Resend Code
             </button>
             )

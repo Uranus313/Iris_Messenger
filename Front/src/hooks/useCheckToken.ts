@@ -7,7 +7,7 @@ function useUserCheckToken(){
         queryFn : async () => {
             const result = await fetch(IAM_api_Link+"user/", {
                             headers: {
-                                'Authorization': `Bearer ${localStorage.getItem("auth-token")}`
+                                'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
                             },
                             credentials: "include"
                         });
