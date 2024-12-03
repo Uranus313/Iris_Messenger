@@ -1,9 +1,9 @@
 import { where } from "sequelize";
 import { User } from "../domain/User.js"
 
-export const readUsers = async (id,conditions) =>{
+export let readUsers = async (id,conditions) =>{
     if(id){
-        const user = await User.findOne({where:{id : id}});
+        let user = await User.findOne({where:{id : id}});
         if(user){
             user = await user.toJSON();
                 
@@ -11,18 +11,18 @@ export const readUsers = async (id,conditions) =>{
         delete user.password;
         return user;
     }if(conditions){
-        const users = await User.findAll({where: conditions});
+        let users = await User.findAll({where: conditions});
         for (let index = 0; index < users.length; index++) {
-            const element = users[index];
+            let element = users[index];
             element = await element.toJSON();
             delete element.password;
 
         }
         return users;  
     }else{
-        const users = await User.findAll();
+        let users = await User.findAll();
         for (let index = 0; index < users.length; index++) {
-            const element = users[index];
+            let element = users[index];
             element = await element.toJSON();
         delete element.password;
 
@@ -31,23 +31,23 @@ export const readUsers = async (id,conditions) =>{
     }
     
 }
-export const findUserWithPassword = async (email,password) =>{
-    const user = await User.findOne({where:{email : email}});
+export let findUserWithPassword = async (email,password) =>{
+    let user = await User.findOne({where:{email : email}});
     if(!user){
         user = await user.toJSON();
     }
     return user;
 }
-export const createUser = async (newuser) =>{
-    const user = await User.create(newuser);
+export let createUser = async (newuser) =>{
+    let user = await User.create(newuser);
     user = await user.toJSON();
     delete user.password;
 
     return user;
 }
-export const updateUser = async (id,newUser) =>{
+export let updateUser = async (id,newUser) =>{
     
-    const user = await User.findOne({where:{id : id}});
+    let user = await User.findOne({where:{id : id}});
     if(user){
         if(newUser.password){
     newUser.password = await hashPassword(newUser.password);      
@@ -65,8 +65,8 @@ export const updateUser = async (id,newUser) =>{
         return null;
     }
 }
-export const deleteUser = async (id) =>{
-    const user = await User.findOne({where:{id : id}});
+export let deleteUser = async (id) =>{
+    let user = await User.findOne({where:{id : id}});
     if(user){
         user.isDeleted = true;
         await user.save();

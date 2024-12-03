@@ -16,7 +16,7 @@ const EnterEmail = ({goToNextStage , setEmail } : Props) => {
   const emailMutate = useMutation({
     mutationFn: async (emailObject : {email : string }) => {
        
-        const result = await fetch(IAM_api_Link + `/users/createOTP`, {
+        const result = await fetch(IAM_api_Link + `users/createOTP`, {
             method: "POST",
             credentials: 'include',
             headers: {

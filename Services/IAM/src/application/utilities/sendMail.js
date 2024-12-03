@@ -18,6 +18,7 @@ export async function sendMail({title,text,targetEmail}){
         text:text
     }
     try {
+        console.log( process.env.emailName, process.env.emailPass)
     const info = await transporter.sendMail(mailOptions );
      return info
         

@@ -1,13 +1,16 @@
 import { readUsers } from "../../infrastructure/user.js";
 import jwt from "jsonwebtoken";
 export async function auth(req,res, next, acceptedStatuses){
-    let token = req.cookies["x-auth-token"];
+    // console.log(req.cookies)
+    const token = req.headers["auth-token"];
+    // let token = req.cookies["x-auth-token"];
     if(!token){
         res.status(401).send({message: "access denied , no token provided" });
         return;
     }
     try {
         const decoded = jwt.verify(token, process.env.JWTSecret);
+        console.log("test")
         let checker = false;
         for (let index = 0; index < acceptedStatuses.length; index++) {
         if (decoded.status == acceptedStatuses[index]) {

@@ -21,19 +21,20 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
   const [error , setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const signUpMutate = useMutation({
-    mutationFn: async (signUpObject : {email : string , FirstName : string , LastName? : string | null , Bio? : string | null  }) => {
+    mutationFn: async (signUpObject : {email : string , firstName : string , lastName? : string | null , bio? : string | null  }) => {
        console.log(localStorage.getItem('Authorization'));
        console.log("test")
         const result = await fetch(IAM_api_Link + `users/signUp`, {
             method: "POST",
             credentials: 'include',
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "auth-token" : localStorage.getItem("auth-token") || ""
             },
             body: JSON.stringify(signUpObject),
       });
       const jsonResult = await result.json();
-      localStorage.setItem("Authorization",result.headers.get("token") || "");
+      localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
     //   console.log(jsonResult)
       if(result.ok){
           return jsonResult;
@@ -63,7 +64,7 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
 
   const handleSignUp = (data : any) => {
     setSubmitLoading(true);
-    signUpMutate.mutate({...data, Email: email})
+    signUpMutate.mutate({...data, email: email})
   };
 
   return (
@@ -115,7 +116,7 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
             First Name
           <input
             type="text"
-            {...register("FirstName")}
+            {...register("firstName")}
             placeholder="Enter your first name"
             required
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -132,7 +133,7 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
           <input
             type="text"
             placeholder="Enter your last name"
-            {...register("LastName")}
+            {...register("lastName")}
             className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
           </label>
@@ -146,7 +147,7 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
           >
             Bio
           <textarea
-            {...register("Bio")}
+            {...register("bio")}
             placeholder="Tell us a bit about yourself"
             className="textarea textarea-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 h-32"
           ></textarea>

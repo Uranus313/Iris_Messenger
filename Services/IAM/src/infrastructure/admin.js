@@ -2,9 +2,9 @@ import { where } from "sequelize";
 import { Admin } from "../domain/Admin.js"
 import { hashPassword } from "../application/utilities/hashing.js";
 
-export const readAdmins = async (id,conditions) =>{
+export let readAdmins = async (id,conditions) =>{
     if(id){
-        const admin = await Admin.findOne({where:{id : id}});
+        let admin = await Admin.findOne({where:{id : id}});
         if(admin){
         admin = await admin.toJSON();
             
@@ -12,18 +12,18 @@ export const readAdmins = async (id,conditions) =>{
         delete admin.password;
         return admin;
     }if(conditions){
-        const admins = await Admin.findAll({where: conditions});
+        let admins = await Admin.findAll({where: conditions});
         for (let index = 0; index < admins.length; index++) {
-            const element = admins[index];
+            let element = admins[index];
             element = await element.toJSON();
             delete element.password;
 
         }
         return admins;  
     }else{
-        const admins = await Admin.findAll();
+        let admins = await Admin.findAll();
         for (let index = 0; index < admins.length; index++) {
-            const element = admins[index];
+            let element = admins[index];
             element = await element.toJSON();
         delete element.password;
 
@@ -33,23 +33,23 @@ export const readAdmins = async (id,conditions) =>{
     
 }
 
-export const findAdminWithPassword = async (email) =>{
-        const admin = await Admin.findOne({where:{email : email}});
+export let findAdminWithPassword = async (email) =>{
+        let admin = await Admin.findOne({where:{email : email}});
         if(!admin){
             admin = await admin.toJSON();
         }
         return admin;
 }
-export const createAdmin = async (newadmin) =>{
+export let createAdmin = async (newadmin) =>{
     admin.password = await hashPassword(newadmin.password);
-    const admin = await Admin.create(admin);
+    let admin = await Admin.create(admin);
     admin = await admin.toJSON();
     delete admin.password;
 
     return admin;
 }
-export const updateAdmin = async (id,newAdmin) =>{
-    const admin = await Admin.findOne({where:{id : id}});
+export let updateAdmin = async (id,newAdmin) =>{
+    let admin = await Admin.findOne({where:{id : id}});
     if(admin){
         Object.keys(admin).forEach(key => {
             admin[key] = newAdmin[key];
@@ -64,8 +64,8 @@ export const updateAdmin = async (id,newAdmin) =>{
         return null;
     }
 }
-export const deleteAdmin = async (id) =>{
-    const admin = await Admin.findOne({where:{id : id}});
+export let deleteAdmin = async (id) =>{
+    let admin = await Admin.findOne({where:{id : id}});
     if(admin){
         admin.isDeleted = true;
         await admin.save();

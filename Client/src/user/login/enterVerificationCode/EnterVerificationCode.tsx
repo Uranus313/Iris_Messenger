@@ -41,18 +41,21 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
   const verificationCodeMutate = useMutation({
     mutationFn: async (verificationCodeObject : {email : string , verificationCode : string}) => {
        
-        const result = await fetch(IAM_api_Link + `/users/checkOTP`, {
+        const result = await fetch(IAM_api_Link + `users/checkOTP`, {
             method: "POST",
             credentials: 'include',
             
             headers: {
-              "Content-Type": "application/json"
-              // 'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
+              "Content-Type": "application/json",
+              'auth-token': localStorage.getItem("auth-token") || ""
             },
             body: JSON.stringify(verificationCodeObject),
             
       });
       const jsonResult = await result.json();
+      console.log(result.headers);
+      localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
+
       console.log(1);
       console.log(3);
       console.log(jsonResult);
@@ -61,7 +64,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         console.log(`${name}: ${value}`);
       })
       console.log(2);
-      localStorage.setItem("Authorization",jsonResult.token || "");
+      // localStorage.setItem("Authorization",jsonResult.token || "");
 
     //   console.log(jsonResult)
       if(result.ok){
@@ -107,7 +110,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
   const resendVerificationCodeMutate = useMutation({
     mutationFn: async (emailObject : {email : string }) => {
        
-        const result = await fetch(IAM_api_Link + `/users/createOTP`, {
+        const result = await fetch(IAM_api_Link + `users/createOTP`, {
             method: "POST",
             credentials: 'include',
             headers: {

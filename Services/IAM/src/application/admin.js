@@ -1,5 +1,7 @@
 import { findAdminWithPassword, readAdmins } from "../infrastructure/admin.js";
 
+import jwt from "jsonwebtoken";
+
 
 export const getAllAdmins = async (req,res) => {
     try {
@@ -32,15 +34,16 @@ export const adminSignUp = async (req,res) => {
     try {
         
         const admin = await createAdmin(req.body);
-        const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSECRET, { expiresIn: '30d' });
-        res.cookie('x-auth-token', token, {
-            httpOnly: true,
-            // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: false,
+        const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSecret, { expiresIn: '30d' });
+        // res.cookie('x-auth-token', token, {
+        //     httpOnly: true,
+        //     // secure: process.env.NODE_ENV == "development"?null : true,
+        //     secure: false,
 
-            sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000 *30
-        });
+        //     sameSite: 'none',
+        //     maxAge: 24 * 60 * 60 * 1000 *30
+        // });
+        
         res.send(admin)
     } catch (error) {
         console.log(error);
@@ -69,15 +72,17 @@ export const adminLogIn = async(req,res)=>{
             return result;
         }
         delete admin.password;
-        const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSECRET, { expiresIn: '30d' });
-        res.cookie('x-auth-token', token, {
-            httpOnly: true,
-            // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: false,
+        const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSecret, { expiresIn: '30d' });
+        // res.cookie('x-auth-token', token, {
+        //     httpOnly: true,
+        //     // secure: process.env.NODE_ENV == "development"?null : true,
+        //     secure: false,
 
-            sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000 *30
-        });
+        //     sameSite: 'none',
+        //     maxAge: 24 * 60 * 60 * 1000 *30
+        // });
+        res.setHeader("auth-token",token);
+        
         res.send(admin);
     } catch (error) {
         console.log(error);
