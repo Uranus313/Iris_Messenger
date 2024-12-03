@@ -5,10 +5,8 @@ function useUserCheckToken(){
     return useQuery({
         queryKey : ['user'],
         queryFn : async () => {
-            const result = await fetch(IAM_api_Link+"user/", {
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
-                            },
+            const result = await fetch(IAM_api_Link+"general/checkToken", {
+                            
                             credentials: "include"
                         });
             const jsonResult  = await result.json();

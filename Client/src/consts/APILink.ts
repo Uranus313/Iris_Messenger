@@ -1,1 +1,1 @@
-export const IAM_api_Link = "http://192.168.42.43:5187/IAM_api/";
+export const IAM_api_Link = "http://localhost:3000/";

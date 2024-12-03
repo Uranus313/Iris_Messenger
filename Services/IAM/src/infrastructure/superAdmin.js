@@ -8,3 +8,10 @@ export const readSuperAdmin = async () =>{
         delete superAdmin.password;
         return superAdmin;
 }
+export const findSuperAdminWithPassword = async (email) =>{
+    const admin = await SuperAdmin.findOne({where:{email : email}});
+    if(!admin){
+        admin = await admin.toJSON();
+    }
+    return admin;
+}

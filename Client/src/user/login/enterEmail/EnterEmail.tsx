@@ -16,12 +16,11 @@ const EnterEmail = ({goToNextStage , setEmail } : Props) => {
   const emailMutate = useMutation({
     mutationFn: async (emailObject : {email : string }) => {
        
-        const result = await fetch(IAM_api_Link + `authentication/CreateOTP`, {
+        const result = await fetch(IAM_api_Link + `/users/createOTP`, {
             method: "POST",
             credentials: 'include',
             headers: {
-              "Content-Type": "application/json",
-              'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
+              "Content-Type": "application/json"
             },
             body: JSON.stringify(emailObject),
       });

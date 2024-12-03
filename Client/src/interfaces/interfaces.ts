@@ -1,25 +1,25 @@
 export interface User{
-    Id : number;
-    Username? : string | null;
-    Email : string;
-    TwoStepPassword? : string | null;
-    IsOnline : boolean;
-    LastSeen : string;
-    FirstName : string;
-    LastName? : string | null;
-    Bio? : string | null;
-    IsDeleted : boolean;
-    IsBanned : boolean;
+    id : number;
+    username? : string | null;
+    email : string;
+    twoStepPassword? : string | null;
+    isOnline : boolean;
+    lastSeen : string;
+    firstName : string;
+    lastName? : string | null;
+    bio? : string | null;
+    isDeleted : boolean;
+    isBanned : boolean;
 }
 
 export interface Admin{
-    Id : number;
-    Password : string;
-    Email : string;
-    IsOnline : boolean;
-    LastSeen : string;
-    FirstName : string;
-    LastName? : string | null;
-    IsDeleted : boolean;
-    IsBanned : boolean;
+    id : number;
+    password : string;
+    email : string;
+    isOnline : boolean;
+    lastSeen : string;
+    firstName : string;
+    lastName? : string | null;
+    isDeleted : boolean;
+    isBanned : boolean;
 }

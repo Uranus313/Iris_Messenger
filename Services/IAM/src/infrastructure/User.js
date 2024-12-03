@@ -4,7 +4,10 @@ import { User } from "../domain/User.js"
 export const readUsers = async (id,conditions) =>{
     if(id){
         const user = await User.findOne({where:{id : id}});
-        user = await user.toJSON();
+        if(user){
+            user = await user.toJSON();
+                
+        }
         delete user.password;
         return user;
     }if(conditions){
@@ -28,16 +31,27 @@ export const readUsers = async (id,conditions) =>{
     }
     
 }
-export const createUser = async (user) =>{
-    const user = await User.create(user);
+export const findUserWithPassword = async (email,password) =>{
+    const user = await User.findOne({where:{email : email}});
+    if(!user){
+        user = await user.toJSON();
+    }
+    return user;
+}
+export const createUser = async (newuser) =>{
+    const user = await User.create(newuser);
     user = await user.toJSON();
     delete user.password;
 
     return user;
 }
 export const updateUser = async (id,newUser) =>{
+    
     const user = await User.findOne({where:{id : id}});
     if(user){
+        if(newUser.password){
+    newUser.password = await hashPassword(newUser.password);      
+        }
         Object.keys(user).forEach(key => {
             user[key] = newUser[key];
         });

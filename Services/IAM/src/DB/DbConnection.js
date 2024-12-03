@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 // import { readUsers } from "../infrastructure/User.js";
-export const sequelize = new Sequelize("EMS","postgres","admin",{
+export const sequelize = new Sequelize("Iris","postgres","admin",{
     host: "localhost",
     dialect: "postgres"
 });

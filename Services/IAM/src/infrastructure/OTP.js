@@ -4,7 +4,10 @@ import { OTP } from "../domain/OTP.js"
 export const readOTPs = async (id,conditions) =>{
     if(id){
         const otp = await OTP.findOne({where:{id : id}});
-        otp = await otp.toJSON();
+        if(otp){
+            otp = await otp.toJSON();
+                
+            }
         delete otp.password;
         return otp;
     }if(conditions){
@@ -28,8 +31,8 @@ export const readOTPs = async (id,conditions) =>{
     }
     
 }
-export const createOTP = async (otp) =>{
-    const otp = await OTP.create(otp);
+export const createOTP = async (newotp) =>{
+    const otp = await OTP.create(newotp);
     otp = await otp.toJSON();
     delete otp.password;
 

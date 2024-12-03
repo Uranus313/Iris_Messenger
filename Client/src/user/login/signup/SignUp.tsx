@@ -24,12 +24,11 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
     mutationFn: async (signUpObject : {email : string , FirstName : string , LastName? : string | null , Bio? : string | null  }) => {
        console.log(localStorage.getItem('Authorization'));
        console.log("test")
-        const result = await fetch(IAM_api_Link + `users`, {
+        const result = await fetch(IAM_api_Link + `users/signUp`, {
             method: "POST",
             credentials: 'include',
             headers: {
-              "Content-Type": "application/json",
-              'Authorization': `Bearer ${localStorage.getItem("Authorization")}`
+              "Content-Type": "application/json"
             },
             body: JSON.stringify(signUpObject),
       });

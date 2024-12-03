@@ -41,8 +41,9 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
   const verificationCodeMutate = useMutation({
     mutationFn: async (verificationCodeObject : {email : string , verificationCode : string}) => {
        
-        const result = await fetch(IAM_api_Link + `authentication/authenticateUser`, {
+        const result = await fetch(IAM_api_Link + `/users/checkOTP`, {
             method: "POST",
+            credentials: 'include',
             
             headers: {
               "Content-Type": "application/json"
@@ -106,7 +107,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
   const resendVerificationCodeMutate = useMutation({
     mutationFn: async (emailObject : {email : string }) => {
        
-        const result = await fetch(IAM_api_Link + `authentication/CreateOTP`, {
+        const result = await fetch(IAM_api_Link + `/users/createOTP`, {
             method: "POST",
             credentials: 'include',
             headers: {
