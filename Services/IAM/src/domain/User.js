@@ -13,8 +13,7 @@ export const User = sequelize.define("User",{
     },
     bio:{
         type: DataTypes.STRING,
-        allowNull: true,
-        unique : true
+        allowNull: true
     },
     firstName:{
         type: DataTypes.STRING,

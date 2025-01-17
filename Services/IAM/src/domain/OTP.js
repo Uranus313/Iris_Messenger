@@ -13,7 +13,7 @@ export const OTP = sequelize.define("OTP",{
     },
     code:{
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
         unique : true
     },
     createdAt:{
