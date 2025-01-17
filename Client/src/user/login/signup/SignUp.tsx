@@ -68,7 +68,8 @@ const SignUp = ({email , goToPreviousStage} : Props) => {
 
   const handleSignUp = (data : any) => {
     setSubmitLoading(true);
-    signUpMutate.mutate({...data, email: email})
+    const filteredData : {firstName : string , lastName? : string | null , bio? : string | null} = Object.fromEntries( Object.entries(data).filter(([key, value]) => value !== "") ) as {firstName : string , lastName? : string | null , bio? : string | null};
+    signUpMutate.mutate({...filteredData, email: email});
   };
 
   return (

@@ -12,15 +12,15 @@ const app = express();
 const port = process.env.PORT || 3001;
 DbConnection();
 app.use(cors({
-    origin: true, // Allow all origins
-    credentials: true, // Allow credentials
+    origin: "http://localhost:5173",// Allow all origins
+    credentials: true // Allow credentials
     // allowedHeaders: true,
-    exposedHeaders: ["auth-token"]
+    // exposedHeaders: ["auth-token"]
 }));
 process.env.JWTSecret = "mysecret";
 
-process.env.emailName= "mehrbodmh82@gmail.com";
-process.env.emailPass= "humhylbgqsvdlxxx";
+// process.env.emailName= "mehrbodmh14@gmail.com";
+// process.env.emailPass= "imqhmlpsofpktvgt";
 
 app.use(express.json());
 app.use(cookieParser());

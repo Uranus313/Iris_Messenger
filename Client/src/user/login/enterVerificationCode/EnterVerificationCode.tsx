@@ -48,23 +48,23 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
             credentials: 'include',
             
             headers: {
-              "Content-Type": "application/json",
-              'auth-token': localStorage.getItem("auth-token") || ""
+              "Content-Type": "application/json"
+              // 'auth-token': localStorage.getItem("auth-token") || ""
             },
             body: JSON.stringify(verificationCodeObject),
             
       });
       const jsonResult = await result.json();
       console.log(result.headers);
-      localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
+      // localStorage.setItem("auth-token",result.headers.get("auth-token") || "");
 
       console.log(1);
       console.log(3);
       console.log(jsonResult);
-      console.log(result.headers);
-      result.headers.forEach( (value , name) => {
-        console.log(`${name}: ${value}`);
-      })
+      // console.log(result.headers);
+      // result.headers.forEach( (value , name) => {
+      //   console.log(`${name}: ${value}`);
+      // })
       console.log(2);
       // localStorage.setItem("Authorization",jsonResult.token || "");
 
@@ -149,7 +149,7 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
 
         <div className="flex justify-center mb-4">
 
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s" className="w-40 h-40 rounded-full"></img>
+        <img title="code image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s" className="w-40 h-40 rounded-full" />
         
         </div>
         

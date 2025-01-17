@@ -7,7 +7,7 @@ export function validateUserChangeinfo(data) {
         twoStepPassword: Joi.string().min(8).max(200),
         birthDate: Joi.date(),
         isOnline: Joi.string(),
-        isBanned:Joi.boolean(),
+        // isBanned:Joi.boolean(),
         isDeleted:Joi.boolean(),
         lastScene:Joi.boolean(),
         bio: Joi.string(),

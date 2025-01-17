@@ -4,8 +4,12 @@ import { readUsers } from "../../infrastructure/user.js";
 import jwt from "jsonwebtoken";
 export async function auth(req,res, next, acceptedStatuses){
     // console.log(req.cookies)
-    const token = req.headers["auth-token"];
-    // let token = req.cookies["x-auth-token"];
+    // const token = req.headers["auth-token"];
+    let token = req.cookies["x-auth-token"];
+    // console.log(req.cookies["pga4_session"]);
+    console.log("token comes");
+    console.log(token);
+    console.log("token goes");
     if(!token){
         res.status(401).send({message: "access denied , no token provided" });
         return;

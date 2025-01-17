@@ -43,36 +43,40 @@ export const userSignUp = async (req,res) => {
         return
     }
     try {
-        console.log(1)
-        // console.log(req.cookies["x-auth-token"]);
-        console.log(2)
+        console.log(1);
+        console.log(req.cookies["x-auth-token"]);
+        console.log(2);
 
-        let receivedtoken = req.headers["auth-token"];
-        console.log(receivedtoken)
+        let receivedtoken =req.cookies["x-auth-token"];
+        console.log(receivedtoken);
     if(!receivedtoken){
         res.status(401).send({message: "access denied , no token provided" });
         return;
     }
-    process.env.JWTSecret = "mysecret"
+    process.env.JWTSecret = "mysecret";
         console.log(process.env.JWTSecret)
         const decoded = jwt.verify(receivedtoken, process.env.JWTSecret);
         console.log(decoded)
         // console.log(req)
+        if(decoded.status != "incompeleteUser"){
+            res.status(401).send({message: "access denied , invalid token" });
+            return;
+        }
         if(decoded.email != req.body.email){
             res.status(401).send({message: "access denied , this email is not verified" });
             return;
         }
         const user = await createUser(req.body);
         const token = jwt.sign({ id: user.id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
-        // res.cookie('x-auth-token', token, {
-        //     httpOnly: true,
-        //     // secure: process.env.NODE_ENV == "development"?null : true,
-        //     // secure: false,
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
+            // secure: false,
 
-        //     sameSite: 'none',
-        //     maxAge: 24 * 60 * 60 * 1000 *30
-        // });
-        res.setHeader("auth-token",token);
+            sameSite: 'none',
+            maxAge: 24 * 60 * 60 * 1000 *30
+        });
+        // res.setHeader("auth-token",token);
         res.send({...user,status: "user"})
     } catch (error) {
         console.log(error);
@@ -168,28 +172,28 @@ export const acceptOTP= async(req , res)=>{
         console.log(process.env.JWTSecret);
         if(oldUser[0]){
             const token = jwt.sign({ id: oldUser[0].id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
-        // res.cookie('x-auth-token', token, {
-        //     httpOnly: true,
-        //     // secure: process.env.NODE_ENV == "development"?null : true,
-        //     secure: null,
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
+            secure: null,
 
-        //     sameSite: 'none',
-        //     maxAge: 24 * 60 * 60 * 1000 *30
-        // });
-        res.setHeader("auth-token",token);
+            sameSite: 'none',
+            maxAge: 24 * 60 * 60 * 1000 *30
+        });
+        // res.setHeader("auth-token",token);
         res.send({...oldUser[0],status: "user"});
         return;
         }
         const token = jwt.sign({ email:req.body.email, status: "incompeleteUser" }, process.env.JWTSecret, { expiresIn: '1h' });
-        // res.cookie('x-auth-token', token, {
-        //     httpOnly: true,
-        //     // secure: process.env.NODE_ENV == "development"?null : true,
-        //     secure: false,
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
+            secure: false,
 
-        //     sameSite: 'none',
-        //     maxAge: 1 * 60 * 60 * 1000 
-        // });
-        res.setHeader("auth-token",token);
+            sameSite: 'none',
+            maxAge: 1 * 60 * 60 * 1000 
+        });
+        // res.setHeader("auth-token",token);
 
         res.send({message : "new user"});
     } catch (error) {
