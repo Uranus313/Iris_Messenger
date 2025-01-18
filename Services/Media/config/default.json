@@ -1,0 +1,14 @@
+{
+  "app": {
+    "port": 3002
+  },
+  "db": {
+    "mongo": {
+      "host": "localhost",
+      "port": 27017,
+      "name": "Nex",
+      "username": "root",
+      "password": "admin"
+    }
+  }
+}
