@@ -17,7 +17,7 @@ export let readAdmins = async (id,conditions) =>{
             let element = admins[index];
             element = await element.toJSON();
             delete element.password;
-
+            admins[index] = element;
         }
         return admins;  
     }else{
@@ -26,6 +26,7 @@ export let readAdmins = async (id,conditions) =>{
             let element = admins[index];
             element = await element.toJSON();
         delete element.password;
+        admins[index] = element;
 
         }
         return admins;  

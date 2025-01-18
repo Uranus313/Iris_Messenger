@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
-dotenv.config({path: './config/.env'});
+dotenv.config({path: './config/secret/.env'});
 
 const transporter = nodemailer.createTransport(
     {

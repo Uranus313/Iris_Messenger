@@ -16,7 +16,7 @@ export let readOTPs = async (id,conditions) =>{
             let element = otps[index];
             element = await element.toJSON();
             delete element.password;
-
+            otps[index] = element;
         }
         return otps;  
     }else{
@@ -25,6 +25,7 @@ export let readOTPs = async (id,conditions) =>{
             let element = otps[index];
             element = await element.toJSON();
         delete element.password;
+        otps[index] = element;
 
         }
         return otps;  

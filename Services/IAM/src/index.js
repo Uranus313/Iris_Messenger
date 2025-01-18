@@ -8,7 +8,7 @@ import superAdminRouter from "./presentation/superAdmin.js";
 import userRouter from "./presentation/user.js";
 
 import cookieParser from "cookie-parser";
-dotenv.config({path: './config/.env'});
+dotenv.config({path: './config/secret/.env'});
 const app = express();
 const port = process.env.PORT || 3001;
 DbConnection();
@@ -18,7 +18,6 @@ app.use(cors({
     // allowedHeaders: true,
     // exposedHeaders: ["auth-token"]
 }));
-process.env.JWTSecret = "mysecret";
 
 
 
