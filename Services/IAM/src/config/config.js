@@ -1,0 +1,1 @@
+export const rabbitmqConnectionURI= "amqp://guest:guest@localhost";
