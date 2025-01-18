@@ -2,10 +2,8 @@ import grpc from '@grpc/grpc-js';
 import protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import crypto from 'crypto';
-// import { gfs } from './gridfs'; // Assuming you have initialized GridFS
-import { gfs } from '../../DB/db.js';
-// import logger from './logger';
-import logger from '../loggers/generalLogger.js';
+import { gfs } from '../DB/db.js';
+import logger from '../utilities/loggers/generalLogger.js';
 import { fileURLToPath } from 'url';
 
 function uploadFile(call, callback) {
@@ -38,12 +36,13 @@ function uploadFile(call, callback) {
     });
 }
 
+
 export default function() {
 
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
     
-    const PROTO_PATH = path.join(__dirname, '../../../media.proto');
+    const PROTO_PATH = path.join(__dirname, '../config/media.proto');
     const packageDefinition = protoLoader.loadSync(PROTO_PATH);
     const mediaProto = grpc.loadPackageDefinition(packageDefinition).media;
     

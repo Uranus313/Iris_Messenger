@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
  const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PROTO_PATH = path.join(__dirname, '../../../media.proto');
+const PROTO_PATH = path.join(__dirname, '../../config/media.proto');
 const packageDefinition = protoLoader.loadSync(PROTO_PATH);
 const mediaProto = grpc.loadPackageDefinition(packageDefinition).media;
 
