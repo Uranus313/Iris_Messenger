@@ -9,7 +9,7 @@ const Login = () => {
   useEffect(()=>{
     console.log(stage);
   },[stage]);
- 
+
 
   return (
     <>
@@ -18,7 +18,7 @@ const Login = () => {
       {stage == "signUp" && <SignUp email={email || ""} goToPreviousStage={() => setStage("enterEmail")} />}
     </>
   );
-   
+
 };
 
 export default Login;

@@ -1,5 +1,4 @@
-import { where } from "sequelize";
-import { User } from "../domain/User.js"
+import { User } from "../domain/User.js";
 
 export let readUsers = async (id,conditions) =>{
     if(id){
@@ -15,9 +14,15 @@ export let readUsers = async (id,conditions) =>{
         for (let index = 0; index < users.length; index++) {
             let element = users[index];
             element = await element.toJSON();
+            // console.log(element);
+            // element = element.dataValues;
+            // if(element.password){
             delete element.password;
+            users[index] = element;
+            // }
 
         }
+        console.log(users);
         return users;  
     }else{
         let users = await User.findAll();
@@ -25,7 +30,7 @@ export let readUsers = async (id,conditions) =>{
             let element = users[index];
             element = await element.toJSON();
         delete element.password;
-
+        users[index] = element;
         }
         return users;  
     }
