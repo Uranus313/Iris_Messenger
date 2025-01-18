@@ -195,6 +195,7 @@ export const userUpdateProfilePicture = async (req,res) =>{
 // }
 export const sendOTP= async(req , res)=>{
     const {error: error2} = validateGetOTP(req.body);
+    console.log(req.body);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return

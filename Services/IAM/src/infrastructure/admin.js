@@ -7,9 +7,9 @@ export let readAdmins = async (id,conditions) =>{
         let admin = await Admin.findOne({where:{id : id}});
         if(admin){
         admin = await admin.toJSON();
+        delete admin.password;
             
         }
-        delete admin.password;
         return admin;
     }if(conditions){
         let admins = await Admin.findAll({where: conditions});

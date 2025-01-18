@@ -6,9 +6,9 @@ export let readUsers = async (id,conditions) =>{
         let user = await User.findOne({where:{id : id}});
         if(user){
             user = await user.toJSON();
+        delete user.password;
                 
         }
-        delete user.password;
         return user;
     }if(conditions){
         let users = await User.findAll({where: conditions});

@@ -27,7 +27,7 @@ const options = {
   };
 
 
-// app.use(express.json());
+app.use(express.json());
 app.use(cookieParser());
 // app.use(express.urlencoded({ extended: true }));
 app.get('/', async (req,res,next) =>{
