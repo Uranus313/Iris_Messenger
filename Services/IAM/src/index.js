@@ -5,9 +5,10 @@ import userRouter from "./presentation/user.js"
 import adminRouter from "./presentation/admin.js"
 import generalRouter from "./presentation/general.js"
 import superAdminRouter from "./presentation/superAdmin.js"
-
+import dotenv from 'dotenv';
 
 import cookieParser from "cookie-parser";
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001;
 DbConnection();
@@ -19,8 +20,7 @@ app.use(cors({
 }));
 process.env.JWTSecret = "mysecret";
 
-// process.env.emailName= "mehrbodmh14@gmail.com";
-// process.env.emailPass= "imqhmlpsofpktvgt";
+
 
 app.use(express.json());
 app.use(cookieParser());

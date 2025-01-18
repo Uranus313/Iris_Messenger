@@ -53,7 +53,6 @@ export const userSignUp = async (req,res) => {
         res.status(401).send({message: "access denied , no token provided" });
         return;
     }
-    process.env.JWTSecret = "mysecret";
         console.log(process.env.JWTSecret)
         const decoded = jwt.verify(receivedtoken, process.env.JWTSecret);
         console.log(decoded)
