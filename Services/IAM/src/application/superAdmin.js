@@ -27,7 +27,7 @@ export const superAdminLogIn = async(req,res)=>{
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: false,
+            secure: true,
 
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000 *30

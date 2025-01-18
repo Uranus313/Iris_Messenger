@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package media;
+
+service MediaService {
+  rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+}
+
+message UploadFileRequest {
+  bytes file = 1;
+  string filename = 2;
+  string originalname = 3;
+  string uploadedBy = 4;
+}
+
+message UploadFileResponse {
+  string id = 1;
+  string filename = 2;
+  string uploadDate = 3;
+}

@@ -90,15 +90,15 @@ export const adminLogIn = async(req,res)=>{
         }
         delete admin.password;
         const token = jwt.sign({ id: admin.id, status: "admin" }, process.env.JWTSecret, { expiresIn: '30d' });
-        // res.cookie('x-auth-token', token, {
-        //     httpOnly: true,
-        //     // secure: process.env.NODE_ENV == "development"?null : true,
-        //     secure: false,
+        res.cookie('x-auth-token', token, {
+            httpOnly: true,
+            // secure: process.env.NODE_ENV == "development"?null : true,
+            secure: true,
 
-        //     sameSite: 'none',
-        //     maxAge: 24 * 60 * 60 * 1000 *30
-        // });
-        res.setHeader("auth-token",token);
+            sameSite: 'none',
+            maxAge: 24 * 60 * 60 * 1000 *30
+        });
+        // res.setHeader("auth-token",token);
         
         res.send({...admin,status: "admin"});
     } catch (error) {

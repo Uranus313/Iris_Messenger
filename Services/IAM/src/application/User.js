@@ -1,9 +1,11 @@
 import jwt from "jsonwebtoken";
 import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
-import { createUser, readUsers } from "../infrastructure/user.js";
+import { readUsers , createUser, updateUser } from "../infrastructure/user.js";
 import { generateRandomString } from "./utilities/randomString.js";
 import { sendMail } from "./utilities/sendMail.js";
+import jwt from "jsonwebtoken";
+import { mediaGRPC } from "./utilities/grpc-sender.js";
 export const getAllUsers = async (req,res) => {
     try {
         const users = await readUsers();
@@ -37,12 +39,17 @@ export const userEdit = async (req,res) => {
     }
 }
 export const userSignUp = async (req,res) => {
-    const {error: error2} = validateUserPost(req.body);
+
+    
+    try {
+        console.log(req.body)
+    console.log("test")
+    const sentBody = JSON.parse(req.body.data);
+    const {error: error2} = validateUserPost(sentBody);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
     }
-    try {
         console.log(1);
         console.log(req.cookies["x-auth-token"]);
         console.log(2);
@@ -61,22 +68,55 @@ export const userSignUp = async (req,res) => {
             res.status(401).send({message: "access denied , invalid token" });
             return;
         }
-        if(decoded.email != req.body.email){
+        if(decoded.email != sentBody.email){
             res.status(401).send({message: "access denied , this email is not verified" });
             return;
         }
-        const user = await createUser(req.body);
-        const token = jwt.sign({ id: user.id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
-        res.cookie('x-auth-token', token, {
-            httpOnly: true,
-            // secure: process.env.NODE_ENV == "development"?null : true,
-            // secure: false,
+        if(req.file){
+            const request = {
+                // file: fileBuffer,
+                file: req.file.buffer,
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                uploadedBy: req.user?.id || 'anonymous',
+                // uploadedBy: 'anonymous',
+            };
 
-            sameSite: 'none',
-            maxAge: 24 * 60 * 60 * 1000 *30
-        });
-        // res.setHeader("auth-token",token);
-        res.send({...user,status: "user"})
+            mediaGRPC.UploadFile(request, async (err, response) => {
+                if (err) {
+                    console.error('gRPC upload failed:', err);
+                    return res.status(500).send('Failed to upload file.');
+                }
+        
+                console.log('File uploaded via gRPC:', response);
+                const user = await createUser({...sentBody  ,profilePicture: response.filename})
+                const token = jwt.sign({ id: user.id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
+            res.cookie('x-auth-token', token, {
+                httpOnly: true,
+                // secure: process.env.NODE_ENV == "development"?null : true,
+                secure: true,
+    
+                sameSite: 'none',
+                maxAge: 24 * 60 * 60 * 1000 *30
+            });
+            // res.setHeader("auth-token",token);
+            res.send({...user,status: "user"});
+            });
+        }else{
+            const user = await createUser(sentBody);
+            const token = jwt.sign({ id: user.id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
+            res.cookie('x-auth-token', token, {
+                httpOnly: true,
+                // secure: process.env.NODE_ENV == "development"?null : true,
+                secure: true,
+    
+                sameSite: 'none',
+                maxAge: 24 * 60 * 60 * 1000 *30
+            });
+            // res.setHeader("auth-token",token);
+            res.send({...user,status: "user"});
+        }
+        
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});
@@ -86,6 +126,47 @@ export const userDelete = async (req,res) => {
     try {
         const user = await deleteUser(req.user.id);
         res.send(user)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message:"internal server error"});
+    }
+}
+export const userDeleteProfilePicture = async (req,res) =>{
+    try{
+        const user = updateUser(user.id,{profilePicture : null});
+        res.send({...user,status: "user"});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message:"internal server error"});
+    }
+}
+export const userUpdateProfilePicture = async (req,res) =>{
+    try{
+        if(req.file){
+            const request = {
+                // file: fileBuffer,
+                file: req.file.buffer,
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                uploadedBy: req.user.id || 'anonymous',
+                // uploadedBy: 'anonymous',
+            };
+        
+            mediaGRPC.UploadFile(request, async (err, response) => {
+                if (err) {
+                    console.error('gRPC upload failed:', err);
+                    return res.status(500).send('Failed to upload file.');
+                }
+        
+                console.log('File uploaded via gRPC:', response);
+               
+            const user = updateUser(user.id,{profilePicture : response.filename});
+            res.send({...user,status: "user"});
+            });
+        }else{
+            res.status(400).send({message:"no file received"});
+        }
+        
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});
@@ -115,6 +196,7 @@ export const userDelete = async (req,res) => {
 // }
 export const sendOTP= async(req , res)=>{
     const {error: error2} = validateGetOTP(req.body);
+    console.log(req.body);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
@@ -175,7 +257,7 @@ export const acceptOTP= async(req , res)=>{
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: null,
+            secure: true,
 
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000 *30

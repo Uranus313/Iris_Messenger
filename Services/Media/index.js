@@ -6,8 +6,9 @@ import logger from "./utilities/loggers/generalLogger.js";
 import cors from 'cors';
 import mediaRouter from './Presentation/routes.js';
 import error from "./Middlewares/error.js";
+import grpcStart from "./Application/grpc.js";
 db();
-
+grpcStart();
 const app = express();
 app.use(cors());
 app.use(mediaRouter);
