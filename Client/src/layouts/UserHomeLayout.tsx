@@ -7,7 +7,7 @@ const HomeLayout = () => {
   const navigate = useNavigate();
   useEffect(() => {
      if((!isLoading && !user) ||(user && user.status != "user")){
-      navigate("/logIn");
+      navigate("/user/logIn");
     }
   },[isLoading])
   return (
