@@ -39,14 +39,16 @@ export const userEdit = async (req,res) => {
 }
 export const userSignUp = async (req,res) => {
 
-
+    
+    try {
+        console.log(req.body)
+    console.log("test")
     const sentBody = JSON.parse(req.body.data);
     const {error: error2} = validateUserPost(sentBody);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
     }
-    try {
         console.log(1);
         console.log(req.cookies["x-auth-token"]);
         console.log(2);
@@ -75,10 +77,10 @@ export const userSignUp = async (req,res) => {
                 file: req.file.buffer,
                 filename: req.file.filename,
                 originalname: req.file.originalname,
-                uploadedBy: req.user.id || 'anonymous',
+                uploadedBy: req.user?.id || 'anonymous',
                 // uploadedBy: 'anonymous',
             };
-        
+
             mediaGRPC.UploadFile(request, async (err, response) => {
                 if (err) {
                     console.error('gRPC upload failed:', err);
@@ -86,7 +88,7 @@ export const userSignUp = async (req,res) => {
                 }
         
                 console.log('File uploaded via gRPC:', response);
-                const user = await createUser({profilePicture: response.filename})
+                const user = await createUser({...sentBody  ,profilePicture: response.filename})
                 const token = jwt.sign({ id: user.id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
             res.cookie('x-auth-token', token, {
                 httpOnly: true,
@@ -252,7 +254,7 @@ export const acceptOTP= async(req , res)=>{
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: null,
+            secure: true,
 
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000 *30
@@ -265,7 +267,7 @@ export const acceptOTP= async(req , res)=>{
         res.cookie('x-auth-token', token, {
             httpOnly: true,
             // secure: process.env.NODE_ENV == "development"?null : true,
-            secure: false,
+            secure: true,
 
             sameSite: 'none',
             maxAge: 1 * 60 * 60 * 1000 

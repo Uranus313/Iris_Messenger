@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
-dotenv.config({path: './config/secret/.env'});
-
+// dotenv.config({path: '../config/secret/.env'});
+dotenv.config({path: './src/config/secret/.env'});
 const transporter = nodemailer.createTransport(
     {
         host: 'smtp.gmail.com',
