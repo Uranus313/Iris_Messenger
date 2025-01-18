@@ -1,14 +1,14 @@
-import express from 'express';
 import cors from 'cors';
-import DbConnection from './DB/DbConnection.js';
-import userRouter from "./presentation/user.js"
-import adminRouter from "./presentation/admin.js"
-import generalRouter from "./presentation/general.js"
-import superAdminRouter from "./presentation/superAdmin.js"
 import dotenv from 'dotenv';
+import express from 'express';
+import DbConnection from './DB/DbConnection.js';
+import adminRouter from "./presentation/admin.js";
+import generalRouter from "./presentation/general.js";
+import superAdminRouter from "./presentation/superAdmin.js";
+import userRouter from "./presentation/user.js";
 
 import cookieParser from "cookie-parser";
-dotenv.config();
+dotenv.config({path: './config/.env'});
 const app = express();
 const port = process.env.PORT || 3001;
 DbConnection();

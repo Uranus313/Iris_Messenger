@@ -1,12 +1,15 @@
-import nodemailer from 'nodemailer'
+import dotenv from 'dotenv';
+import nodemailer from 'nodemailer';
+dotenv.config({path: './config/.env'});
+
 const transporter = nodemailer.createTransport(
     {
         host: 'smtp.gmail.com',
         port: 587,
         secure: false,
         auth:{
-            user: process.env.emailName,
-            pass: process.env.emailPass
+            user: process.env.EMAIL_NAME,
+            pass: process.env.EMAIL_PASS
         }
     }
 );
@@ -18,7 +21,7 @@ export async function sendMail({title,text,targetEmail}){
         text:text
     }
     try {
-        console.log( process.env.emailName, process.env.emailPass)
+        console.log( process.env.EMAIL_NAME, process.env.EMAIL_PASS)
     const info = await transporter.sendMail(mailOptions );
      return info
         
