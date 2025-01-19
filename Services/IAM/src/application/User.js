@@ -1,10 +1,10 @@
+import jwt from "jsonwebtoken";
 import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
-import { readUsers , createUser, updateUser } from "../infrastructure/user.js";
+import { createUser, readUsers, updateUser } from "../infrastructure/user.js";
+import { mediaGRPC } from "./utilities/grpc-sender.js";
 import { generateRandomString } from "./utilities/randomString.js";
 import { sendMail } from "./utilities/sendMail.js";
-import jwt from "jsonwebtoken";
-import { mediaGRPC } from "./utilities/grpc-sender.js";
 export const getAllUsers = async (req,res) => {
     try {
         const users = await readUsers();
@@ -254,6 +254,7 @@ export const acceptOTP= async(req , res)=>{
         const oldUser = await readUsers(undefined,{email: req.body.email});
         console.log(process.env.JWTSecret);
         if(oldUser[0]){
+            console.log(oldUser[0]);
             const token = jwt.sign({ id: oldUser[0].id, status: "user" }, process.env.JWTSecret, { expiresIn: '30d' });
         res.cookie('x-auth-token', token, {
             httpOnly: true,
@@ -276,6 +277,7 @@ export const acceptOTP= async(req , res)=>{
             sameSite: 'none',
             maxAge: 1 * 60 * 60 * 1000 
         });
+        console.log(token);
         // res.setHeader("auth-token",token);
 
         res.send({message : "new user"});

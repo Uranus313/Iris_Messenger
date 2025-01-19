@@ -1,58 +1,58 @@
 import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { IAM_api_Link } from "../../../consts/APILink";
 import { useNavigate } from "react-router-dom";
+import { IAM_api_Link } from "../../../consts/APILink";
 import userContext from "../../../contexts/userContext";
 
-
-
-interface Props{
-  goToNextStage : () => void,
-  goToPreviousStage : () => void,
-  email : string
+interface Props {
+  goToNextStage: () => void;
+  goToPreviousStage: () => void;
+  email: string;
 }
 
-
-
-
-const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Props) => {
+const EnterVerificationCode = ({
+  goToNextStage,
+  goToPreviousStage,
+  email,
+}: Props) => {
   const verificationCodeRef = useRef<HTMLInputElement>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [resendCodeLoading, setResendCodeLoading] = useState<boolean>(false);
-  const [error , setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [time, setTime] = useState(120); // 2 minutes = 120 seconds
-  const {user,setUser} = useContext(userContext);
+  const { setUser } = useContext(userContext);
 
   useEffect(() => {
     if (time > 0) {
       const timerId = setInterval(() => {
-        if(time > 0){
-          setTime(prevTime => prevTime - 1);
+        if (time > 0) {
+          setTime((prevTime) => prevTime - 1);
         }
       }, 1000);
       return () => clearInterval(timerId);
     }
   }, [time]);
 
-  const formatTime = (seconds : number) => {
+  const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
   const verificationCodeMutate = useMutation({
-    mutationFn: async (verificationCodeObject : {email : string , verificationCode : string}) => {
-       
-        const result = await fetch(IAM_api_Link + `users/checkOTP`, {
-            method: "POST",
-            credentials: 'include',
-            
-            headers: {
-              "Content-Type": "application/json"
-              // 'auth-token': localStorage.getItem("auth-token") || ""
-            },
-            body: JSON.stringify(verificationCodeObject),
-            
+    mutationFn: async (verificationCodeObject: {
+      email: string;
+      verificationCode: string;
+    }) => {
+      const result = await fetch(IAM_api_Link + `users/checkOTP`, {
+        method: "POST",
+        credentials: "include",
+
+        headers: {
+          "Content-Type": "application/json",
+          // 'auth-token': localStorage.getItem("auth-token") || ""
+        },
+        body: JSON.stringify(verificationCodeObject),
       });
       const jsonResult = await result.json();
       console.log(result.headers);
@@ -68,91 +68,101 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
       console.log(2);
       // localStorage.setItem("Authorization",jsonResult.token || "");
 
-    //   console.log(jsonResult)
-      if(result.ok){
-          return jsonResult;
-      }else{
-          throw new Error(jsonResult.message);
+      //   console.log(jsonResult)
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
       }
     },
-    onSuccess: ( result,sentData) =>{
-        console.log(sentData);
-        console.log(result);
-        setSubmitLoading(false);
+    onSuccess: (result, sentData) => {
+      console.log(sentData);
+      console.log(result);
+      setSubmitLoading(false);
 
-        if(result.id){
-          setUser(result);
-          navigate("/user");
-        }else{
-          goToNextStage();
-        }
-
+      if (result.id) {
+        setUser(result);
+        navigate("/user");
+      } else {
+        goToNextStage();
+      }
     },
-    onError: (error) =>{
-        // console.log("error12");
-        // console.log(error);
-        // console.log(error.message);
-        // let errorText = 'error';
-        // goToPreviousStage();
-        setError(error.message)  
-        setSubmitLoading(false);
-    }
-}); 
+    onError: (error) => {
+      // console.log("error12");
+      // console.log(error);
+      // console.log(error.message);
+      // let errorText = 'error';
+      // goToPreviousStage();
+      setError(error.message);
+      setSubmitLoading(false);
+    },
+  });
 
   const handleVerificationCodeSend = (e: FormEvent) => {
     e.preventDefault();
-    
-    if(!verificationCodeRef.current?.value){
+
+    if (!verificationCodeRef.current?.value) {
       return;
     }
     setSubmitLoading(true);
 
-    verificationCodeMutate.mutate({email : email , verificationCode : verificationCodeRef.current?.value });
-
+    verificationCodeMutate.mutate({
+      email: email,
+      verificationCode: verificationCodeRef.current?.value,
+    });
   };
   const resendVerificationCodeMutate = useMutation({
-    mutationFn: async (emailObject : {email : string }) => {
-       
-        const result = await fetch(IAM_api_Link + `users/createOTP`, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(emailObject),
+    mutationFn: async (emailObject: { email: string }) => {
+      const result = await fetch(IAM_api_Link + `users/createOTP`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailObject),
       });
       const jsonResult = await result.json();
-    //   console.log(jsonResult)
-      if(result.ok){
-          return jsonResult;
-      }else{
-          throw new Error(jsonResult.message);
+      //   console.log(jsonResult)
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
       }
     },
-    onSuccess: ( result,sentData) =>{
-        console.log(sentData);
-        console.log(result);
-        setResendCodeLoading(false);
-        setTime(120);
-
+    onSuccess: (result, sentData) => {
+      console.log(sentData);
+      console.log(result);
+      setResendCodeLoading(false);
+      setTime(120);
     },
-    onError: (error) =>{
-        setError(error.message)  
-        setResendCodeLoading(false);
-        setTime(0);
-    }
-}); 
+    onError: (error) => {
+      setError(error.message);
+      setResendCodeLoading(false);
+      setTime(0);
+    },
+  });
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-      <form onSubmit={submitLoading ? (e) => {e.preventDefault()} : handleVerificationCodeSend} className="text-center">
+      <form
+        onSubmit={
+          submitLoading
+            ? (e) => {
+                e.preventDefault();
+              }
+            : handleVerificationCodeSend
+        }
+        className="text-center"
+      >
         {/* Avatar Icon */}
 
         <div className="flex justify-center mb-4">
-
-        <img title="code image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s" className="w-40 h-40 rounded-full" />
-        
+          <img
+            title="code image"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s"
+            className="w-40 h-40 rounded-full"
+          />
         </div>
-        
+
         {/* <div className="flex justify-center mb-4">
 
           <div className="avatar">
@@ -166,9 +176,9 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         <p className="text-xl font-semibold">{email}</p>
         <p className="text-gray-400 mt-2">
           We have sent you a code. <br />
-           Please enter the code below to verify your email.
+          Please enter the code below to verify your email.
         </p>
-        {error && <p>{error}</p>}  
+        {error && <p>{error}</p>}
         {/* Code Input Field */}
         <div className="mt-4">
           <input
@@ -182,24 +192,40 @@ const EnterVerificationCode = ({goToNextStage , goToPreviousStage , email} : Pro
         {/* Verify Button */}
         <div className="mt-4">
           <button type="submit" className="btn btn-primary w-full max-w-xs">
-            {submitLoading? <span className="loading loading-spinner loading-md"></span>:"Verify Code"}
+            {submitLoading ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              "Verify Code"
+            )}
           </button>
         </div>
 
         {/* Resend Code Option */}
         <p className="text-gray-400 mt-4 text-sm">
           Didn't receive the code?{" "}
-          {resendCodeLoading ? <span className="loading loading-spinner loading-md"></span>:
-            (time > 0 ? formatTime(time) : <button onClick={() => {
-              setResendCodeLoading(true);
-              resendVerificationCodeMutate.mutate({email : email})}} type="button" className="text-blue-400 hover:underline">
+          {resendCodeLoading ? (
+            <span className="loading loading-spinner loading-md"></span>
+          ) : time > 0 ? (
+            formatTime(time)
+          ) : (
+            <button
+              onClick={() => {
+                setResendCodeLoading(true);
+                resendVerificationCodeMutate.mutate({ email: email });
+              }}
+              type="button"
+              className="text-blue-400 hover:underline"
+            >
               Resend Code
             </button>
-            )
-          }
-          
-          
+          )}
         </p>
+        <button
+          onClick={() => goToPreviousStage()}
+          className=" text-blue-400 text-sm"
+        >
+          Edit Email
+        </button>
       </form>
     </div>
   );

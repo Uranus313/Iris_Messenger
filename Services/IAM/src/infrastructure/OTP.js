@@ -1,5 +1,4 @@
-import { where } from "sequelize";
-import { OTP } from "../domain/OTP.js"
+import { OTP } from "../domain/OTP.js";
 
 export let readOTPs = async (id,conditions) =>{
     if(id){
