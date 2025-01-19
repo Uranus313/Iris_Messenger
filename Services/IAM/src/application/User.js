@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
 import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
-import { readUsers , createUser, updateUser } from "../infrastructure/user.js";
+import { createUser, readUsers, updateUser } from "../infrastructure/user.js";
+import { mediaGRPC } from "./utilities/grpc-sender.js";
 import { generateRandomString } from "./utilities/randomString.js";
 import { sendMail } from "./utilities/sendMail.js";
-import jwt from "jsonwebtoken";
-import { mediaGRPC } from "./utilities/grpc-sender.js";
 export const getAllUsers = async (req,res) => {
     try {
         const users = await readUsers();

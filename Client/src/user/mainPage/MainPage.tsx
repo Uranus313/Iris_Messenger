@@ -1,10 +1,15 @@
 import { useState } from "react";
 import Chat from "./chat/Chat";
 import ChatList from "./chatList/ChatList";
+import Contact from "./menu/contacts/Contact";
+import Setting from "./menu/setting/Setting";
 
 const MainPage = () => {
   let [chatList, setChatList] = useState<boolean>(false);
   let [selectedChat, setSelectedChat] = useState<string | null>("test");
+  let [SidebarState, setSidebarState] = useState<
+    "chatlist" | "settings" | "contacts"
+  >("chatlist");
   return (
     <div className="flex  ">
       {/* Sidebar for Chat List */}
@@ -15,7 +20,15 @@ const MainPage = () => {
             : "flex-grow bg-base-300  md:block md:flex-none"
         }
       >
-        <ChatList />
+        {SidebarState == "chatlist" && (
+          <ChatList setSidebarState={setSidebarState} />
+        )}
+        {SidebarState == "settings" && (
+          <Setting goBack={() => setSidebarState("chatlist")} />
+        )}
+        {SidebarState == "contacts" && (
+          <Contact goBack={() => setSidebarState("chatlist")} />
+        )}
       </div>
       {/* Main Chat Area */}
 

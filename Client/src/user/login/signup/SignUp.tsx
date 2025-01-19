@@ -6,21 +6,15 @@ import { IAM_api_Link } from "../../../consts/APILink";
 import userContext from "../../../contexts/userContext";
 
 interface Props {
-  goToPreviousStage: () => void;
   email: string;
 }
 
-const SignUp = ({ email, goToPreviousStage }: Props) => {
+const SignUp = ({ email }: Props) => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const {
-    register,
-    // setValue,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { user, setUser } = useContext(userContext);
+  const { setUser } = useContext(userContext);
   console.log("testtingggggg");
   const navigate = useNavigate();
   const signUpMutate = useMutation({
@@ -33,7 +27,6 @@ const SignUp = ({ email, goToPreviousStage }: Props) => {
         body: formData,
       });
       const jsonResult = await result.json();
-      //   console.log(jsonResult)
       if (result.ok) {
         return jsonResult;
       } else {
@@ -45,7 +38,6 @@ const SignUp = ({ email, goToPreviousStage }: Props) => {
       console.log(result);
       setUser(result);
       navigate("/user");
-      // goToNextStage();
     },
     onError: (error) => {
       setError(error.message);
@@ -67,7 +59,7 @@ const SignUp = ({ email, goToPreviousStage }: Props) => {
       lastName?: string | null;
       bio?: string | null;
     } = Object.fromEntries(
-      Object.entries(data).filter(([key, value]) => value !== "")
+      Object.entries(data).filter(([value]) => value !== "")
     ) as { firstName: string; lastName?: string | null; bio?: string | null };
     if (profilePicture) {
       formData.append("file", profilePicture);

@@ -1,7 +1,11 @@
 import { useState } from "react";
-import sth from "../../../assets/345974-200 .png"
+import sth from "../../../assets/345974-200 .png";
 
-const ChatList = () => {
+interface Props {
+  setSidebarState: (nextState: "settings" | "contacts") => void;
+}
+
+const ChatList = ({ setSidebarState }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -14,20 +18,20 @@ const ChatList = () => {
       <div className="px-4 py-2 bg-base-100 flex items-center justify-between">
         <div className="relative">
           <button onClick={toggleMenu} className="btn btn-ghost text-lg mt-4">
-            <img
-              src={sth}
-              alt=""
-              className=" fixed"
-            />
+            <img src={sth} alt="" className=" fixed" />
           </button>
           {isMenuOpen && (
             <div className="absolute top-12 left-0 bg-base-100 shadow-lg rounded-md w-48 mt-4">
               <ul className="menu menu-compact p-2 bg-base-200 rounded-md">
                 <li className=" hover:bg-base-300">
-                  <a href="#">Contact</a>
+                  <button onClick={() => setSidebarState("contacts")}>
+                    Contact
+                  </button>
                 </li>
                 <li className="hover:bg-base-300">
-                  <a href="#">Settings</a>
+                  <button onClick={() => setSidebarState("settings")}>
+                    Settings
+                  </button>
                 </li>
               </ul>
             </div>

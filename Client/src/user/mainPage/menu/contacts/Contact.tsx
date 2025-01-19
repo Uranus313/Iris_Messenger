@@ -1,6 +1,8 @@
 import { useState } from "react";
-
-const Contact = () => {
+interface Props {
+  goBack: () => void;
+}
+const Contact = ({ goBack }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Sample Data (Replace with real data from API)
@@ -58,7 +60,10 @@ const Contact = () => {
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Header and Search Bar */}
       <div className="sticky top-0 bg-gray-800 p-4 flex items-center gap-2">
-        <button className="btn btn-circle btn-sm btn-outline text-white">
+        <button
+          onClick={goBack}
+          className="btn btn-circle btn-sm btn-outline text-white"
+        >
           <i className="fas fa-arrow-left"></i>
         </button>
         <input
