@@ -12,15 +12,15 @@ export let readUsers = async (id,conditions,idArray) =>{
         }
         return user;
     }else if(idArray){
-        let admins = await User.findAll({ 
+        let users = await User.findAll({ 
             where: { id: { [Op.in]: idArray } } 
         });
-        admins = admins.map((admin) => {
-            admin = admin.toJSON();
-            delete admin.password;
-            return admin;
+        users = users.map((user) => {
+            user = user.toJSON();
+            delete user.password;
+            return user;
         });
-        return admins;
+        return users;
     }
     else if(conditions){
         let users = await User.findAll({where: conditions});

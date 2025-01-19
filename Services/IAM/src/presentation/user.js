@@ -1,6 +1,6 @@
 import express from 'express';
 import { auth } from '../application/authorization/auth.js';
-import { acceptOTP, getAllUsers, getUserByID, sendOTP, userDelete, userDeleteProfilePicture, userEdit, userSignUp, userUpdateProfilePicture } from '../application/user.js';
+import { acceptOTP, getAllUsers, getUserByID, searchUserByEmail, sendOTP, userDelete, userDeleteProfilePicture, userEdit, userSignUp, userUpdateProfilePicture } from '../application/user.js';
 import multer from 'multer';
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -14,4 +14,6 @@ router.patch("/editUser",(req,res,next) => auth(req,res,next,["user"]), userEdit
 router.delete("/delete",(req,res,next) => auth(req,res,next,["user"]), userDelete);
 router.post("/createOTP", sendOTP);
 router.post("/checkOTP", acceptOTP);
+router.get("/searchUserById/:email",(req,res,next) => auth(req,res,next,["user"]), searchUserByEmail);
+
 export default router;

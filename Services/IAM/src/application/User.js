@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
+import { validateGetOTP, validateSearchUserByEmail, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
 import { createUser, readUsers, updateUser } from "../infrastructure/user.js";
 import { mediaGRPC } from "./utilities/grpc-sender.js";
@@ -18,6 +18,20 @@ export const getUserByID = async (req,res) => {
     try {
         const user = await readUsers(req.params.id);
         res.send(user)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message:"internal server error"});
+    }
+}
+export const searchUserByEmail = async (req,res) => {
+    const {error: error2} = validateSearchUserByEmail(req.params.email);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
+    try {
+        const users = await readUsers(undefined,{email : req.params.email});
+        res.send(users)
     } catch (error) {
         console.log(error);
         res.status(500).send({message:"internal server error"});
@@ -135,7 +149,7 @@ export const userDelete = async (req,res) => {
 }
 export const userDeleteProfilePicture = async (req,res) =>{
     try{
-        const user = updateUser(req.user.id,{profilePicture : null});
+        const user = await updateUser(req.user.id,{profilePicture : null});
         res.send({...user,status: "user"});
     } catch (error) {
         console.log(error);
@@ -162,7 +176,7 @@ export const userUpdateProfilePicture = async (req,res) =>{
         
                 console.log('File uploaded via gRPC:', response);
                
-            const user = updateUser(req.user.id,{profilePicture : response.filename});
+            const user = await updateUser(req.user.id,{profilePicture : response.filename});
             res.send({...user,status: "user"});
             });
         }else{

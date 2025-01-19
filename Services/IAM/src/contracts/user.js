@@ -33,6 +33,14 @@ export function validateGetOTP(data) {
     return schema.validate(data);
 }
 
+export function validateSearchUserByEmail(data) {
+    const schema = Joi.object({
+        
+        email : Joi.string().email().required()
+    });
+    return schema.validate(data);
+}
+
 export function validateSendOTP(data) {
     const schema = Joi.object({
         

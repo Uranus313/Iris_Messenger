@@ -1,31 +1,31 @@
-import { validateBlockedPost } from "../contracts/blocked.js";
+import { validateContactPost } from "../contracts/contact.js";
 import { validateNumericId } from "../contracts/general.js";
-import { deleteBlocked, getBlockeds, saveBlocked } from "../Infrastructure/blocked.js";
+import { deleteContact, getContacts, saveContact } from "../Infrastructure/contact.js";
 import { getUsersByIds } from "./message_brokers/rabbitmq-sender.js";
 import logger from "./utilities/loggers/generalLogger.js";
 
 
 
-export const blockUser = async (req , res) => {
-    const {error: validationError} = validateBlockedPost(req.body); 
+export const addContact = async (req , res) => {
+    const {error: validationError} = validateContactPost(req.body); 
     if (validationError) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
     }
     try {
-        const previousBlock = await getBlockeds({searchParams:{firstUserId : req.user.id , targetUserId : req.body.targetUserId}});
-        if (previousBlock.error){
-            res.status(400).send({message : previousBlock.error});
-            logger.info(previousBlock.error);
+        const previousContact = await getContacts({searchParams:{firstUserId : req.user.id , targetUserId : req.body.targetUserId}});
+        if (previousContact.error){
+            res.status(400).send({message : previousContact.error});
+            logger.info(previousContact.error);
             return;
         }
-        if(previousBlock.response.length > 0){
-            res.status(400).send({message : "you already blocked this user"});
-            logger.info( "you already blocked this user");
+        if(previousContact.response.length > 0){
+            res.status(400).send({message : "you already contact this user"});
+            logger.info( "you already contact this user");
             return;
         }
-        const result = await saveBlocked({firstUserId : req.user.id , targetUserId : req.body.targetUserId});
+        const result = await saveContact({firstUserId : req.user.id , targetUserId : req.body.targetUserId});
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
@@ -43,7 +43,7 @@ export const blockUser = async (req , res) => {
 }
 
 
-export const unblockUser = async (req , res) => {
+export const removeContact = async (req , res) => {
     const {error: validationError} = validateNumericId(req.params.userId); 
     if (validationError) {
             res.status(400).send({message : error.details[0].message});
@@ -51,18 +51,18 @@ export const unblockUser = async (req , res) => {
         return;
     }
     try {
-        const previousBlock = await getBlockeds({searchParams:{firstUserId : req.user.id , targetUserId : req.body.targetUserId}});
-        if (previousBlock.error){
-            res.status(400).send({message : previousBlock.error});
-            logger.info(previousBlock.error);
+        const previousContact = await getContacts({searchParams:{firstUserId : req.user.id , targetUserId : req.body.targetUserId}});
+        if (previousContact.error){
+            res.status(400).send({message : previousContact.error});
+            logger.info(previousContact.error);
             return;
         }
-        if(previousBlock.response.length == 0){
-            res.status(400).send({message : "you already didn't block this user"});
-            logger.info( "you already didn't block this user");
+        if(previousContact.response.length == 0){
+            res.status(400).send({message : "you already didn't contact this user"});
+            logger.info( "you already didn't contact this user");
             return;
         }
-        const result = await deleteBlocked(previousBlock.response[0]._id);
+        const result = await deleteContact(previousContact.response[0]._id);
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
@@ -77,20 +77,20 @@ export const unblockUser = async (req , res) => {
     }
 }
 
-export const getBlockedUsers = async (req,res) =>{
+export const getMyContacts = async (req,res) =>{
     try {
-        const blocks = await getBlockeds({searchParams:{firstUserId : req.user.id }});
+        const contacts = await getContacts({searchParams:{firstUserId : req.user.id }});
         
-        if (blocks.error){
-            res.status(400).send({message : blocks.error});
-            logger.info(blocks.error);
+        if (contacts.error){
+            res.status(400).send({message : contacts.error});
+            logger.info(contacts.error);
             return;
         }
-        if(blocks.response.length == 0){
+        if(contacts.response.length == 0){
             res.send([]);
             return;
         }
-        const result = await getUsersByIds(blocks.response,"user");
+        const result = await getUsersByIds(contacts.response,"user");
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
