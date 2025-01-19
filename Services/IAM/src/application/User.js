@@ -24,13 +24,16 @@ export const getUserByID = async (req,res) => {
     }
 }
 export const userEdit = async (req,res) => {
+    // console.log(req.body);
+    console.log(req.body)
+
     const {error: error2} = validateUserChangeinfo(req.body);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
     }
     try {
-        const user = await createUser(req.user.id,req.body);
+        const user = await updateUser(req.user.id,req.body);
         res.send(user)
     } catch (error) {
         console.log(error);

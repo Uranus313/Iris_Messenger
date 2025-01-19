@@ -3,15 +3,16 @@ import Joi from "joi";
 export function validateUserChangeinfo(data) {
     const schema = Joi.object({
         firstName: Joi.string().min(1).max(100),
-        lastName: Joi.string().min(1).max(100),
+        lastName: Joi.string().min(1).max(100).allow(null),
         twoStepPassword: Joi.string().min(8).max(200),
         birthDate: Joi.date(),
         isOnline: Joi.string(),
         // isBanned:Joi.boolean(),
+        phoneNumber : Joi.string(),
         isDeleted:Joi.boolean(),
         lastScene:Joi.boolean(),
-        bio: Joi.string(),
-        username: Joi.string(),
+        bio: Joi.string().allow(null),
+        username: Joi.string().allow(null),
     }).min(1);
     return schema.validate(data);
 }

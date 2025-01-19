@@ -50,15 +50,18 @@ export let createUser = async (newuser) =>{
 export let updateUser = async (id,newUser) =>{
     
     let user = await User.findOne({where:{id : id}});
+
     if(user){
         if(newUser.password){
     newUser.password = await hashPassword(newUser.password);      
         }
-        Object.keys(user).forEach(key => {
+        Object.keys(newUser).forEach(key => {
             user[key] = newUser[key];
         });
+        console.log(user);
         await user.save();
         user = await user.toJSON();
+        console.log(user);
         delete user.password;
 
         return user ;

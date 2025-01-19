@@ -55,8 +55,8 @@ export let createAdmin = async (newadmin) =>{
 export let updateAdmin = async (id,newAdmin) =>{
     let admin = await Admin.findOne({where:{id : id}});
     if(admin){
-        Object.keys(admin).forEach(key => {
-            admin[key] = newAdmin[key];
+        Object.keys(newAdmin).forEach(key => {
+            admin  [key] = newAdmin[key];
         });
         await admin.save();
         admin = await admin.toJSON();
