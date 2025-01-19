@@ -8,7 +8,7 @@ export async function saveMessage(messageCreate){
     return result;
 }
 
-export async function getMessages(id , searchParams ,limit , floor ,textSearch,sort , desc ){
+export async function getMessages({id , searchParams ,limit , floor ,textSearch,sort , desc , seeDeleted }){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
@@ -18,6 +18,16 @@ export async function getMessages(id , searchParams ,limit , floor ,textSearch,s
         }
         return result;
     }else{
+      if (!seeDeleted) {
+        searchParams = {
+            ...searchParams,
+            $or: [
+                { deleted: { $exists: false } }, // Field does not exist
+                { deleted: null },              // Field is null
+                { deleted: false }              // Field is explicitly false
+            ]
+        };
+    }
         let data = null;
         let hasMore = false;
         if(!limit){
@@ -61,6 +71,18 @@ export async function deleteMessage(id){
     result.response = await MessageModel.deleteOne({_id : id});
     return result;
 }
+
+
+export async function softDeleteMessage(id){
+  const result = {};
+  const response = await MessageModel.findByIdAndUpdate(id,{$set :{
+    isDeleted: true,
+    deletedAt: Date.now()
+  }},{new : true});
+    result.response = response.toJSON();
+  return result;
+}
+
 
 export async function updateMessage(id,messageUpdate ){
     const result = {};

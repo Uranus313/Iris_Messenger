@@ -8,7 +8,7 @@ export async function saveChannel(channelCreate){
     return result;
 }
 
-export async function getChannels(id , searchParams ,limit , floor ,textSearch,sort , desc ){
+export async function getChannels({id , searchParams ,limit , floor ,textSearch,sort , desc , seeDeleted }){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
@@ -18,6 +18,16 @@ export async function getChannels(id , searchParams ,limit , floor ,textSearch,s
         }
         return result;
     }else{
+      if (!seeDeleted) {
+        searchParams = {
+            ...searchParams,
+            $or: [
+                { deleted: { $exists: false } }, // Field does not exist
+                { deleted: null },              // Field is null
+                { deleted: false }              // Field is explicitly false
+            ]
+        };
+    }
         let data = null;
         let hasMore = false;
         if(!limit){
@@ -60,6 +70,16 @@ export async function deleteChannel(id){
     const result = {};
     result.response = await ChannelModel.deleteOne({_id : id});
     return result;
+}
+
+export async function softDeleteChannel(id){
+  const result = {};
+  const response = await ChannelModel.findByIdAndUpdate(id,{$set :{
+    isDeleted: true,
+    deletedAt: Date.now()
+  }},{new : true});
+    result.response = response.toJSON();
+  return result;
 }
 
 export async function updateChannel(id,channelUpdate ){

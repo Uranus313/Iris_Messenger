@@ -8,7 +8,7 @@ export async function saveDirect(directCreate){
     return result;
 }
 
-export async function getDirects(id , searchParams ,limit , floor ,sort , desc ){
+export async function getDirects({id , searchParams ,limit , floor ,sort , desc , seeDeleted }){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
@@ -18,6 +18,16 @@ export async function getDirects(id , searchParams ,limit , floor ,sort , desc )
         }
         return result;
     }else{
+      if (!seeDeleted) {
+        searchParams = {
+            ...searchParams,
+            $or: [
+                { deleted: { $exists: false } }, // Field does not exist
+                { deleted: null },              // Field is null
+                { deleted: false }              // Field is explicitly false
+            ]
+        };
+    }
         let data = null;
         let hasMore = false;
         if(!limit){
@@ -49,6 +59,18 @@ export async function deleteDirect(id){
     result.response = await DirectModel.deleteOne({_id : id});
     return result;
 }
+
+
+export async function softDeleteDirect(id){
+  const result = {};
+  const response = await DirectModel.findByIdAndUpdate(id,{$set :{
+    isDeleted: true,
+    deletedAt: Date.now()
+  }},{new : true});
+    result.response = response.toJSON();
+  return result;
+}
+
 
 export async function updateDirect(id,directUpdate ){
     const result = {};

@@ -8,7 +8,7 @@ export async function saveChannelMember(channelMemberCreate){
     return result;
 }
 
-export async function getChannelMembers(id , searchParams ,limit , floor ,sort , desc ){
+export async function getChannelMembers({id , searchParams ,limit , floor ,sort , desc, seeDeleted }){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
@@ -18,6 +18,16 @@ export async function getChannelMembers(id , searchParams ,limit , floor ,sort ,
         }
         return result;
     }else{
+      if (!seeDeleted) {
+        searchParams = {
+            ...searchParams,
+            $or: [
+                { deleted: { $exists: false } }, // Field does not exist
+                { deleted: null },              // Field is null
+                { deleted: false }              // Field is explicitly false
+            ]
+        };
+    }
         let data = null;
         let hasMore = false;
         if(!limit){
@@ -50,6 +60,8 @@ export async function deleteChannelMember(id){
     result.response = await ChannelMemberModel.deleteOne({_id : id});
     return result;
 }
+
+
 
 export async function updateChannelMember(id,channelMemberUpdate ){
     const result = {};

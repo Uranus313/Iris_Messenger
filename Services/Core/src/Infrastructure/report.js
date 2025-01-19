@@ -8,8 +8,9 @@ export async function saveReport(reportCreate){
     return result;
 }
 
-export async function getReports(id , searchParams ,limit , floor ,textSearch,sort , desc ){
+export async function getReports({id , searchParams ,limit , floor ,textSearch,sort , desc , seeDeleted }){
     const result = {};
+    
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
         result.response = await ReportModel.find({_id : id}).findOne();
@@ -18,6 +19,16 @@ export async function getReports(id , searchParams ,limit , floor ,textSearch,so
         }
         return result;
     }else{
+        if (!seeDeleted) {
+            searchParams = {
+                ...searchParams,
+                $or: [
+                    { deleted: { $exists: false } }, // Field does not exist
+                    { deleted: null },              // Field is null
+                    { deleted: false }              // Field is explicitly false
+                ]
+            };
+        }
         let data = null;
         let hasMore = false;
         if(!limit){
@@ -61,6 +72,19 @@ export async function deleteReport(id){
     result.response = await ReportModel.deleteOne({_id : id});
     return result;
 }
+
+
+export async function softDeleteReport(id){
+    const result = {};
+    const response = await ReportModel.findByIdAndUpdate(id,{$set :{
+      isDeleted: true,
+      deletedAt: Date.now()
+    }},{new : true});
+      result.response = response.toJSON();
+    return result;
+  }
+  
+
 
 export async function updateReport(id,reportUpdate ){
     const result = {};

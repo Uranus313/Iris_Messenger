@@ -8,7 +8,7 @@ export async function saveContact(contactCreate){
     return result;
 }
 
-export async function getContacts(id , searchParams ,limit , floor ,sort , desc ){
+export async function getContacts({id , searchParams ,limit , floor ,sort , desc ,seeDeleted} ){
     const result = {};
     let sortOrder = (desc == true || desc == "true")? -1 : 1;
     if(id){
@@ -18,6 +18,16 @@ export async function getContacts(id , searchParams ,limit , floor ,sort , desc 
         }
         return result;
     }else{
+      if (!seeDeleted) {
+        searchParams = {
+            ...searchParams,
+            $or: [
+                { deleted: { $exists: false } }, // Field does not exist
+                { deleted: null },              // Field is null
+                { deleted: false }              // Field is explicitly false
+            ]
+        };
+    }
         let data = null;
         let hasMore = false;
         if(!limit){
