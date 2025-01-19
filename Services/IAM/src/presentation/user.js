@@ -14,6 +14,6 @@ router.patch("/editUser",(req,res,next) => auth(req,res,next,["user"]), userEdit
 router.delete("/delete",(req,res,next) => auth(req,res,next,["user"]), userDelete);
 router.post("/createOTP", sendOTP);
 router.post("/checkOTP", acceptOTP);
-router.get("/searchUserById/:email",(req,res,next) => auth(req,res,next,["user"]), searchUserByEmail);
+router.get("/searchUserByEmail/:email",(req,res,next) => auth(req,res,next,["user"]), searchUserByEmail);
 
 export default router;

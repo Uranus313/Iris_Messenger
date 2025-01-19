@@ -9,6 +9,7 @@ import userRouter from "./src/presentation/user.js";
 import fs from "fs";
 import https from 'https';
 import cookieParser from "cookie-parser";
+import morgan from 'morgan';
 import {setupRabbitMQUserSender , setupRabbitMQTokenValidation} from './src/application/message_brokers/rabbitmq.js';
 dotenv.config({path: './src/config/secret/.env'});
 
@@ -29,6 +30,7 @@ const options = {
     cert: fs.readFileSync("../cert.pem"), // Replace with your certificate path
   };
 
+app.use(morgan('dev'));
 
 app.use(express.json());
 app.use(cookieParser());

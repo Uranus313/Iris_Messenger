@@ -3,7 +3,7 @@ import joiObjectid from "joi-objectid";
 
 Joi.objectId = joiObjectid(Joi); // Enable ObjectId validation
 
-export const validateGroupPost = (data) => {
+export const validateChannelPost = (data) => {
   const schema = Joi.object({
     description: Joi.string()
       .max(512) // Description limited to 512 characters
@@ -14,7 +14,7 @@ export const validateGroupPost = (data) => {
       .required(),
     link: Joi.string()
       .max(256) // Link limited to 256 characters
-      .optional(),
+      .required(),
     type: Joi.string()
       .valid("private", "public") // Must be either "private" or "public"
       .required(),

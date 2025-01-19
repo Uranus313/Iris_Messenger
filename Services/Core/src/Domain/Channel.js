@@ -7,12 +7,12 @@ const channelSchema  = new mongoose.Schema(
         },
         description: {type: String},
         name: {type: String,required : true},
-        link: {type: String},
+        link: {type: String,required : true , unique : true},
         type: {type: String,enum: ["private" , "public"]},
         profilePicture: {
             type: String
         },
-        memberCount: {type: Number , required: true},
+        memberCount: {type: Number , required: true,default: 1},
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
         deletedAt : {type: Date},

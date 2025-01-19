@@ -1,0 +1,278 @@
+import { validateChannelPost } from "../contracts/channel.js";
+import { validateChannelMemberRemove } from "../contracts/channelMember.js";
+import { validateNumericId, validateObjectId } from "../contracts/general.js";
+import { deleteChannel, getChannels, saveChannel } from "../Infrastructure/channel.js";
+import { addUserToChannel, getChannelsForUser, getUsersInChannel, removeUserFromChannel } from "../Infrastructure/channelMember.js";
+import { getUsersByIds } from "./message_brokers/rabbitmq-sender.js";
+import logger from "./utilities/loggers/generalLogger.js";
+
+
+
+export const getChannels = async (req , res) =>{
+    try {
+        let searchParams = {...req.query};
+        delete searchParams.floor;
+        delete searchParams.limit;
+        delete searchParams.nameSearch;
+        delete searchParams.sort;
+        delete searchParams.desc;
+        // console.log(req.query.limit)
+        const result = await getChannels({id: req.params.channelId,searchParams: searchParams,limit: req.query.limit,floor:req.query.floor,textSearch: req.query.textSearch,sort:req.query.sort,desc:req.query.desc});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+    } catch (error) {
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+    }
+}
+
+
+export const addChannel = async (req , res) => {
+    const {error: validationError} = validateChannelPost(req.body); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const previousChannel = await getChannels({searchParams:{link : req.body.link} , seeDeleted: true});
+        if (previousChannel.error){
+            res.status(400).send({message : previousChannel.error});
+            logger.info(previousChannel.error);
+            return;
+        }
+        if(previousChannel.response.length > 0){
+            res.status(400).send({message : "a channel with this link already exists"});
+            logger.info( "a channel with this link already exists");
+            return;
+        }
+        const result = await saveChannel({ ...req.body , ownerId : req.user.id});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (error) {
+
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+
+    }
+}
+
+
+export const removeChannel = async (req , res) => {
+    const {error: validationError} = validateNumericId(req.params.channelId); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const previousChannel = await getChannels({id:req.params.channelId});
+        if (previousChannel.error){
+            res.status(400).send({message : previousChannel.error});
+            logger.info(previousChannel.error);
+            return;
+        }
+        if(!previousChannel.response){
+            res.status(404).send({message : "this channel doesnt exist"});
+            logger.info( "this channel doesnt exist");
+            return;
+        }
+        if(previousChannel.response.ownerId != req.user.id){
+            res.status(403).send({message : "you dont own this channel"});
+            logger.info( "you dont own this channel");
+            return;
+        }
+        const result = await deleteChannel(req.params.channelId);
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (error) {
+        res.status(500).send({message:"internal server error"});
+        logger.error("internal server error ",error);
+
+    }
+}
+
+export const getMyChannels = async (req,res) =>{
+    try {
+        const channels = await getChannelsForUser({id: req.user.id });
+        
+        if (channels.error){
+            res.status(400).send({message : channels.error});
+            logger.info(channels.error);
+            return;
+        }
+        
+        res.send(channels.response);
+    } catch (error) {
+        res.status(500).send({message:"internal server error"});
+        logger.error("internal server error ",error);
+
+    }
+}
+
+
+export const joinChannel = async (req , res) => {
+    const {error: validationError} = validateObjectId(req.params.channelId); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const result = await addUserToChannel({userId: req.user.id , channelId : req.params.channelId});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (error) {
+
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+
+    }
+}
+
+export const leaveChannel = async (req , res) => {
+    const {error: validationError} = validateObjectId(req.params.channelId); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const result = await removeUserFromChannel({userId: req.user.id , channelId : req.params.channelId});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (error) {
+
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+
+    }
+}
+export const removeUserFromChannel = async (req , res) =>{
+    const {error: validationError} = validateChannelMemberRemove(req.body); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const previousChannel = await getChannels({id:req.body.channelId});
+        if (previousChannel.error){
+            res.status(400).send({message : previousChannel.error});
+            logger.info(previousChannel.error);
+            return;
+        }
+        if(!previousChannel.response){
+            res.status(404).send({message : "this channel doesnt exist"});
+            logger.info( "this channel doesnt exist");
+            return;
+        }
+        if(previousChannel.response.ownerId != req.user.id){
+            res.status(403).send({message : "you dont own this channel"});
+            logger.info( "you dont own this channel");
+            return;
+        }
+        const result = await removeUserFromChannel({userId: req.user.id , channelId : req.params.channelId});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        res.send(result.response);
+        res.body = result.response;
+    } catch (error) {
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+    }
+    
+}
+
+
+
+export const getChannelUsers = async (req , res) =>{
+    const {error: validationError} = validateObjectId(req.params.channelId); 
+    if (validationError) {
+            res.status(400).send({message : error.details[0].message});
+            logger.info( error.details[0].message);
+        return;
+    }
+    try {
+        const previousChannel = await getChannels({id:req.body.channelId});
+        if (previousChannel.error){
+            res.status(400).send({message : previousChannel.error});
+            logger.info(previousChannel.error);
+            return;
+        }
+        if(!previousChannel.response){
+            res.status(404).send({message : "this channel doesnt exist"});
+            logger.info( "this channel doesnt exist");
+            return;
+        }
+        if(previousChannel.response.ownerId != req.user.id){
+            res.status(403).send({message : "you dont own this channel"});
+            logger.info( "you dont own this channel");
+            return;
+        }
+        let result = await getUsersInChannel({groupId : req.params.groupId});
+        if (result.error){
+            res.status(400).send({message : result.error});
+            logger.info(result.error);
+            return;
+        }
+        let userIds = result.response.data.map( item => item.userId);
+        let result2 = await getUsersByIds(userIds,"user");
+        if (result2.error){
+            res.status(400).send({message : result2.error});
+            logger.info(result2.error);
+            return;
+        }
+        let users = result2.data.users;
+        for (let index1 = 0; index1 < users.length; index1++) {
+            for (let index2 = 0; index2 < result.response.data.length; index2++) {
+                if(users[index1].id == result.response.data[index2].userId){
+                    users.role = result.response.data[index2].role;
+                    break;
+                }
+            }
+        }    
+        res.send(users);
+        res.body = users;
+    } catch (error) {
+        res.status(500).send({message:"internal server error"});
+
+        logger.error("internal server error ",error);
+    }
+    
+}
+
+
+

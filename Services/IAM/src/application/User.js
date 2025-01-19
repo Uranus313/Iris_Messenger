@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
-import { validateGetOTP, validateSearchUserByEmail, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
+import { validateGetOTP,  validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
 import { createUser, readUsers, updateUser } from "../infrastructure/user.js";
 import { mediaGRPC } from "./utilities/grpc-sender.js";
 import { generateRandomString } from "./utilities/randomString.js";
 import { sendMail } from "./utilities/sendMail.js";
+import { validateEmail } from "../contracts/general.js";
 export const getAllUsers = async (req,res) => {
     try {
         const users = await readUsers();
@@ -24,13 +25,14 @@ export const getUserByID = async (req,res) => {
     }
 }
 export const searchUserByEmail = async (req,res) => {
-    const {error: error2} = validateSearchUserByEmail(req.params.email);
+    const {error: error2} = validateEmail(req.params.email);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
     }
     try {
         const users = await readUsers(undefined,{email : req.params.email});
+        console.log(users);
         res.send(users)
     } catch (error) {
         console.log(error);

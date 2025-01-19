@@ -24,7 +24,7 @@ export  const  setupRabbitMQTokenValidation = async () => {
                 const decoded = jwt.verify(token, process.env.JWTSecret);
                 response.isValid = true;
 
-                if (type == "admin") {
+                if (decoded.status == "admin") {
                     // const admin = await adminReadByID(decoded._id);
                     // response.data = { admin: admin.toJSON() };
                     const admin = await readAdmins(decoded.id);
@@ -65,6 +65,7 @@ export  const  setupRabbitMQTokenValidation = async () => {
                     response.error = "access denied. invalid status";
                 }
             } catch (error) {
+                console.log(error);
                 response.error = "Invalid token";
             }
 
@@ -103,7 +104,7 @@ export const setupRabbitMQUserSender = async ()=> {
                     response.data = { users: admins , status: "admin" };
                     
                 }else if(type == "user") {
-                    const users = await readAdmins(undefined,undefined, ids);
+                    const users = await readUsers(undefined,undefined, ids);
                     
                     response.data = { users: users , status: "user" };
                 } else{

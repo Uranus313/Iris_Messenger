@@ -8,12 +8,13 @@ export async function auth(req,res, next, acceptedStatuses){
     if(!token){
         res.status(401).send({message: "access denied , no token provided" });
         return;
-    }s
+    }
     try {
         const result = await sendTokenValidationRequest(token);
         if(result.error){
             res.status(401).send({ message: result.error });
             logger.info(result.error);
+            return
         }
         
         let checker = false;

@@ -7,23 +7,23 @@ const groupSchema  = new mongoose.Schema(
         },
         description: {type: String},
         name: {type: String,required : true},
-        link: {type: String},
+        link: {type: String,required : true , unique : true},
         type: {type: String,enum: ["private" , "public"]},
         profilePicture: {
             type: String
         },
         members:{type: [{
-            id: Number,
-            role : {type: String,enum: ["admin" , "owner","member"]},
+            id: {type: Number, required: true},
+            role : {type: String,enum: ["admin" , "owner","member"] , default: "member"},
             createdAt: {type: Date, required: true, default : Date.now()},
         }] ,required : true},
-        memberCount: {type: Number , required: true},
+        memberCount: {type: Number , required: true ,default: 1},
 
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
         deletedAt : {type: Date},
         isBanned : {type: Boolean},
-        bannedAt : {type: Date},
+        bannedAt : {type: Date}
         
     }
 );

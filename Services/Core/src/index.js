@@ -11,6 +11,7 @@ import fs from "fs";
 import https from 'https';
 import cookieParser from "cookie-parser";
 import error from './Application/middlewares/error.js';
+import morgan from 'morgan';
 dotenv.config({path: './src/config/secret/.env'});
 
 const app = express();
@@ -30,6 +31,8 @@ const options = {
 console.log("key333")
 
 console.log("key",options)
+app.use(morgan('dev'));
+
 app.use(express.json());
 app.use(cookieParser());
 // app.use(express.urlencoded({ extended: true }));

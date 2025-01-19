@@ -90,3 +90,181 @@ export async function updateGroup(id,groupUpdate ){
     return(result);
 }
 
+export async function addMemberToGroup({ groupId, userId, role = "member" }) {
+  const result = {};
+
+  try {
+      // Add the member and increment the member count atomically
+      const updatedGroup = await GroupModel.findByIdAndUpdate(
+          groupId,
+          {
+              $push: { members: { id: userId, role, createdAt: new Date() } },
+              $inc: { memberCount: 1 },
+          },
+          { new: true } // Return the updated group document
+      );
+
+      if (!updatedGroup) {
+          throw new Error("Group not found.");
+      }
+
+      result.response = {
+          message: "Member added successfully.",
+          updatedGroup,
+      };
+
+      return result;
+  } catch (error) {
+      result.error = error.message || "An error occurred while adding the member.";
+      return result;
+  }
+}
+
+export async function removeMemberFromGroup({ groupId, userId }) {
+  const result = {};
+
+  try {
+      // Remove the member and decrement the member count atomically
+      const updatedGroup = await GroupModel.findByIdAndUpdate(
+          groupId,
+          {
+              $pull: { members: { id: userId } },
+              $inc: { memberCount: -1 },
+          },
+          { new: true } // Return the updated group document
+      );
+
+      if (!updatedGroup) {
+          throw new Error("Group not found.");
+      }
+
+      if (updatedGroup.members.length === 0) {
+          throw new Error("User is not a member of the group.");
+      }
+
+      result.response = {
+          message: "Member removed successfully.",
+          updatedGroup,
+      };
+
+      return result;
+  } catch (error) {
+      result.error = error.message || "An error occurred while removing the member.";
+      return result;
+  }
+}
+
+
+export async function getGroupsForUser({
+  userId,
+  searchParams = {},
+  limit = 20,
+  floor = 0,
+  sort = "createdAt",
+  desc = false,
+  seeDeleted = false,
+}) {
+  const result = {};
+  const sortOrder = desc ? -1 : 1;
+
+  try {
+      // Base query to find groups where the user is a member
+      const baseQuery = {
+          "members.id": userId, // Check if the user is in the members array
+          ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted groups if necessary
+      };
+
+      // Merge with any additional search parameters
+      const finalQuery = { ...baseQuery, ...searchParams };
+
+      // Find the groups with pagination and sorting
+      const groups = await GroupModel.find(finalQuery)
+          .skip(floor)
+          .limit(limit)
+          .sort({ [sort]: sortOrder });
+
+      // Format the response
+      const data = groups.map((group) => {
+          // Extract the member's details from the members array
+          const memberDetails = group.members.find((member) => member.id === userId);
+
+          return {
+              group: {
+                  id: group._id,
+                  name: group.name,
+                  description: group.description,
+                  type: group.type,
+                  profilePicture: group.profilePicture,
+                  createdAt: group.createdAt,
+                  isDeleted: group.isDeleted || false,
+              },
+              role: memberDetails.role, // User's role in the group
+              joinedAt: memberDetails.createdAt, // When the user joined the group
+          };
+      });
+
+      // Count total matching groups for pagination
+      const totalMatchingGroups = await GroupModel.countDocuments(finalQuery);
+
+      // Check if there are more results
+      const hasMore = totalMatchingGroups > floor + limit;
+
+      result.response = {
+          data,
+          hasMore,
+      };
+
+      return result;
+  } catch (error) {
+      result.error = error.message || "An error occurred while fetching groups.";
+      return result;
+  }
+}
+
+
+export async function getUsersInGroup({ groupId, floor = 0, limit = 20, sort = "createdAt", desc = false }) {
+  const result = {};
+  const sortOrder = desc ? -1 : 1;
+
+  try {
+      // Find the group by its ID
+      const group = await GroupModel.findById(groupId);
+
+      if (!group) {
+          result.error = "Group not found.";
+          return result;
+      }
+
+      // Extract and sort members
+      const sortedMembers = group.members.sort((a, b) => {
+          if (sortOrder === 1) {
+              return new Date(a[sort]) - new Date(b[sort]);
+          } else {
+              return new Date(b[sort]) - new Date(a[sort]);
+          }
+      });
+
+      // Apply pagination
+      const paginatedMembers = sortedMembers.slice(floor, floor + limit);
+
+      // Format the response
+      const data = paginatedMembers.map((member) => ({
+          userId: member.id,
+          role: member.role,
+          joinedAt: member.createdAt,
+      }));
+
+      // Check if there are more members beyond the current page
+      const hasMore = group.members.length > floor + limit;
+
+      result.response = {
+          data,
+          hasMore,
+      };
+
+      return result;
+  } catch (error) {
+      result.error = error.message || "An error occurred while fetching users in the group.";
+      return result;
+  }
+}

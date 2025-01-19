@@ -1,9 +1,23 @@
+
 import Joi from "joi";
-Joi.objectId = joiObjectid(Joi); // Enable ObjectId validation
 import joiObjectid from "joi-objectid";
+
+Joi.objectId = joiObjectid(Joi); // Enable ObjectId validation
 export const validateChannelMemberPost = (data) => {
   const schema = Joi.object({
-    channelId: JoiJoi.objectId().required()
+    channelId: Joi.objectId().required()
+  });
+
+  return schema.validate(data);
+};
+
+export const validateChannelMemberRemove = (data) => {
+  const schema = Joi.object({
+    channelId: Joi.objectId().required(),
+    userId: Joi.number()
+        .integer()
+        .min(1) // Positive integer for member ID
+        .required()
   });
 
   return schema.validate(data);

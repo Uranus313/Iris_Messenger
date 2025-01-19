@@ -2,7 +2,6 @@ import Joi from "joi";
 import joiObjectid from "joi-objectid";
 
 Joi.objectId = joiObjectid(Joi); // Enable ObjectId validation
-import joiObjectid from "joi-objectid";
 
 Joi.objectId = joiObjectid(Joi); 
 export const validateGroupPost = (data) => {
@@ -16,7 +15,7 @@ export const validateGroupPost = (data) => {
       .required(),
     link: Joi.string()
       .max(256) // Link limited to 256 characters
-      .optional(),
+      .required(),
     type: Joi.string()
       .valid("private", "public") // Must be either "private" or "public"
       .required(),
@@ -65,3 +64,16 @@ export const validateGroupEdit = (data) => {
     return schema.validate(data);
   };  
   
+
+
+  export const validateGroupMemberRemove = (data) => {
+    const schema = Joi.object({
+      groupId: Joi.objectId().required(),
+      userId: Joi.number()
+          .integer()
+          .min(1) // Positive integer for member ID
+          .required()
+    });
+  
+    return schema.validate(data);
+  };
