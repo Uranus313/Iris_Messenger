@@ -7,12 +7,13 @@ import { addContact, removeContact , getMyContacts } from '../Application/contac
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const router = express.Router();
-router.post("/blockUser",(req,res,next) => auth(req,res,next,["user"]), blockUser);
-router.delete("/unblockUser/:userId",(req,res,next) => auth(req,res,next,["user"]), unblockUser);
-router.get("/blockedUsers",(req,res,next) => auth(req,res,next,["user"]), getBlockedUsers);
-router.post("/addContact",(req,res,next) => auth(req,res,next,["user"]), addContact);
-router.delete("/removeContact/:userId",(req,res,next) => auth(req,res,next,["user"]), removeContact);
-router.get("/contacts",(req,res,next) => auth(req,res,next,["user"]), getMyContacts);
+router.post("/blockUser", blockUser);
+router.delete("/unblockUser/:userId", unblockUser);
+router.get("/blockedUsers", getBlockedUsers);
+router.post("/addContact", addContact);
+router.delete("/removeContact/:userId", removeContact);
+router.get("/contacts", getMyContacts);
+
 router.get("/test",async (req , res) =>{
     console.log("my test")
     const result = await getUsersByIds([1,2],"user");

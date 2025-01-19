@@ -8,7 +8,7 @@ import logger from "./utilities/loggers/generalLogger.js";
 
 
 
-export const getChannels = async (req , res) =>{
+export const getAllChannels = async (req , res) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -40,24 +40,62 @@ export const addChannel = async (req , res) => {
         return;
     }
     try {
-        const previousChannel = await getChannels({searchParams:{link : req.body.link} , seeDeleted: true});
-        if (previousChannel.error){
-            res.status(400).send({message : previousChannel.error});
-            logger.info(previousChannel.error);
-            return;
-        }
-        if(previousChannel.response.length > 0){
-            res.status(400).send({message : "a channel with this link already exists"});
-            logger.info( "a channel with this link already exists");
-            return;
-        }
-        const result = await saveChannel({ ...req.body , ownerId : req.user.id});
+        const sentBody = JSON.parse(req.body.data);
+    const {error: error2} = validateUserPost(sentBody);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
+
+
+    const previousChannel = await getChannels({searchParams:{link : sentBody.link} , seeDeleted: true});
+    if (previousChannel.error){
+        res.status(400).send({message : previousChannel.error});
+        logger.info(previousChannel.error);
+        return;
+    }
+    if(previousChannel.response.length > 0){
+        res.status(400).send({message : "a group with this link already exists"});
+        logger.info( "a group with this link already exists");
+        return;
+    }
+        if(req.file){
+            const request = {
+                // file: fileBuffer,
+                file: req.file.buffer,
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                uploadedBy: req.user?.id || 'anonymous',
+                // uploadedBy: 'anonymous',
+            };
+
+            mediaGRPC.UploadFile(request, async (err, response) => {
+                if (err) {
+                    console.error('gRPC upload failed:', err);
+                    return res.status(500).send('Failed to upload file.');
+                }
+        
+                console.log('File uploaded via gRPC:', response);
+                const result = await saveChannel({ ...sentBody , ownerId : req.user.id, profilePicture: response.filename});
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
             return;
         }
         res.send(result.response);
+                
+            });
+        }else{
+            const result = await saveChannel({ ...sentBody , ownerId : req.user.id});
+            if (result.error){
+                res.status(400).send({message : result.error});
+                logger.info(result.error);
+                return;
+            }
+            res.send(result.response);
+        }
+        
+        
         res.body = result.response;
     } catch (error) {
 
@@ -67,6 +105,7 @@ export const addChannel = async (req , res) => {
 
     }
 }
+
 
 
 export const removeChannel = async (req , res) => {
@@ -176,7 +215,7 @@ export const leaveChannel = async (req , res) => {
 
     }
 }
-export const removeUserFromChannel = async (req , res) =>{
+export const removeUserFromMyChannel = async (req , res) =>{
     const {error: validationError} = validateChannelMemberRemove(req.body); 
     if (validationError) {
             res.status(400).send({message : error.details[0].message});

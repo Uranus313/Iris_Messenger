@@ -1,14 +1,13 @@
 
-import { validateGroupPost } from "../contracts/group.js";
-import { validateGroupMemberRemove } from "../contracts/groupMember.js";
+import { validateGroupMemberRemove, validateGroupPost } from "../contracts/group.js";
 import { validateNumericId, validateObjectId } from "../contracts/general.js";
-import { addMemberToGroup, addMemberToGroup, deleteGroup, getGroups, getGroupsForUser, getUsersInGroup, removeMemberFromGroup, saveGroup } from "../Infrastructure/group.js";
+import {  addMemberToGroup, deleteGroup, getGroups, getGroupsForUser, getUsersInGroup, removeMemberFromGroup, saveGroup } from "../Infrastructure/group.js";
 import { getUsersByIds } from "./message_brokers/rabbitmq-sender.js";
 import logger from "./utilities/loggers/generalLogger.js";
 
 
 
-export const getGroups = async (req , res) =>{
+export const getAllGroups = async (req , res) =>{
     try {
         let searchParams = {...req.query};
         delete searchParams.floor;
@@ -40,24 +39,62 @@ export const addGroup = async (req , res) => {
         return;
     }
     try {
-        const previousGroup = await getGroups({searchParams:{link : req.body.link} , seeDeleted: true});
-        if (previousGroup.error){
-            res.status(400).send({message : previousGroup.error});
-            logger.info(previousGroup.error);
-            return;
-        }
-        if(previousGroup.response.length > 0){
-            res.status(400).send({message : "a group with this link already exists"});
-            logger.info( "a group with this link already exists");
-            return;
-        }
-        const result = await saveGroup({ ...req.body , ownerId : req.user.id});
+        const sentBody = JSON.parse(req.body.data);
+    const {error: error2} = validateUserPost(sentBody);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
+
+
+    const previousGroup = await getGroups({searchParams:{link : sentBody.link} , seeDeleted: true});
+    if (previousGroup.error){
+        res.status(400).send({message : previousGroup.error});
+        logger.info(previousGroup.error);
+        return;
+    }
+    if(previousGroup.response.length > 0){
+        res.status(400).send({message : "a group with this link already exists"});
+        logger.info( "a group with this link already exists");
+        return;
+    }
+        if(req.file){
+            const request = {
+                // file: fileBuffer,
+                file: req.file.buffer,
+                filename: req.file.filename,
+                originalname: req.file.originalname,
+                uploadedBy: req.user?.id || 'anonymous',
+                // uploadedBy: 'anonymous',
+            };
+
+            mediaGRPC.UploadFile(request, async (err, response) => {
+                if (err) {
+                    console.error('gRPC upload failed:', err);
+                    return res.status(500).send('Failed to upload file.');
+                }
+        
+                console.log('File uploaded via gRPC:', response);
+                const result = await saveGroup({ ...sentBody , ownerId : req.user.id, profilePicture: response.filename});
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
             return;
         }
         res.send(result.response);
+                
+            });
+        }else{
+            const result = await saveGroup({ ...sentBody , ownerId : req.user.id});
+            if (result.error){
+                res.status(400).send({message : result.error});
+                logger.info(result.error);
+                return;
+            }
+            res.send(result.response);
+        }
+        
+        
         res.body = result.response;
     } catch (error) {
 
@@ -176,7 +213,7 @@ export const leaveGroup = async (req , res) => {
 
     }
 }
-export const removeUserFromGroup = async (req , res) =>{
+export const removeUserFromMyGroup = async (req , res) =>{
     const {error: validationError} = validateGroupMemberRemove(req.body); 
     if (validationError) {
             res.status(400).send({message : error.details[0].message});

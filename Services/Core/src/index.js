@@ -7,6 +7,10 @@ import DbConnection from './DB/DbConnection.js';
 // import generalRouter from "./src/presentation/general.js";
 // import superAdminRouter from "./src/presentation/superAdmin.js";
 import userRouter from "./Presentation/user.js";
+import groupRouter from "./Presentation/group.js";
+import channelRouter from "./Presentation/channel.js";
+
+
 import fs from "fs";
 import https from 'https';
 import cookieParser from "cookie-parser";
@@ -39,7 +43,9 @@ app.use(cookieParser());
 app.get('/', async (req,res,next) =>{
     res.send("hello world!");
 });
-app.use("/users",userRouter);
+app.use("/users",(req,res,next) => auth(req,res,next,["user"]),userRouter);
+app.use("/groups",(req,res,next) => auth(req,res,next,["user"]),groupRouter);
+
 // app.use("/admins",adminRouter);
 // app.use("/general",generalRouter);
 // app.use("/superAdmin",superAdminRouter);
