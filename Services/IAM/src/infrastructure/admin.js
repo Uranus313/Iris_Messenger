@@ -1,8 +1,7 @@
-import { where } from "sequelize";
+import { where, Op } from "sequelize";
 import { Admin } from "../domain/Admin.js"
 import { hashPassword } from "../application/utilities/hashing.js";
-
-export let readAdmins = async (id,conditions) =>{
+export let readAdmins = async (id,conditions , idArray) =>{
     if(id){
         let admin = await Admin.findOne({where:{id : id}});
         if(admin){
@@ -11,7 +10,18 @@ export let readAdmins = async (id,conditions) =>{
             
         }
         return admin;
-    }if(conditions){
+    }else if(idArray){
+        let admins = await Admin.findAll({ 
+            where: { id: { [Op.in]: idArray } } 
+        });
+        admins = admins.map((admin) => {
+            admin = admin.toJSON();
+            delete admin.password;
+            return admin;
+        });
+        return admins;
+    }
+    else if(conditions){
         let admins = await Admin.findAll({where: conditions});
         for (let index = 0; index < admins.length; index++) {
             let element = admins[index];

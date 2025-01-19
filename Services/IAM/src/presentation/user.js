@@ -9,7 +9,7 @@ router.get("/getAllUsers",(req,res,next) => auth(req,res,next,["admin","superAdm
 router.get("/getAllUsers/:id",(req,res,next) => auth(req,res,next,["admin","superAdmin"]), getUserByID);
 router.post("/signUp",upload.single("file"), userSignUp);
 router.put("/updateProfilePicture",(req,res,next) => auth(req,res,next,["user"]),upload.single("file"), userUpdateProfilePicture);
-router.post("/deleteProfilePicture",(req,res,next) => auth(req,res,next,["user"]), userDeleteProfilePicture);
+router.delete("/deleteProfilePicture",(req,res,next) => auth(req,res,next,["user"]), userDeleteProfilePicture);
 router.patch("/editUser",(req,res,next) => auth(req,res,next,["user"]), userEdit);
 router.delete("/delete",(req,res,next) => auth(req,res,next,["user"]), userDelete);
 router.post("/createOTP", sendOTP);

@@ -135,7 +135,7 @@ export const userDelete = async (req,res) => {
 }
 export const userDeleteProfilePicture = async (req,res) =>{
     try{
-        const user = updateUser(user.id,{profilePicture : null});
+        const user = updateUser(req.user.id,{profilePicture : null});
         res.send({...user,status: "user"});
     } catch (error) {
         console.log(error);
@@ -162,7 +162,7 @@ export const userUpdateProfilePicture = async (req,res) =>{
         
                 console.log('File uploaded via gRPC:', response);
                
-            const user = updateUser(user.id,{profilePicture : response.filename});
+            const user = updateUser(req.user.id,{profilePicture : response.filename});
             res.send({...user,status: "user"});
             });
         }else{

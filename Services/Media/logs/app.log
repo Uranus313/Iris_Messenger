@@ -23,3 +23,5 @@
 {"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T09:28:47.130Z"}
 {"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T09:28:47.213Z"}
 {"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T09:28:47.216Z"}
+{"filename":"4f7142a867d8f078c4e0f5178a2627f9.png","id":"678d0ab3912a77bfa0a024e6","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:22:45.712Z","uploadDate":"2025-01-19T14:22:45.517Z"}
+{"filename":"88cea2a4ae758b590283ba0fb9514f26.png","id":"678d0b26912a77bfa0a024e8","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:24:38.802Z","uploadDate":"2025-01-19T14:24:38.786Z"}

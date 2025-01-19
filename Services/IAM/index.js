@@ -9,12 +9,15 @@ import userRouter from "./src/presentation/user.js";
 import fs from "fs";
 import https from 'https';
 import cookieParser from "cookie-parser";
-import multer from 'multer';
+import {setupRabbitMQUserSender , setupRabbitMQTokenValidation} from './src/application/message_brokers/rabbitmq.js';
 dotenv.config({path: './src/config/secret/.env'});
 
 const app = express();
 const port = process.env.PORT || 3001;
 DbConnection();
+setupRabbitMQTokenValidation();
+setupRabbitMQUserSender();
+
 app.use(cors({
     origin: true,// Allow all origins
     credentials: true // Allow credentials

@@ -1,15 +1,16 @@
 import amqp from "amqplib";
 import jwt from "jsonwebtoken";
-import { jwtSecret } from "../configs/config.js";
 import { readUsers } from "../../infrastructure/user.js";
 import {  readAdmins } from "../../infrastructure/admin.js";
-import { rabbitmqConnectionURI } from "../configs/config.js";
+import { rabbitmqConnectionURI } from "../../config/config.js";
 import { readSuperAdmin } from "../../infrastructure/superAdmin.js";
+const connection = await amqp.connect(rabbitmqConnectionURI);
+const channel = await connection.createChannel();
 
-export default async function setupRabbitMQ() {
+
+export  const  setupRabbitMQTokenValidation = async () => {
     try {
-        const connection = await amqp.connect(rabbitmqConnectionURI);
-        const channel = await connection.createChannel();
+        
 
         const queue = "token_validation";
 
@@ -20,10 +21,10 @@ export default async function setupRabbitMQ() {
             let response = { isValid: false };
 
             try {
-                const decoded = jwt.verify(token, jwtSecret);
+                const decoded = jwt.verify(token, process.env.JWTSecret);
                 response.isValid = true;
 
-                if (decoded.status == "admin") {
+                if (type == "admin") {
                     // const admin = await adminReadByID(decoded._id);
                     // response.data = { admin: admin.toJSON() };
                     const admin = await readAdmins(decoded.id);
@@ -65,6 +66,51 @@ export default async function setupRabbitMQ() {
                 }
             } catch (error) {
                 response.error = "Invalid token";
+            }
+
+            channel.sendToQueue(
+                message.properties.replyTo,
+                Buffer.from(JSON.stringify(response)),
+                { correlationId: message.properties.correlationId }
+            );
+
+            channel.ack(message);
+        });
+
+        console.log("RabbitMQ is listening for token validation requests...");
+    } catch (error) {
+        console.log("RabbitMQ Error:", error);
+    }
+}
+export const setupRabbitMQUserSender = async ()=> {
+    try {
+        
+
+        const queue = "user_data";
+
+        await channel.assertQueue(queue, { durable: false });
+
+        channel.consume(queue, async (message) => {
+            const { ids , type } = JSON.parse(message.content.toString());
+            let response = { isValid: false };
+
+            try {
+                response.isValid = true;
+
+                if (type == "admin") {
+                    const admins = await readAdmins(undefined,undefined, ids);
+                    
+                    response.data = { users: admins , status: "admin" };
+                    
+                }else if(type == "user") {
+                    const users = await readAdmins(undefined,undefined, ids);
+                    
+                    response.data = { users: users , status: "user" };
+                } else{
+                    response.error = "invalid status";
+                }
+            } catch (error) {
+                response.error = "error happened";
             }
 
             channel.sendToQueue(

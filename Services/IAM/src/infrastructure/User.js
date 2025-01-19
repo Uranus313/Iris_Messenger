@@ -1,7 +1,8 @@
-import { where } from "sequelize";
+import { where, Op } from "sequelize";
+
 import { User } from "../domain/User.js"
 
-export let readUsers = async (id,conditions) =>{
+export let readUsers = async (id,conditions,idArray) =>{
     if(id){
         let user = await User.findOne({where:{id : id}});
         if(user){
@@ -10,7 +11,18 @@ export let readUsers = async (id,conditions) =>{
                 
         }
         return user;
-    }if(conditions){
+    }else if(idArray){
+        let admins = await User.findAll({ 
+            where: { id: { [Op.in]: idArray } } 
+        });
+        admins = admins.map((admin) => {
+            admin = admin.toJSON();
+            delete admin.password;
+            return admin;
+        });
+        return admins;
+    }
+    else if(conditions){
         let users = await User.findAll({where: conditions});
         for (let index = 0; index < users.length; index++) {
             let element = users[index];
