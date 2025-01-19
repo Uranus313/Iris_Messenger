@@ -50,7 +50,7 @@ export async function auth(req,res, next, acceptedStatuses){
       
                 return;
               }
-              req.user = user;
+              req.user = {...user,status:"user"};
               next();
 
               break;
@@ -70,7 +70,7 @@ export async function auth(req,res, next, acceptedStatuses){
         
                   return;
                 }
-                req.user = admin;
+                req.user = {...admin,status:"admin"};
                 next();
                 break;
                 case "superAdmin":
@@ -82,7 +82,7 @@ export async function auth(req,res, next, acceptedStatuses){
             
                       return;
                     }
-                    req.user = superAdmin;
+                    req.user = {...superAdmin,status:"superAdmin"};
                     next();
 
                     break;
