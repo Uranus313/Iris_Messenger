@@ -23,4 +23,4 @@ const reportSchema  = new mongoose.Schema(
     }
 );
 
-export const RepostModel = mongoose.model("reports",reportSchema);
+export const ReportModel = mongoose.model("reports",reportSchema);
