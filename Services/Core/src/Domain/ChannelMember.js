@@ -2,10 +2,13 @@ import mongoose from "mongoose";
 
 const channelMemberSchema  = new mongoose.Schema(
     {
-        userId: {
-            type : Number ,required : true
+        user: {
+            type : {
+                id: Number,
+                role : {type: String,enum: ["admin" , "owner","member"]}
+            } ,required : true
         },
-        channelId: {type : mongoose.Schema.Types.ObjectId, ref: "channels" , required : true },
+        channelId: {type : mongoose.Schema.Types.ObjectId, ref: "channels" , required : true  },
         
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},

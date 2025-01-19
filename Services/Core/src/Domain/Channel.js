@@ -15,7 +15,9 @@ const channelSchema  = new mongoose.Schema(
         memberCount: {type: Number , required: true},
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
-        deletedAt : {type: Date}
+        deletedAt : {type: Date},
+        isBanned : {type: Boolean},
+        bannedAt : {type: Date}
         
     }
 );

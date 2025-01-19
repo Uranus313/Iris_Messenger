@@ -21,7 +21,9 @@ const groupSchema  = new mongoose.Schema(
 
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
-        deletedAt : {type: Date}
+        deletedAt : {type: Date},
+        isBanned : {type: Boolean},
+        bannedAt : {type: Date},
         
     }
 );

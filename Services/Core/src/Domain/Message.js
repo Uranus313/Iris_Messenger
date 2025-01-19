@@ -15,7 +15,9 @@ const messageSchema  = new mongoose.Schema(
         directId: {type : mongoose.Schema.Types.ObjectId, ref: "directs" },
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
-        deletedAt : {type: Date}
+        deletedAt : {type: Date},
+        isSeen: {type: Boolean},
+        isEdited : {type : Boolean}
         
     }
 );

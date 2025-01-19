@@ -8,14 +8,17 @@ const reportSchema  = new mongoose.Schema(
             type : Number 
         },
         reportedUserId: {
-            type : Number 
+            type : Number  , required: true
         },
         reportedGroupId: {type : mongoose.Schema.Types.ObjectId , ref: "groups"   },
         reportedChannelId: {type : mongoose.Schema.Types.ObjectId, ref: "channels" },
         reportedMessageId: {type : mongoose.Schema.Types.ObjectId, ref: "messages" },
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
-        deletedAt : {type: Date}
+        deletedAt : {type: Date},
+        
+
+        isSeen: {type: Boolean}
         
     }
 );
