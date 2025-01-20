@@ -29,7 +29,10 @@ const MainPage = () => {
         }
       >
         {SidebarState == "chatlist" && (
-          <ChatList setSidebarState={setSidebarState} />
+          <ChatList
+            setSidebarState={setSidebarState}
+            setSelectedChat={setSelectedChat}
+          />
         )}
         {SidebarState == "settings" && (
           <Setting goBack={() => setSidebarState("chatlist")} />
@@ -78,20 +81,21 @@ const MainPage = () => {
           />
         )}
         {!selectedChat && (
-  <div className="flex justify-center items-center h-screen" style={{
-    backgroundImage: `url(${sth})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "repeat",
-    backgroundPosition: "center",
-  }}>
-    No Chat Selected...
-  </div>
-)}
+          <div
+            className="flex justify-center items-center h-screen"
+            style={{
+              backgroundImage: `url(${sth})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "repeat",
+              backgroundPosition: "center",
+            }}
+          >
+            No Chat Selected...
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default MainPage;
-
-

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Core_api_Link } from "../consts/APILink";
-import { Direct } from "../interfaces/interfaces";
+import { Direct, DirectMessage } from "../interfaces/interfaces";
 
 function useGetDirects(){
     return useQuery({
@@ -11,14 +11,14 @@ function useGetDirects(){
                         });
             const jsonResult  = await result.json();
             if(result.ok){
-                return jsonResult as {data :Direct[],hasMore: boolean}
+                return jsonResult as {data : {direct:Direct,lastMessage:DirectMessage}[],hasMore: boolean}
             }else{
                 throw new Error(jsonResult.error);
             }
         },
         staleTime: 6 * 60 * 60 * 1000,
         //
-        retry: 3
+        retry: 1
     })
 }
 export default useGetDirects;

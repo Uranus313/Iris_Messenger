@@ -46,7 +46,7 @@ export interface Channel{
     status: "channel"|"group"|"direct"
 }
 export interface Direct{
-    _id: number;
+    _id: string;
     user : User;
     status: "channel"|"group"|"direct"
 
@@ -66,4 +66,31 @@ export interface Group{
     isDeleted : boolean;
     isBanned : boolean;
     status: "channel"|"group"|"direct"
+}
+export interface GroupMessage{
+    _id : string;
+    messageType : string| null;
+    senderUserId : number;
+    text : string|null;
+    createAt : Date;
+    groupId:string;
+    media:string|null;
+}
+export interface DirectMessage{
+    _id : string;
+    messageType : string| null;
+    senderUserId : number;
+    text : string|null;
+    createAt : Date;
+    directId:string;
+    media:string|null;
+}
+export interface ChannelMessage{
+    _id : string;
+    messageType : string| null;
+    senderUserId : number;
+    text : string|null;
+    createAt : Date;
+    ChannelId:string;
+    media:string|null;
 }

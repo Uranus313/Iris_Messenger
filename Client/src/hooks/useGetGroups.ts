@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Core_api_Link } from "../consts/APILink";
-import { Group } from "../interfaces/interfaces";
+import { Group, GroupMessage } from "../interfaces/interfaces";
 function useGetGroups(){
     return useQuery({
         queryKey : ['groups'],
@@ -10,14 +10,14 @@ function useGetGroups(){
                         });
             const jsonResult  = await result.json();
             if(result.ok){
-                return jsonResult as {data :Group[],hasMore: boolean}
+                return jsonResult as {data : {group:Group,role:string,joinedAt:Date,lastMessage:GroupMessage}[],hasMore: boolean}
             }else{
                 throw new Error(jsonResult.error);
             }
         },
         staleTime: 6 * 60 * 60 * 1000,
         //
-        retry: 3
+        retry: 1
     })
 }
 export default useGetGroups;

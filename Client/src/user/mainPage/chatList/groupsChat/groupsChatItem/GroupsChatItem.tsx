@@ -1,11 +1,12 @@
 import { Media_api_Link } from "../../../../../consts/APILink";
-import { Group } from "../../../../../interfaces/interfaces";
+import { Group, GroupMessage } from "../../../../../interfaces/interfaces";
 
 interface Props {
   group: Group;
+  lastMessage: GroupMessage;
 }
 
-const GroupsChatItem = ({ group }: Props) => {
+const GroupsChatItem = ({ group, lastMessage }: Props) => {
   return (
     <div className="flex items-center justify-between px-4 py-3 hover:bg-base-200">
       {/* Avatar and User Info */}
@@ -15,7 +16,7 @@ const GroupsChatItem = ({ group }: Props) => {
             <img
               src={
                 group.profilePicture
-                  ? Media_api_Link + "file" + group.profilePicture
+                  ? Media_api_Link + "file/" + group.profilePicture
                   : ""
               }
               alt={""}
@@ -24,6 +25,7 @@ const GroupsChatItem = ({ group }: Props) => {
         </div>
         <div className="ml-3">
           <h2 className="font-bold text-base-content">{group.name}</h2>
+          <p className="text-sm">{lastMessage.text}</p>
         </div>
       </div>
     </div>

@@ -1,18 +1,20 @@
 import { useState } from "react";
 import sth from "../../../assets/345974-200 .png";
+import { Channel, Direct, Group } from "../../../interfaces/interfaces";
 import ChannelsChat from "./channelsChat/ChannelsChat";
 import DirectsChat from "./directsChat/DirectsChat";
 import GroupsChat from "./groupsChat/GroupsChat";
 
 interface Props {
+  setSelectedChat: (nextState: Group | Channel | Direct | null) => void;
   setSidebarState: (
     nextState: "settings" | "contacts" | "addGroup" | "addChannel"
   ) => void;
 }
 
-const ChatList = ({ setSidebarState }: Props) => {
+const ChatList = ({ setSidebarState, setSelectedChat }: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<
+  const [selectedTab, setSelectedTab] = useState<
     "directs" | "channels" | "groups"
   >("directs");
   const toggleMenu = () => {
@@ -22,7 +24,6 @@ const ChatList = ({ setSidebarState }: Props) => {
   return (
     <div className="md:block bg-base-300 text-base-content flex flex-col scroll-my-60">
       <div>
-
         {/* Top Navigation Bar */}
         <div className="px-4 py-2 bg-base-100 flex items-center">
           <div className=" ">
@@ -68,18 +69,24 @@ const ChatList = ({ setSidebarState }: Props) => {
         </div>
         {/* Tabs */}
         <div className="bg-base-100 flex justify-around border-b border-base-200 py-2">
-          <button onClick={() => setSelectedChat("directs")}>Directs</button>
-          <button onClick={() => setSelectedChat("groups")}>Groups</button>
-          <button onClick={() => setSelectedChat("channels")}>Channels</button>
+          <button onClick={() => setSelectedTab("directs")}>Directs</button>
+          <button onClick={() => setSelectedTab("groups")}>Groups</button>
+          <button onClick={() => setSelectedTab("channels")}>Channels</button>
         </div>
       </div>
 
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center hover:bg-base-100">
-          {selectedChat == "directs" && <DirectsChat />}
-          {selectedChat == "channels" && <ChannelsChat />}
-          {selectedChat == "groups" && <GroupsChat />}
+          {selectedTab == "directs" && (
+            <DirectsChat setSelectedChat={setSelectedChat} />
+          )}
+          {selectedTab == "channels" && (
+            <ChannelsChat setSelectedChat={setSelectedChat} />
+          )}
+          {selectedTab == "groups" && (
+            <GroupsChat setSelectedChat={setSelectedChat} />
+          )}
         </div>
       </div>
 

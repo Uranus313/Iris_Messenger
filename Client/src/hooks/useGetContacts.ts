@@ -16,7 +16,7 @@ function useGetContacts(){
             }
         },
         staleTime: 6 * 60 * 60 * 1000,
-        retry: 3
+        retry: 1
     })
 }
 export default useGetContacts;
