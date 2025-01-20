@@ -10,13 +10,14 @@ import UserHomeLayout from "../layouts/UserHomeLayout";
 import Login from "../user/login/login";
 import MainPage from "../user/mainPage/MainPage";
 import App from "../App";
+import App2 from "../App2";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <OuterLayout />,
     children: [
-      { path: "kir/", element: <App /> },
+      { path: "kir/", element: <App2 /> },
 
       {
         path: "user/",
