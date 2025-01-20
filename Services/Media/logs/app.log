@@ -18,3 +18,37 @@
 {"filename":"ae355f09a2b9a55d518c321d3ab4820d.jpg","id":"678c22d3050e9f6b6984ab40","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-18T21:53:23.686Z","uploadDate":"2025-01-18T21:53:23.662Z"}
 {"filename":"8474e9f6fbbb387779b6ee00481c897f.jpg","id":"678c233e050e9f6b6984ab42","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-18T21:55:10.589Z","uploadDate":"2025-01-18T21:55:10.587Z"}
 {"filename":"16d9a64a84586933bbfd86fc9fba45a9.jpg","id":"678c238c050e9f6b6984ab44","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-18T21:56:28.165Z","uploadDate":"2025-01-18T21:56:28.163Z"}
+{"filename":"20be62ce761c760ca9c12031011d2310.gif","id":"678c2847050e9f6b6984ab46","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-18T22:16:39.019Z","uploadDate":"2025-01-18T22:16:39.018Z"}
+{"level":"info","message":"listening on port 3002...","timestamp":"2025-01-19T09:28:47.041Z"}
+{"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T09:28:47.130Z"}
+{"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T09:28:47.213Z"}
+{"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T09:28:47.216Z"}
+{"filename":"4f7142a867d8f078c4e0f5178a2627f9.png","id":"678d0ab3912a77bfa0a024e6","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:22:45.712Z","uploadDate":"2025-01-19T14:22:45.517Z"}
+{"filename":"88cea2a4ae758b590283ba0fb9514f26.png","id":"678d0b26912a77bfa0a024e8","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:24:38.802Z","uploadDate":"2025-01-19T14:24:38.786Z"}
+{"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T14:38:50.538Z"}
+{"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T14:38:50.761Z"}
+{"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T14:38:50.764Z"}
+{"filename":"89f8fc771030019a0b92289d2619a67c.png","id":"678d0f03a19a37c2d036bc6a","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:41:07.944Z","uploadDate":"2025-01-19T14:41:07.942Z"}
+{"filename":"19465d01ed0744aaf7f54c97de430476.jpg","id":"678d0f84a19a37c2d036bc6c","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:43:16.374Z","uploadDate":"2025-01-19T14:43:16.373Z"}
+{"filename":"92630d83c63bf1ca87c1761dd494a0e2.png","id":"678d101aa19a37c2d036bc6e","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T14:45:46.898Z","uploadDate":"2025-01-19T14:45:46.897Z"}
+{"filename":"08669266b1409a8494594c2e036a98a3.gif","id":"678d1555a19a37c2d036bc70","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T15:08:05.661Z","uploadDate":"2025-01-19T15:08:05.660Z"}
+{"filename":"0e1d9f39b234dc20446f152b265558ac.gif","id":"678d163ba19a37c2d036bc72","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T15:11:55.899Z","uploadDate":"2025-01-19T15:11:55.899Z"}
+{"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T17:19:14.310Z"}
+{"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T17:19:15.382Z"}
+{"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T17:19:15.418Z"}
+{"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T17:22:03.775Z"}
+{"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T17:22:04.525Z"}
+{"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T17:22:04.529Z"}
+{"filename":"e4dce91679107ebc8b75f2e2bf6c8740.png","id":"678d7bbce71d7c48bda7769d","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:25:00.604Z","uploadDate":"2025-01-19T22:25:00.576Z"}
+{"filename":"6cf2859c645dc7d2491cec0e524b14e7.png","id":"678d7c3de71d7c48bda7769f","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:27:09.214Z","uploadDate":"2025-01-19T22:27:09.184Z"}
+{"filename":"00eacd960ee6551d1c9e4d078c796cfc.png","id":"678d7d7ee71d7c48bda776a1","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:32:30.095Z","uploadDate":"2025-01-19T22:32:30.091Z"}
+{"filename":"2639e5e7ae090616989ea7076dde1215.png","id":"678d7da2e71d7c48bda776a3","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:33:06.734Z","uploadDate":"2025-01-19T22:33:06.708Z"}
+{"filename":"0a2ccda0ea1622d01466bae12b4d0250.png","id":"678d7e50e71d7c48bda776a5","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:36:00.741Z","uploadDate":"2025-01-19T22:36:00.741Z"}
+{"filename":"9af1df34072b3351572b2fc1f70fbd23.jpg","id":"678d7f68e71d7c48bda776a7","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:40:40.278Z","uploadDate":"2025-01-19T22:40:40.277Z"}
+{"filename":"2f7d2acc0b37a8c146304d6d9ec6a18b.jpg","id":"678d800fe71d7c48bda776a9","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:43:27.229Z","uploadDate":"2025-01-19T22:43:27.227Z"}
+{"filename":"0cc3b05636513aa9de894d4c12021ef3.jpg","id":"678d812de71d7c48bda776ab","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:48:13.445Z","uploadDate":"2025-01-19T22:48:13.444Z"}
+{"filename":"72b3a85d114d10d6e4597bb1dca7d33e.jpg","id":"678d81a6e71d7c48bda776ad","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:50:14.814Z","uploadDate":"2025-01-19T22:50:14.813Z"}
+{"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-20T11:25:41.904Z"}
+{"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-20T11:25:42.275Z"}
+{"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-20T11:25:42.283Z"}
+{"filename":"ba59f72021f9114e64588cd01af7c4fe.gif","id":"678e4161fea3adda085107f3","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-20T12:28:17.683Z","uploadDate":"2025-01-20T12:28:17.679Z"}

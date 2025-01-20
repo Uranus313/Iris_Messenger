@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
-import { validateGetOTP, validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
+import { validateGetOTP,  validateSendOTP, validateUserChangeinfo, validateUserPost } from "../contracts/user.js";
 import { createOTP, deleteOTP, readOTPs } from "../infrastructure/OTP.js";
 import { createUser, readUsers, updateUser } from "../infrastructure/user.js";
 import { mediaGRPC } from "./utilities/grpc-sender.js";
 import { generateRandomString } from "./utilities/randomString.js";
 import { sendMail } from "./utilities/sendMail.js";
+import { validateEmail } from "../contracts/general.js";
 export const getAllUsers = async (req,res) => {
     try {
         const users = await readUsers();
@@ -23,14 +24,32 @@ export const getUserByID = async (req,res) => {
         res.status(500).send({message:"internal server error"});
     }
 }
+export const searchUserByEmail = async (req,res) => {
+    const {error: error2} = validateEmail(req.params.email);
+    if(error2){
+        res.status(400).send({ message: error2.details[0].message });
+        return
+    }
+    try {
+        const users = await readUsers(undefined,{email : req.params.email});
+        console.log(users);
+        res.send(users)
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({message:"internal server error"});
+    }
+}
 export const userEdit = async (req,res) => {
+    // console.log(req.body);
+    console.log(req.body)
+
     const {error: error2} = validateUserChangeinfo(req.body);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
     }
     try {
-        const user = await createUser(req.user.id,req.body);
+        const user = await updateUser(req.user.id,req.body);
         res.send(user)
     } catch (error) {
         console.log(error);
@@ -132,7 +151,7 @@ export const userDelete = async (req,res) => {
 }
 export const userDeleteProfilePicture = async (req,res) =>{
     try{
-        const user = updateUser(user.id,{profilePicture : null});
+        const user = await updateUser(req.user.id,{profilePicture : null});
         res.send({...user,status: "user"});
     } catch (error) {
         console.log(error);
@@ -159,7 +178,7 @@ export const userUpdateProfilePicture = async (req,res) =>{
         
                 console.log('File uploaded via gRPC:', response);
                
-            const user = updateUser(user.id,{profilePicture : response.filename});
+            const user = await updateUser(req.user.id,{profilePicture : response.filename});
             res.send({...user,status: "user"});
             });
         }else{
