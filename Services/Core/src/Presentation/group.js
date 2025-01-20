@@ -18,7 +18,7 @@ const router = express.Router();
 
 // 1. Get all groups with optional query parameters
 router.get("/", getAllGroups);
-
+router.get("/getGroup/:groupId", getAllGroups);
 // 2. Add a new group
 router.post("/",upload.single("file"), addGroup);
 
