@@ -163,6 +163,7 @@ export async function getChannelsForUser({
             name: messageGroup.channelDetails.name,
             description: messageGroup.channelDetails.description,
             type: messageGroup.channelDetails.type,
+            status: "channel",
             profilePicture: messageGroup.channelDetails.profilePicture,
             createdAt: messageGroup.channelDetails.createdAt,
             isDeleted: messageGroup.channelDetails.isDeleted || false,
