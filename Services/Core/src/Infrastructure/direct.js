@@ -132,6 +132,7 @@ export async function getDirectConversationsForUser({ userId, floor = 0, limit =
         {
           $project: {
             _id: 1, // Direct conversation ID
+            status: "direct",
             user: {
               $cond: {
                 if: { $eq: ["$firstUserId", userId] },
