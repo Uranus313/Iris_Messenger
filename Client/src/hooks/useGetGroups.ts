@@ -1,18 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { IAM_api_Link } from "../consts/APILink";
-import { User } from "../interfaces/interfaces";
-function useUserCheckToken(){
+import { Core_api_Link } from "../consts/APILink";
+import { Group, GroupMessage } from "../interfaces/interfaces";
+function useGetGroups(){
     return useQuery({
-        queryKey : ['user'],
+        queryKey : ['groups'],
         queryFn : async () => {
-            const result = await fetch(IAM_api_Link+"general/checkToken", {
+            const result = await fetch(Core_api_Link+"groups/my-groups", {
                             credentials: "include"
                         });
             const jsonResult  = await result.json();
-            console.log("teees")
-            console.log(jsonResult)
             if(result.ok){
-                return jsonResult as User
+                return jsonResult as {data : {group:Group,role:string,joinedAt:Date,lastMessage:GroupMessage}[],hasMore: boolean}
             }else{
                 throw new Error(jsonResult.error);
             }
@@ -22,4 +20,4 @@ function useUserCheckToken(){
         retry: 1
     })
 }
-export default useUserCheckToken;
+export default useGetGroups;

@@ -12,9 +12,9 @@ const Blockedusers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+    <div className="min-h-screen bg-base-300 text-white flex flex-col">
       {/* Header */}
-      <header className="bg-gray-800 p-4">
+      <header className="bg-base-300 p-4">
         <h1 className="text-2xl font-bold">Blocked Users</h1>
         <p className="text-sm text-gray-400">
           Blocked users can't send you messages or add you to groups. They will
@@ -59,6 +59,9 @@ const Blockedusers = () => {
       <button className="btn btn-circle btn-primary fixed bottom-5 right-5">
         +
       </button>
+      <p className=" text-sm text-base-300">
+            Updated 10.4 September 29, 2024 Improved structure
+          </p>
     </div>
   );
 };

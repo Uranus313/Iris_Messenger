@@ -1,12 +1,11 @@
 import { useState } from "react";
-import sth from "./assets/Background.png";
+import sth from "../../../../assets/Background.png";
 
-// interface Props {
-//   selectedChat: string | null;
-//   showChatList: () => void;
-// }
+interface Props {
+  showChatList: () => void;
+}
 
-const DirectPage = () => {
+const ChannelPage = ({ showChatList }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
 
   const toggleRightMenu = () => {
@@ -14,8 +13,7 @@ const DirectPage = () => {
   };
 
   // return user1 ? (
-  // return selectedChat == "group" ? (
-    return  (
+  return (
     <div
       className="min-h-screen flex flex-col"
       style={{
@@ -27,7 +25,7 @@ const DirectPage = () => {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-base-200">
-        <button className="block md:hidden p-2" >
+        <button className="block md:hidden p-2" onClick={showChatList}>
           back
         </button>
         <button onClick={toggleRightMenu}>
@@ -202,12 +200,7 @@ const DirectPage = () => {
         </button>
       </div>
     </div>
-    )
-  // ) : (
-  //   <div className="flex justify-center items-center h-screen">
-  //     No Chat Selected...
-  //   </div>
-  // );
+  );
 };
 
-export default DirectPage;
+export default ChannelPage;

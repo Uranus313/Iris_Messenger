@@ -1,17 +1,25 @@
 import { useState } from "react";
-import Chat from "./chat/Chat";
+import sth from "../../assets/Background.png";
+import { Channel, Direct, Group } from "../../interfaces/interfaces";
+import ChannelPage from "./chat/channelPage/ChannelPage";
+import DirectPage from "./chat/directPage/DirectPage";
+import GroupPage from "./chat/groupPage/GroupPage";
 import ChatList from "./chatList/ChatList";
+import AddChannel from "./menu/addChannel/AddChannel";
+import AddGroup from "./menu/addGroup/AddGroup";
 import Contact from "./menu/contacts/Contact";
 import Setting from "./menu/setting/Setting";
 
 const MainPage = () => {
-  let [chatList, setChatList] = useState<boolean>(false);
-  let [selectedChat, setSelectedChat] = useState<string | null>("test");
+  let [chatList, setChatList] = useState<boolean>(true);
+  let [selectedChat, setSelectedChat] = useState<
+    Group | Channel | Direct | null
+  >(null);
   let [SidebarState, setSidebarState] = useState<
-    "chatlist" | "settings" | "contacts"
+    "chatlist" | "settings" | "contacts" | "addChannel" | "addGroup"
   >("chatlist");
   return (
-    <div className="flex  ">
+    <div className="flex ">
       {/* Sidebar for Chat List */}
       <div
         className={
@@ -21,7 +29,10 @@ const MainPage = () => {
         }
       >
         {SidebarState == "chatlist" && (
-          <ChatList setSidebarState={setSidebarState} />
+          <ChatList
+            setSidebarState={setSidebarState}
+            setSelectedChat={setSelectedChat}
+          />
         )}
         {SidebarState == "settings" && (
           <Setting goBack={() => setSidebarState("chatlist")} />
@@ -29,25 +40,59 @@ const MainPage = () => {
         {SidebarState == "contacts" && (
           <Contact goBack={() => setSidebarState("chatlist")} />
         )}
+        {SidebarState == "addGroup" && (
+          <AddGroup goBack={() => setSidebarState("chatlist")} />
+        )}
+        {SidebarState == "addChannel" && (
+          <AddChannel goBack={() => setSidebarState("chatlist")} />
+        )}
       </div>
       {/* Main Chat Area */}
 
       <div
         className={
           !chatList
-            ? "flex-grow  bg-base-200  md:block "
+            ? "flex-grow  bg-base-200  md:block md:basis-3/4"
             : "flex-grow bg-base-200  md:block " + "hidden"
         }
       >
-        <Chat
-          showChatList={() => {
-            setChatList(true);
-            setSelectedChat(null);
-          }}
-          chatList={chatList}
-          user1={selectedChat}
-          user2={selectedChat}
-        />
+        {selectedChat?.status == "direct" && (
+          <DirectPage
+            showChatList={() => {
+              setChatList(true);
+              setSelectedChat(null);
+            }}
+          />
+        )}
+        {selectedChat?.status == "group" && (
+          <GroupPage
+            showChatList={() => {
+              setChatList(true);
+              setSelectedChat(null);
+            }}
+          />
+        )}
+        {selectedChat?.status == "channel" && (
+          <ChannelPage
+            showChatList={() => {
+              setChatList(true);
+              setSelectedChat(null);
+            }}
+          />
+        )}
+        {!selectedChat && (
+          <div
+            className="flex justify-center items-center h-screen"
+            style={{
+              backgroundImage: `url(${sth})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "repeat",
+              backgroundPosition: "center",
+            }}
+          >
+            No Chat Selected...
+          </div>
+        )}
       </div>
     </div>
   );
