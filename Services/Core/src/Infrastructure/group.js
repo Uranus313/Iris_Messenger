@@ -230,6 +230,7 @@ export async function getGroupsForUser({
             id: group._id,
             name: group.name,
             description: group.description,
+            link : group.link,
             type: group.type,
             memberCount : group.memberCount,
             status: 'group',

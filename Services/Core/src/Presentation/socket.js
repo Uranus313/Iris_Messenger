@@ -1,6 +1,24 @@
 import { Server as SocketIO } from 'socket.io';
 import cookie from 'cookie';
 import { sendTokenValidationRequest } from '../Application/message_brokers/rabbitmq-sender.js';
+import multer from 'multer';
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
+const processFileUpload = (socket, next) => {
+    const multerMiddleware = upload.single('file'); // 'file' should be the key of the file input in FormData
+
+    multerMiddleware(socket.request, {}, (err) => {
+        if (err) {
+            return next(new Error(`File upload error: ${err.message}`));
+        }
+        // File is available in socket.request.file
+        socket.file = socket.request.file;
+        next();
+    });
+};
+
 
 export const initializeSocket = async (httpsServer) => {
     const io = new SocketIO(httpsServer, {
@@ -70,20 +88,49 @@ export const initializeSocket = async (httpsServer) => {
         });
 
         // Handle messages or other events here...
-        socket.on('sendMessage', ({ targetUserId, message }) => {
-            // Retrieve the target user's connections
-            const targetConnections = userConnections.get(targetUserId);
-
-            if (targetConnections && targetConnections.length > 0) {
-                targetConnections.forEach((targetSocket) => {
-                    targetSocket.emit('receiveMessage', {
-                        from: socket.user.id,
-                        message
+        socket.on('sendMessage', (formDataBuffer) => {
+            const formData = new FormData(formDataBuffer);
+        
+            const parsedData = {};
+            formData.forEach((value, key) => {
+                parsedData[key] = value;
+            });
+        
+            const targetUserId = parsedData.targetUserId;
+            const message = parsedData.message;
+        
+            // Process the file upload
+            processFileUpload(socket, (err) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+        
+                const fileBuffer = socket.file.buffer;
+                const fileName = socket.file.originalname;
+                const mimeType = socket.file.mimetype;
+        
+                // Retrieve the target user's connections
+                const targetConnections = userConnections.get(targetUserId);
+        
+                if (targetConnections && targetConnections.length > 0) {
+                    targetConnections.forEach((targetSocket) => {
+                        targetSocket.emit('receiveMessage', {
+                            from: socket.user.id,
+                            message,
+                            file: {
+                                buffer: fileBuffer,
+                                fileName,
+                                mimeType
+                            }
+                        });
                     });
-                });
-            } else {
-                console.log(`User ${targetUserId} is not connected`);
-            }
+                } else {
+                    console.log(`User ${targetUserId} is not connected`);
+                }
+            });
         });
+        
+        
     });
 };
