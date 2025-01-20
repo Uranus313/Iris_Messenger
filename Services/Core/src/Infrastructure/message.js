@@ -176,6 +176,7 @@ export async function getAllConversationsForUser({
               id: "$group._id",
               name: "$group.name",
               link: "$group.link",
+              memberCount : "$group.memberCount",
               profilePicture: "$group.profilePicture",
               description: "$group.description"
             },
@@ -217,6 +218,7 @@ export async function getAllConversationsForUser({
               name: "$channel.name",
               link: "$group.link",
               profilePicture: "$group.profilePicture",
+              memberCount : "$group.memberCount",
               description: "$group.description"
             },
             lastMessage: "$mostRecentMessage",
