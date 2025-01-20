@@ -231,6 +231,7 @@ export async function getGroupsForUser({
             name: group.name,
             description: group.description,
             type: group.type,
+            memberCount : group.memberCount,
             status: 'group',
             profilePicture: group.profilePicture,
             createdAt: group.createdAt,

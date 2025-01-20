@@ -1,30 +1,89 @@
-import server from '../index.js';
-import cookieParser from 'cookie-parser'; // You can use this package to parse cookies
+import { Server as SocketIO } from 'socket.io';
+import cookie from 'cookie';
+import { sendTokenValidationRequest } from '../Application/message_brokers/rabbitmq-sender.js';
 
-console.log("testws");
-const io = new SocketIO(server, {
-    path: '/ws',
-  });
-// Middleware to parse cookies
-io.use((socket, next) => {
-  // You can access cookies from the socket request
-  const token = socket.request.cookies['x-auth-token']; // Extract the token
+export const initializeSocket = async (httpsServer) => {
+    const io = new SocketIO(httpsServer, {
+        path: '/ws',
+        cors: {
+            origin: "http://localhost:5173",
+            methods: ["GET", "POST"],
+            credentials: true
+        }
+    });
 
-  if (!token) {
-    return next(new Error('Authentication error: Token missing'));
-  }
+    // A mapping of user IDs to their corresponding socket connections
+    const userConnections = new Map();
 
+    // Middleware to parse cookies and authenticate users
+    io.use(async (socket, next) => {
+        const cookies = cookie.parse(socket.request.headers.cookie || ''); 
+        const token = cookies['x-auth-token']; // Extract the token
 
-  // Validate the JWT token
- 
-    // Store the decoded user info in the socket for later use
-// Store user data from the token (e.g., userId)
-    next(); // Proceed with the connection
-});
+        if (!token) {
+            return next(new Error('Authentication error: Token missing'));
+        }
 
-// When the socket is connected
-io.on('connection', (socket) => {
-  console.log(`User authenticated: ${socket.token}`); // You can access the user's info
+        try {
+            const result = await sendTokenValidationRequest(token);
+            if (result.error) {
+                return next(new Error(`Authentication error: ${result.error}`));
+            }
 
-  // Handle further socket events...
-});
+            const user = result.data.user;
+            if (!user) {
+                return next(new Error('Authentication error: User missing'));
+            }
+
+            // Attach the authenticated user to the socket object
+            socket.user = user;
+
+            // Store the user's connection
+            if (!userConnections.has(user.id)) {
+                userConnections.set(user.id, []);
+            }
+            userConnections.get(user.id).push(socket);
+
+            // Proceed with the connection
+            next();
+        } catch (err) {
+            return next(new Error(`Authentication error: ${err.message}`));
+        }
+    });
+
+    // When the socket is connected
+    io.on('connection', (socket) => {
+        console.log(`User connected: ${socket.user.id}`);
+
+        // Handle disconnection
+        socket.on('disconnect', () => {
+            console.log(`User disconnected: ${socket.user.id}`);
+
+            // Remove the socket from the user's connection list
+            const connections = userConnections.get(socket.user.id) || [];
+            const updatedConnections = connections.filter((conn) => conn !== socket);
+            if (updatedConnections.length > 0) {
+                userConnections.set(socket.user.id, updatedConnections);
+            } else {
+                userConnections.delete(socket.user.id);
+            }
+        });
+
+        // Handle messages or other events here...
+        socket.on('sendMessage', ({ targetUserId, message }) => {
+            // Retrieve the target user's connections
+            const targetConnections = userConnections.get(targetUserId);
+
+            if (targetConnections && targetConnections.length > 0) {
+                targetConnections.forEach((targetSocket) => {
+                    targetSocket.emit('receiveMessage', {
+                        from: socket.user.id,
+                        message
+                    });
+                });
+            } else {
+                console.log(`User ${targetUserId} is not connected`);
+            }
+        });
+    });
+};

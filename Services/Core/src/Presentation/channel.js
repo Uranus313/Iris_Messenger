@@ -17,6 +17,7 @@ const router = express.Router();
 
 // 1. Get all channels with optional query parameters
 router.get("/", getAllChannels);
+router.get("/getChannel/:channelId", getAllChannels);
 
 // 2. Add a new channel
 router.post("/",upload.single("file"), addChannel);

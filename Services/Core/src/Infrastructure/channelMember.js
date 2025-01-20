@@ -164,6 +164,7 @@ export async function getChannelsForUser({
             description: messageGroup.channelDetails.description,
             type: messageGroup.channelDetails.type,
             status: "channel",
+            memberCount : messageGroup.channelDetails.memberCount,
             profilePicture: messageGroup.channelDetails.profilePicture,
             createdAt: messageGroup.channelDetails.createdAt,
             isDeleted: messageGroup.channelDetails.isDeleted || false,
