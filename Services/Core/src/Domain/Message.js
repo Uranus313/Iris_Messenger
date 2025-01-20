@@ -4,7 +4,8 @@ const messageSchema  = new mongoose.Schema(
     {
         messageType: {type : String , enum: ["group" , "channel","direct"],required : true},
         senderUserId: {
-            type : Number 
+            type : Number ,
+            required : true
         },
         media: {type: String},
         text: {type: String},

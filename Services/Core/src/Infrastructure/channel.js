@@ -1,14 +1,16 @@
 import { ChannelModel } from "../Domain/Channel.js";
 import { addUserToChannel } from "./channelMember.js";
+import { saveMessage } from "./message.js";
 
 export async function saveChannel(channelCreate){
     const result = {};
+    
     const channel = new ChannelModel(channelCreate);
     const response = await channel.save();
 
     result.response = response.toJSON();
     addUserToChannel({userId : channelCreate.ownerId , role: "owner" , channelId : result.response._id});
-
+    saveMessage({messageType: "channel",senderUserId : channelCreate.ownerId , text :"channel created" ,channelId : result.response._id });
     return result;
 }
 

@@ -6,6 +6,7 @@ export async function saveGroup(groupCreate){
     const group = new GroupModel(groupCreate);
     const response = await group.save();
     result.response = response.toJSON();
+    saveMessage({messageType: "group",senderUserId : channelCreate.ownerId , text: "group created",groupId : result.response._id});
     return result;
 }
 
