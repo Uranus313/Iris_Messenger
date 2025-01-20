@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import sth from "../../assets/Background.png";
 import { Channel, Direct, Group } from "../../interfaces/interfaces";
 import ChannelPage from "./chat/channelPage/ChannelPage";
@@ -18,6 +18,11 @@ const MainPage = () => {
   let [SidebarState, setSidebarState] = useState<
     "chatlist" | "settings" | "contacts" | "addChannel" | "addGroup"
   >("chatlist");
+  useEffect(() => {
+    if (selectedChat) {
+      setChatList(false);
+    }
+  }, [selectedChat]);
   return (
     <div className="flex ">
       {/* Sidebar for Chat List */}
