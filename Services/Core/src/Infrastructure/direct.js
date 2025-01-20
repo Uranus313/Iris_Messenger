@@ -80,3 +80,43 @@ export async function updateDirect(id,directUpdate ){
     return(result);
 }
 
+
+export async function getDirectConversationsForUser({ userId, floor = 0, limit = 20 }) {
+    try {
+        // Query to find all directs where the user is either firstUserId or secondUserId
+        const conversations = await DirectModel.find({
+            $or: [
+                { firstUserId: userId },
+                { secondUserId: userId }
+            ],
+            isDeleted: { $ne: true } // Exclude deleted conversations
+        })
+        .skip(floor) // Skip based on the floor value (pagination)
+        .limit(limit) // Limit the number of results
+        .sort({ createdAt: -1 }); // Optional: Sort by creation date, latest first
+
+        // Map the results to get the direct_id and the other user's ID
+        const result = conversations.map(conversation => {
+            return {
+                _id: conversation._id, // The direct conversation ID
+                user: conversation.firstUserId === userId ? conversation.secondUserId : conversation.firstUserId
+            };
+        });
+
+        // Get total count for pagination purposes
+        const totalCount = await DirectModel.countDocuments({
+            $or: [
+                { firstUserId: userId },
+                { secondUserId: userId }
+            ],
+            isDeleted: { $ne: true }
+        });
+
+        const hasMore = totalCount > floor + limit;
+
+        return { error: null, response: result, hasMore };
+
+    } catch (error) {
+        return { error: error.message || "An error occurred while fetching the direct conversations." };
+    }
+}

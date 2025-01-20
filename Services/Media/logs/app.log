@@ -39,3 +39,12 @@
 {"level":"info","message":"Media gRPC server running on port 8087","timestamp":"2025-01-19T17:22:03.775Z"}
 {"level":"info","message":"Connected to MongoDB...","timestamp":"2025-01-19T17:22:04.525Z"}
 {"level":"info","message":"GridFS initialized successfully...","timestamp":"2025-01-19T17:22:04.529Z"}
+{"filename":"e4dce91679107ebc8b75f2e2bf6c8740.png","id":"678d7bbce71d7c48bda7769d","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:25:00.604Z","uploadDate":"2025-01-19T22:25:00.576Z"}
+{"filename":"6cf2859c645dc7d2491cec0e524b14e7.png","id":"678d7c3de71d7c48bda7769f","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:27:09.214Z","uploadDate":"2025-01-19T22:27:09.184Z"}
+{"filename":"00eacd960ee6551d1c9e4d078c796cfc.png","id":"678d7d7ee71d7c48bda776a1","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:32:30.095Z","uploadDate":"2025-01-19T22:32:30.091Z"}
+{"filename":"2639e5e7ae090616989ea7076dde1215.png","id":"678d7da2e71d7c48bda776a3","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:33:06.734Z","uploadDate":"2025-01-19T22:33:06.708Z"}
+{"filename":"0a2ccda0ea1622d01466bae12b4d0250.png","id":"678d7e50e71d7c48bda776a5","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:36:00.741Z","uploadDate":"2025-01-19T22:36:00.741Z"}
+{"filename":"9af1df34072b3351572b2fc1f70fbd23.jpg","id":"678d7f68e71d7c48bda776a7","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:40:40.278Z","uploadDate":"2025-01-19T22:40:40.277Z"}
+{"filename":"2f7d2acc0b37a8c146304d6d9ec6a18b.jpg","id":"678d800fe71d7c48bda776a9","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:43:27.229Z","uploadDate":"2025-01-19T22:43:27.227Z"}
+{"filename":"0cc3b05636513aa9de894d4c12021ef3.jpg","id":"678d812de71d7c48bda776ab","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:48:13.445Z","uploadDate":"2025-01-19T22:48:13.444Z"}
+{"filename":"72b3a85d114d10d6e4597bb1dca7d33e.jpg","id":"678d81a6e71d7c48bda776ad","level":"info","message":"File uploaded successfully:","timestamp":"2025-01-19T22:50:14.814Z","uploadDate":"2025-01-19T22:50:14.813Z"}

@@ -2,10 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import DbConnection from './src/DB/DbConnection.js';
-import adminRouter from "./src/presentation/admin.js";
-import generalRouter from "./src/presentation/general.js";
-import superAdminRouter from "./src/presentation/superAdmin.js";
-import userRouter from "./src/presentation/user.js";
+import routes from './src/presentation/routes.js'
 import fs from "fs";
 import https from 'https';
 import cookieParser from "cookie-parser";
@@ -38,10 +35,7 @@ app.use(cookieParser());
 app.get('/', async (req,res,next) =>{
     res.send("hello world!");
 });
-app.use("/users",userRouter);
-app.use("/admins",adminRouter);
-app.use("/general",generalRouter);
-app.use("/superAdmin",superAdminRouter);
+app.use("",routes);
 const httpsServer = https.createServer(options, app);
 
 httpsServer.listen(port, async () =>{

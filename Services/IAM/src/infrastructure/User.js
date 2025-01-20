@@ -15,6 +15,8 @@ export let readUsers = async (id,conditions,idArray) =>{
         let users = await User.findAll({ 
             where: { id: { [Op.in]: idArray } } 
         });
+        // let users = await User.findAll();
+        console.log(users);
         users = users.map((user) => {
             user = user.toJSON();
             delete user.password;

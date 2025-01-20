@@ -4,6 +4,7 @@ import { validateNumericId, validateObjectId } from "../contracts/general.js";
 import { deleteChannel, getChannels, saveChannel } from "../Infrastructure/channel.js";
 import { addUserToChannel, getChannelsForUser, getUsersInChannel, removeUserFromChannel } from "../Infrastructure/channelMember.js";
 import { getUsersByIds } from "./message_brokers/rabbitmq-sender.js";
+import { mediaGRPC } from "./utilities/grpc_sender.js";
 import logger from "./utilities/loggers/generalLogger.js";
 
 
@@ -13,7 +14,7 @@ export const getAllChannels = async (req , res) =>{
         let searchParams = {...req.query};
         delete searchParams.floor;
         delete searchParams.limit;
-        delete searchParams.nameSearch;
+        delete searchParams.textSearch;
         delete searchParams.sort;
         delete searchParams.desc;
         // console.log(req.query.limit)
@@ -33,15 +34,10 @@ export const getAllChannels = async (req , res) =>{
 
 
 export const addChannel = async (req , res) => {
-    const {error: validationError} = validateChannelPost(req.body); 
-    if (validationError) {
-            res.status(400).send({message : error.details[0].message});
-            logger.info( error.details[0].message);
-        return;
-    }
+    
     try {
         const sentBody = JSON.parse(req.body.data);
-    const {error: error2} = validateUserPost(sentBody);
+    const {error: error2} = validateChannelPost(sentBody);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
@@ -49,12 +45,13 @@ export const addChannel = async (req , res) => {
 
 
     const previousChannel = await getChannels({searchParams:{link : sentBody.link} , seeDeleted: true});
+    console.log(previousChannel);
     if (previousChannel.error){
         res.status(400).send({message : previousChannel.error});
         logger.info(previousChannel.error);
         return;
     }
-    if(previousChannel.response.length > 0){
+    if(previousChannel.response.data.length > 0){
         res.status(400).send({message : "a group with this link already exists"});
         logger.info( "a group with this link already exists");
         return;
@@ -77,11 +74,11 @@ export const addChannel = async (req , res) => {
         
                 console.log('File uploaded via gRPC:', response);
                 const result = await saveChannel({ ...sentBody , ownerId : req.user.id, profilePicture: response.filename});
-        if (result.error){
+            if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);
             return;
-        }
+         }
         res.send(result.response);
                 
             });
@@ -96,7 +93,6 @@ export const addChannel = async (req , res) => {
         }
         
         
-        res.body = result.response;
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -109,8 +105,8 @@ export const addChannel = async (req , res) => {
 
 
 export const removeChannel = async (req , res) => {
-    const {error: validationError} = validateNumericId(req.params.channelId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.channelId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -139,7 +135,6 @@ export const removeChannel = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
     } catch (error) {
         res.status(500).send({message:"internal server error"});
         logger.error("internal server error ",error);
@@ -149,7 +144,7 @@ export const removeChannel = async (req , res) => {
 
 export const getMyChannels = async (req,res) =>{
     try {
-        const channels = await getChannelsForUser({id: req.user.id });
+        const channels = await getChannelsForUser({userId: req.user.id });
         
         if (channels.error){
             res.status(400).send({message : channels.error});
@@ -167,8 +162,8 @@ export const getMyChannels = async (req,res) =>{
 
 
 export const joinChannel = async (req , res) => {
-    const {error: validationError} = validateObjectId(req.params.channelId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.channelId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -181,7 +176,7 @@ export const joinChannel = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -192,8 +187,8 @@ export const joinChannel = async (req , res) => {
 }
 
 export const leaveChannel = async (req , res) => {
-    const {error: validationError} = validateObjectId(req.params.channelId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.channelId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -206,7 +201,7 @@ export const leaveChannel = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -216,8 +211,8 @@ export const leaveChannel = async (req , res) => {
     }
 }
 export const removeUserFromMyChannel = async (req , res) =>{
-    const {error: validationError} = validateChannelMemberRemove(req.body); 
-    if (validationError) {
+    const {error: error} = validateChannelMemberRemove(req.body); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -246,7 +241,7 @@ export const removeUserFromMyChannel = async (req , res) =>{
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
         res.status(500).send({message:"internal server error"});
 
@@ -258,14 +253,14 @@ export const removeUserFromMyChannel = async (req , res) =>{
 
 
 export const getChannelUsers = async (req , res) =>{
-    const {error: validationError} = validateObjectId(req.params.channelId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.channelId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
     }
     try {
-        const previousChannel = await getChannels({id:req.body.channelId});
+        const previousChannel = await getChannels({id:req.params.channelId});
         if (previousChannel.error){
             res.status(400).send({message : previousChannel.error});
             logger.info(previousChannel.error);
@@ -276,12 +271,14 @@ export const getChannelUsers = async (req , res) =>{
             logger.info( "this channel doesnt exist");
             return;
         }
+        console.log(previousChannel.response);
+        console.log(req.user.id);
         if(previousChannel.response.ownerId != req.user.id){
             res.status(403).send({message : "you dont own this channel"});
             logger.info( "you dont own this channel");
             return;
         }
-        let result = await getUsersInChannel({groupId : req.params.groupId});
+        let result = await getUsersInChannel({channelId : req.params.channelId});
         if (result.error){
             res.status(400).send({message : result.error});
             logger.info(result.error);

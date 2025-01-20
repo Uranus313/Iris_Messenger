@@ -4,6 +4,7 @@ import { validateNumericId, validateObjectId } from "../contracts/general.js";
 import {  addMemberToGroup, deleteGroup, getGroups, getGroupsForUser, getUsersInGroup, removeMemberFromGroup, saveGroup } from "../Infrastructure/group.js";
 import { getUsersByIds } from "./message_brokers/rabbitmq-sender.js";
 import logger from "./utilities/loggers/generalLogger.js";
+import { mediaGRPC } from "./utilities/grpc_sender.js";
 
 
 
@@ -12,7 +13,7 @@ export const getAllGroups = async (req , res) =>{
         let searchParams = {...req.query};
         delete searchParams.floor;
         delete searchParams.limit;
-        delete searchParams.nameSearch;
+        delete searchParams.textSearch;
         delete searchParams.sort;
         delete searchParams.desc;
         // console.log(req.query.limit)
@@ -32,15 +33,10 @@ export const getAllGroups = async (req , res) =>{
 
 
 export const addGroup = async (req , res) => {
-    const {error: validationError} = validateGroupPost(req.body); 
-    if (validationError) {
-            res.status(400).send({message : error.details[0].message});
-            logger.info( error.details[0].message);
-        return;
-    }
+    
     try {
         const sentBody = JSON.parse(req.body.data);
-    const {error: error2} = validateUserPost(sentBody);
+    const {error: error2} = validateGroupPost(sentBody);
     if(error2){
         res.status(400).send({ message: error2.details[0].message });
         return
@@ -53,7 +49,7 @@ export const addGroup = async (req , res) => {
         logger.info(previousGroup.error);
         return;
     }
-    if(previousGroup.response.length > 0){
+    if(previousGroup.response.data.length > 0){
         res.status(400).send({message : "a group with this link already exists"});
         logger.info( "a group with this link already exists");
         return;
@@ -71,7 +67,8 @@ export const addGroup = async (req , res) => {
             mediaGRPC.UploadFile(request, async (err, response) => {
                 if (err) {
                     console.error('gRPC upload failed:', err);
-                    return res.status(500).send('Failed to upload file.');
+                     res.status(500).send('Failed to upload file.');
+                     return
                 }
         
                 console.log('File uploaded via gRPC:', response);
@@ -95,7 +92,6 @@ export const addGroup = async (req , res) => {
         }
         
         
-        res.body = result.response;
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -107,8 +103,8 @@ export const addGroup = async (req , res) => {
 
 
 export const removeGroup = async (req , res) => {
-    const {error: validationError} = validateNumericId(req.params.groupId); 
-    if (validationError) {
+    const {error: error} = validateNumericId(req.params.groupId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -137,7 +133,7 @@ export const removeGroup = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
         res.status(500).send({message:"internal server error"});
         logger.error("internal server error ",error);
@@ -147,7 +143,7 @@ export const removeGroup = async (req , res) => {
 
 export const getMyGroups = async (req,res) =>{
     try {
-        const groups = await getGroupsForUser({id: req.user.id });
+        const groups = await getGroupsForUser({userId: req.user.id });
         
         if (groups.error){
             res.status(400).send({message : groups.error});
@@ -165,8 +161,8 @@ export const getMyGroups = async (req,res) =>{
 
 
 export const joinGroup = async (req , res) => {
-    const {error: validationError} = validateObjectId(req.params.groupId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.groupId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -179,7 +175,7 @@ export const joinGroup = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -190,8 +186,8 @@ export const joinGroup = async (req , res) => {
 }
 
 export const leaveGroup = async (req , res) => {
-    const {error: validationError} = validateObjectId(req.params.groupId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.groupId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -204,7 +200,7 @@ export const leaveGroup = async (req , res) => {
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
 
         res.status(500).send({message:"internal server error"});
@@ -214,8 +210,8 @@ export const leaveGroup = async (req , res) => {
     }
 }
 export const removeUserFromMyGroup = async (req , res) =>{
-    const {error: validationError} = validateGroupMemberRemove(req.body); 
-    if (validationError) {
+    const {error: error} = validateGroupMemberRemove(req.body); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;
@@ -244,7 +240,7 @@ export const removeUserFromMyGroup = async (req , res) =>{
             return;
         }
         res.send(result.response);
-        res.body = result.response;
+        
     } catch (error) {
         res.status(500).send({message:"internal server error"});
 
@@ -256,8 +252,8 @@ export const removeUserFromMyGroup = async (req , res) =>{
 
 
 export const getGroupUsers = async (req , res) =>{
-    const {error: validationError} = validateObjectId(req.params.groupId); 
-    if (validationError) {
+    const {error: error} = validateObjectId(req.params.groupId); 
+    if (error) {
             res.status(400).send({message : error.details[0].message});
             logger.info( error.details[0].message);
         return;

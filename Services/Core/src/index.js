@@ -6,9 +6,8 @@ import DbConnection from './DB/DbConnection.js';
 // import adminRouter from "./src/presentation/admin.js";
 // import generalRouter from "./src/presentation/general.js";
 // import superAdminRouter from "./src/presentation/superAdmin.js";
-import userRouter from "./Presentation/user.js";
-import groupRouter from "./Presentation/group.js";
-import channelRouter from "./Presentation/channel.js";
+import routes from "./Presentation/routes.js";
+
 
 
 import fs from "fs";
@@ -16,10 +15,13 @@ import https from 'https';
 import cookieParser from "cookie-parser";
 import error from './Application/middlewares/error.js';
 import morgan from 'morgan';
+console.log("arsam1");
+
 dotenv.config({path: './src/config/secret/.env'});
 
 const app = express();
 const port = process.env.PORT || 3003;
+console.log("arsam1");
 DbConnection();
 console.log("arsam");
 app.use(cors({
@@ -43,10 +45,11 @@ app.use(cookieParser());
 app.get('/', async (req,res,next) =>{
     res.send("hello world!");
 });
-app.use("/users",(req,res,next) => auth(req,res,next,["user"]),userRouter);
-app.use("/groups",(req,res,next) => auth(req,res,next,["user"]),groupRouter);
 
-// app.use("/admins",adminRouter);
+
+
+
+app.use("",routes);
 // app.use("/general",generalRouter);
 // app.use("/superAdmin",superAdminRouter);
 app.use(error);

@@ -92,9 +92,11 @@ export const setupRabbitMQUserSender = async ()=> {
         await channel.assertQueue(queue, { durable: false });
 
         channel.consume(queue, async (message) => {
+            console.log("message",message)
             const { ids , type } = JSON.parse(message.content.toString());
+            console.log("ids",ids)
             let response = { isValid: false };
-
+            console.log("test============");
             try {
                 response.isValid = true;
 
@@ -105,12 +107,13 @@ export const setupRabbitMQUserSender = async ()=> {
                     
                 }else if(type == "user") {
                     const users = await readUsers(undefined,undefined, ids);
-                    
+                    console.log(users);
                     response.data = { users: users , status: "user" };
                 } else{
                     response.error = "invalid status";
                 }
             } catch (error) {
+                console.log(error);
                 response.error = "error happened";
             }
 

@@ -12,7 +12,7 @@ const channelSchema  = new mongoose.Schema(
         profilePicture: {
             type: String
         },
-        memberCount: {type: Number , required: true,default: 1},
+        memberCount: {type: Number , required: true,default: 0},
         createdAt : {type: Date, required: true, default : Date.now()},
         isDeleted : {type: Boolean},
         deletedAt : {type: Date},

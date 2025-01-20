@@ -17,10 +17,7 @@ export const validateChannelPost = (data) => {
       .required(),
     type: Joi.string()
       .valid("private", "public") // Must be either "private" or "public"
-      .required(),
-    profilePicture: Joi.string()
-      .max(512) // URL/path for profile picture limited to 512 characters
-      .optional()
+      .required()
   });
 
   return schema.validate(data);
@@ -39,10 +36,7 @@ export const validateChannelEdit = (data) => {
         .optional(),
       type: Joi.string()
         .valid("private", "public") // Must be either "private" or "public"
-        .optional(),
-      profilePicture: Joi.string()
-        .max(512) // URL/path for profile picture limited to 512 characters
-        .optional(),
+        .optional()
     }).min(1); // Require at least one field to be present
   
     return schema.validate(data);

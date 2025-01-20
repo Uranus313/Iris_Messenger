@@ -1,6 +1,6 @@
 import { ChannelModel } from "../Domain/Channel.js";
 import { ChannelMemberModel } from "../Domain/ChannelMember.js";
-
+import mongoose from 'mongoose';
 export async function saveChannelMember(channelMemberCreate){
     const result = {};
     const channelMember = new ChannelMemberModel(channelMemberCreate);
@@ -155,10 +155,11 @@ export async function addUserToChannel({ userId, role = "member", channelId }) {
   const result = {};
 
   // Start a session for atomic operations
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
 
   try {
+    console.log("started")
       // Check if the user is already a member of the channel
       const existingMember = await ChannelMemberModel.findOne({ 
           "user.id": userId, 
@@ -179,28 +180,31 @@ export async function addUserToChannel({ userId, role = "member", channelId }) {
       });
 
       // Save the new member
-      await newMember.save({ session });
+      await newMember.save();
 
       // Increment the channel's member count
       const updatedChannel = await ChannelModel.findByIdAndUpdate(
           channelId,
           { $inc: { memberCount: 1 } }, // Increment member count by 1
-          { new: true, session } // Return the updated channel document
+          { new: true} // Return the updated channel document
       );
 
-      // Commit the transaction
-      await session.commitTransaction();
-      session.endSession();
+      // // Commit the transaction
+      // await session.commitTransaction();
+      // session.endSession();
 
       result.response = {
           message: "User added to channel successfully."
       };
+      console.log("succeeded")
 
       return result;
   } catch (error) {
+    console.log("failed")
+    console.log(error);
       // Abort the transaction in case of error
-      await session.abortTransaction();
-      session.endSession();
+      // await session.abortTransaction();
+      // session.endSession();
 
       result.error = error.message || "An error occurred while adding the user to the channel.";
       return result;
@@ -211,8 +215,8 @@ export async function removeUserFromChannel({ userId, channelId }) {
   const result = {};
 
   // Start a session for atomic operations
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
 
   try {
       // Check if the user is a member of the channel
@@ -229,18 +233,18 @@ export async function removeUserFromChannel({ userId, channelId }) {
       await ChannelMemberModel.deleteOne({ 
           "user.id": userId, 
           channelId 
-      }, { session });
+      });
 
       // Decrement the channel's member count
       const updatedChannel = await ChannelModel.findByIdAndUpdate(
           channelId,
           { $inc: { memberCount: -1 } }, // Decrement member count by 1
-          { new: true, session } // Return the updated channel document
+          { new: true } // Return the updated channel document
       );
 
       // Commit the transaction
-      await session.commitTransaction();
-      session.endSession();
+      // await session.commitTransaction();
+      // session.endSession();
 
       result.response = {
           message: "User removed from channel successfully."
@@ -249,8 +253,8 @@ export async function removeUserFromChannel({ userId, channelId }) {
       return result;
   } catch (error) {
       // Abort the transaction in case of error
-      await session.abortTransaction();
-      session.endSession();
+      // await session.abortTransaction();
+      // session.endSession();
 
       result.error = error.message || "An error occurred while removing the user from the channel.";
       return result;
@@ -263,8 +267,10 @@ export async function getUsersInChannel({ channelId, floor = 0, limit = 20, sort
 
   try {
       // Base query to find users in the channel
+
       const baseQuery = {
-          channelId,
+        
+          channelId : channelId,
           ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted users if necessary
       };
 
@@ -275,6 +281,8 @@ export async function getUsersInChannel({ channelId, floor = 0, limit = 20, sort
           .sort({ [sort]: sortOrder });
 
       // Format the response
+      console.log(channelId);
+      console.log(members);
       const data = members.map((member) => ({
           userId: member.user.id,
           role: member.user.role,

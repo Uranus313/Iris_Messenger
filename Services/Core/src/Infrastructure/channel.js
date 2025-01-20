@@ -1,10 +1,14 @@
 import { ChannelModel } from "../Domain/Channel.js";
+import { addUserToChannel } from "./channelMember.js";
 
 export async function saveChannel(channelCreate){
     const result = {};
     const channel = new ChannelModel(channelCreate);
     const response = await channel.save();
+
     result.response = response.toJSON();
+    addUserToChannel({userId : channelCreate.ownerId , role: "owner" , channelId : result.response._id});
+
     return result;
 }
 
@@ -34,7 +38,7 @@ export async function getChannels({id , searchParams ,limit , floor ,textSearch,
             limit = 20;
         }
         if(textSearch && textSearch != ''){
-            data = await ChannelModel.find({...searchParams,reason:{
+            data = await ChannelModel.find({...searchParams,name:{
                 $regex: textSearch,
                 $options: 'i'
             } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );

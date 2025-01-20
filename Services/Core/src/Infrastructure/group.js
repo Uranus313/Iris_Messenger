@@ -2,6 +2,7 @@ import { GroupModel } from "../Domain/Group.js";
 
 export async function saveGroup(groupCreate){
     const result = {};
+    groupCreate.members = [{id :groupCreate.ownerId, role:"owner"}];
     const group = new GroupModel(groupCreate);
     const response = await group.save();
     result.response = response.toJSON();
@@ -38,7 +39,7 @@ export async function getGroups({id , searchParams ,limit , floor ,textSearch,so
                 $regex: textSearch,
                 $options: 'i'
             } }).skip(floor).limit(limit).sort({[sort] : sortOrder} );
-            let count = await GroupModel.countDocuments({...searchParams,lastName:{
+            let count = await GroupModel.countDocuments({...searchParams,name:{
                 $regex: textSearch,
                 $options: 'i'
             } });
@@ -124,6 +125,18 @@ export async function removeMemberFromGroup({ groupId, userId }) {
   const result = {};
 
   try {
+    const group = await GroupModel.findById(groupId);
+
+    if (!group) {
+      throw new Error("Group not found.");
+    }
+
+    // Check if the user is in the group's members
+    const memberIndex = group.members.findIndex(member => member.id === userId);
+
+    if (memberIndex === -1) {
+      throw new Error("User is not a member of the group.");
+    }
       // Remove the member and decrement the member count atomically
       const updatedGroup = await GroupModel.findByIdAndUpdate(
           groupId,
@@ -138,9 +151,7 @@ export async function removeMemberFromGroup({ groupId, userId }) {
           throw new Error("Group not found.");
       }
 
-      if (updatedGroup.members.length === 0) {
-          throw new Error("User is not a member of the group.");
-      }
+      
 
       result.response = {
           message: "Member removed successfully.",
@@ -173,16 +184,16 @@ export async function getGroupsForUser({
           "members.id": userId, // Check if the user is in the members array
           ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted groups if necessary
       };
-
+      // console.log(userId)
       // Merge with any additional search parameters
       const finalQuery = { ...baseQuery, ...searchParams };
 
       // Find the groups with pagination and sorting
-      const groups = await GroupModel.find(finalQuery)
+      const groups = await GroupModel.find(baseQuery)
           .skip(floor)
           .limit(limit)
           .sort({ [sort]: sortOrder });
-
+      // console.log(groups)
       // Format the response
       const data = groups.map((group) => {
           // Extract the member's details from the members array
