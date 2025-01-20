@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Core_api_Link } from "../../../../consts/APILink";
@@ -12,6 +12,7 @@ const AddChannel = ({ goBack }: Props) => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const { register, handleSubmit } = useForm();
+  const queryClient = useQueryClient();
   const addChannelMutate = useMutation({
     mutationFn: async (formData: FormData) => {
       const result = await fetch(Core_api_Link + `channels/`, {
@@ -28,6 +29,7 @@ const AddChannel = ({ goBack }: Props) => {
     },
     onSuccess: () => {
       setSubmitLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
       goBack();
     },
     onError: (error) => {
@@ -82,12 +84,12 @@ const AddChannel = ({ goBack }: Props) => {
           {/* Channel Icon */}
           <div className="mb-4">
             {profilePicture ? (
-              <img src={URL.createObjectURL(profilePicture as Blob)} alt="" />
+              <img className="w-24 h-24 rounded-full" src={URL.createObjectURL(profilePicture as Blob)} alt="" />
             ) : (
               <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-primary-content"></div>
             )}
 
-            <label className="btn btn-sm btn-outline">
+            <label className="btn btn-sm btn-outline mt-3 mr-3">
               Upload Picture
               <input
                 type="file"
@@ -135,7 +137,7 @@ const AddChannel = ({ goBack }: Props) => {
 
           <button
             type="submit"
-            className="btn btn-primary w-full bg-indigo-600 text-white hover:bg-indigo-500"
+            className="btn btn-primary w-full bg-indigo-600 text-white hover:bg-indigo-500 mt-5"
           >
             {submitLoading ? (
               <span className="loading loading-spinner loading-md"></span>

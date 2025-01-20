@@ -1,18 +1,20 @@
 import { useState } from "react";
 import sth from "../../../../assets/Background.png";
+import { Media_api_Link } from "../../../../consts/APILink";
+import { Group } from "../../../../interfaces/interfaces";
 
 interface Props {
   showChatList: () => void;
+  group: Group;
 }
 
-const DirectPage = ({ showChatList }: Props) => {
+const DirectPage = ({ showChatList, group }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
 
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
 
-  // return user1 ? (
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -32,12 +34,21 @@ const DirectPage = ({ showChatList }: Props) => {
           <div className="flex items-center">
             <div className="avatar mr-3">
               <div className="w-10 rounded-full">
-                <img src={sth} alt="User" />
+                <img
+                  src={
+                    group.profilePicture
+                      ? Media_api_Link + "file/" + group.profilePicture
+                      : ""
+                  }
+                  alt="User"
+                />
               </div>
             </div>
             <div>
-              <h1 className="text-lg font-bold">Soft</h1>
-              <p className="text-xs text-gray-400">members 0</p>
+              <h1 className="text-lg font-bold">{group.name}</h1>
+              <p className="text-xs text-gray-400">
+                members {" " + group.memberCount}
+              </p>
             </div>
           </div>
         </button>
@@ -71,16 +82,26 @@ const DirectPage = ({ showChatList }: Props) => {
             <div className="p-4 flex flex-col">
               <div className="avatar">
                 <div className="w-56 h-52 rounded-md ">
-                  <img className="" src={sth} alt="" />
+                  <img
+                    className=""
+                    src={
+                      group.profilePicture
+                        ? Media_api_Link + "file/" + group.profilePicture
+                        : ""
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
               <div className="">
                 <h2 className="mt-5 text-xl font-bold text-base-content">
-                  amir
+                  {group.name}
                 </h2>
                 <div className="w-full flex gap-2">
                   <p className="text-sm w-full text-gray-500 ">members </p>
-                  <p className="text-sm w-full text-gray-500">0</p>
+                  <p className="text-sm w-full text-gray-500">
+                    {group.memberCount}
+                  </p>
                 </div>
               </div>
             </div>
@@ -91,8 +112,8 @@ const DirectPage = ({ showChatList }: Props) => {
               <div className="flex items-center">
                 <i className="fas fa-phone text-xl text-gray-500"></i>
                 <div className="">
+                  <p className="text-sm text-gray-500">{group.link}</p>
                   <p className="text-base-content font-medium">Link</p>
-                  <p className="text-sm text-gray-500">esxcfguujouydg</p>
                 </div>
               </div>
               {/* Bio */}
@@ -100,7 +121,7 @@ const DirectPage = ({ showChatList }: Props) => {
                 <i className="fas fa-info-circle text-xl text-gray-500"></i>
                 <div className="">
                   <p className="text-base-content font-medium text-ellipsis overflow-hidden w-fit">
-                    aesrtdi fghdjg xfhvcjh dhchvf vhvvv gdhcfcj chcfh
+                    {group.description}
                   </p>
                   <p className="text-sm text-gray-500">Description</p>
                 </div>

@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <OuterLayout />,
     children: [
-      { path: "kir/", element: <App /> },
+      { path: "kir/", element: <App message={"esrdtfguh gchjvkj hvkhk "} time={"14:97"}/> },
 
       {
         path: "user/",

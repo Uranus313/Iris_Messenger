@@ -58,6 +58,7 @@ const MainPage = () => {
       >
         {selectedChat?.status == "direct" && (
           <DirectPage
+            direct={selectedChat as Direct}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
@@ -66,6 +67,7 @@ const MainPage = () => {
         )}
         {selectedChat?.status == "group" && (
           <GroupPage
+            group={selectedChat as Group}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
@@ -74,6 +76,7 @@ const MainPage = () => {
         )}
         {selectedChat?.status == "channel" && (
           <ChannelPage
+            channel={selectedChat as Channel}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
@@ -94,6 +97,7 @@ const MainPage = () => {
           </div>
         )}
       </div>
+      
     </div>
   );
 };

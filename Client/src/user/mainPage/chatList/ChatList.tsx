@@ -25,7 +25,7 @@ const ChatList = ({ setSidebarState, setSelectedChat }: Props) => {
     <div className="md:block bg-base-300 text-base-content flex flex-col scroll-my-60">
       <div>
         {/* Top Navigation Bar */}
-        <div className="px-4 py-2 bg-base-100 flex items-center">
+        <div className="px-2 py-2 bg-base-100 flex items-center">
           <div className=" ">
             <button onClick={toggleMenu} className="text-lg mt-4">
               <img src={sth} alt="" className=" " />

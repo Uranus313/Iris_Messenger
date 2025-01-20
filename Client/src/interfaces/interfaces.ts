@@ -41,8 +41,6 @@ export interface Channel{
     type : "private"|"public";
     profilePicture : string|null;
     memberCount:number;
-    isDeleted : boolean;
-    isBanned : boolean;
     status: "channel"|"group"|"direct"
 }
 export interface Direct{
@@ -61,10 +59,8 @@ export interface Group{
     members : {
         id:number;
         role:"admin"|"owner"|"member";
-        memberCount:number;
-    }
-    isDeleted : boolean;
-    isBanned : boolean;
+    }[]
+    memberCount:number;
     status: "channel"|"group"|"direct"
 }
 export interface GroupMessage{

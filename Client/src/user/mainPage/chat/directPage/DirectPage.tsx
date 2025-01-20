@@ -1,18 +1,22 @@
 import { useState } from "react";
 import sth from "../../../../assets/Background.png";
+import { Media_api_Link } from "../../../../consts/APILink";
+import { Direct } from "../../../../interfaces/interfaces";
+import DirectMessage from "./directMessage/DirectMessage";
 
 interface Props {
   showChatList: () => void;
+  direct: Direct;
 }
 
-const DirectPage = ({ showChatList }: Props) => {
+const DirectPage = ({ showChatList, direct }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
 
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
 
-  return  (
+  return (
     <div
       className="min-h-screen flex flex-col"
       style={{
@@ -31,24 +35,22 @@ const DirectPage = ({ showChatList }: Props) => {
           <div className="flex items-center">
             <div className="avatar mr-3">
               <div className="w-10 rounded-full">
-                <img src={sth} alt="User" />
+                <img
+                  src={
+                    direct.user.profilePicture
+                      ? Media_api_Link + "file/" + direct.user.profilePicture
+                      : ""
+                  }
+                  alt="User"
+                />
               </div>
             </div>
             <div>
-              <h1 className="text-lg font-bold">Masoud Salehi</h1>
-              <p className="text-xs text-gray-400">last seen recently</p>
+              <h1 className="text-lg font-bold">{direct.user.firstName}</h1>
+              <p className="text-xs text-gray-400">{direct.user.isOnline}</p>
             </div>
           </div>
         </button>
-        {/* <div className="relative">
-          <button className="btn btn-sm">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://icon-library.com/images/android-3-dot-menu-icon/android-3-dot-menu-icon-0.jpg"
-              alt=""
-            />
-          </button>
-        </div> */}
       </div>
 
       {/* Right Menu */}
@@ -70,14 +72,22 @@ const DirectPage = ({ showChatList }: Props) => {
             <div className="p-4 flex flex-col items-center">
               <div className="avatar ms-32">
                 <div className="w-32 h-32 rounded-full ">
-                  <img className="" src={sth} alt="" />
+                  <img
+                    className=""
+                    src={
+                      direct.user.profilePicture
+                        ? Media_api_Link + "file/" + direct.user.profilePicture
+                        : ""
+                    }
+                    alt=""
+                  />
                 </div>
               </div>
               <div className="ms-32">
                 <h2 className="mt-4 text-xl font-bold text-base-content">
-                  amir
+                  {direct.user.firstName + " " + direct.user.firstName}
                 </h2>
-                <p className="text-sm text-gray-500">now</p>
+                <p className="text-sm text-gray-500">{direct.user.isOnline}</p>
               </div>
             </div>
 
@@ -87,7 +97,9 @@ const DirectPage = ({ showChatList }: Props) => {
               <div className="flex items-center">
                 <i className="fas fa-phone text-xl text-gray-500"></i>
                 <div className="ml-4">
-                  <p className="text-base-content font-medium">0935</p>
+                  <p className="text-base-content font-medium">
+                    {direct.user.phoneNumber}
+                  </p>
                   <p className="text-sm text-gray-500">Phone</p>
                 </div>
               </div>
@@ -96,7 +108,9 @@ const DirectPage = ({ showChatList }: Props) => {
               <div className="flex items-center">
                 <i className="fas fa-at text-xl text-gray-500"></i>
                 <div className="ml-4">
-                  <p className="text-base-content font-medium">@amir</p>
+                  <p className="text-base-content font-medium">
+                    {direct.user.username}
+                  </p>
                   <p className="text-sm text-gray-500">Username</p>
                 </div>
               </div>
@@ -106,7 +120,7 @@ const DirectPage = ({ showChatList }: Props) => {
                 <i className="fas fa-info-circle text-xl text-gray-500"></i>
                 <div className="ml-4">
                   <p className="text-base-content font-medium">...</p>
-                  <p className="text-sm text-gray-500">Bio</p>
+                  <p className="text-sm text-gray-500">{direct.user.bio}</p>
                 </div>
               </div>
             </div>
@@ -127,35 +141,7 @@ const DirectPage = ({ showChatList }: Props) => {
         {/* Date Separator */}
         <div className="text-center my-2 text-xs text-gray-500">January 5</div>
 
-        {/* Message Bubble */}
-        <div className="flex justify-end mb-4">
-          <div className="bg-primary text-primary-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">خروجی پروژه‌ها جبر چه درصدایی باید باشه؟</p>
-            <span className="text-xs text-gray-300 block text-right mt-1">
-              22:40
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">سلام ممنونم تو خوبی</p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:39
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">
-              ببین برای کی میز. استاد گفت که 20 درصد اوکیه به بالا برای رگرسیون.
-            </p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:41
-            </span>
-          </div>
-        </div>
+        <DirectMessage content={""} time={""} isSender={false} />
 
         {/* Date Separator */}
         <div className="text-center my-2 text-xs text-gray-500">January 6</div>
@@ -184,6 +170,7 @@ const DirectPage = ({ showChatList }: Props) => {
           <i className="fas fa-paper-plane"></i>
         </button>
       </div>
+      
     </div>
   );
 };
