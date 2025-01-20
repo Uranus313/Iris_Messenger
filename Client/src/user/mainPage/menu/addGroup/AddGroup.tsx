@@ -114,7 +114,7 @@ const AddGroup = ({ goBack }: Props) => {
             <input
               type="text"
               {...register("link")}
-              placeholder="Enter group name"
+              placeholder="Group Link"
               className="input input-bordered w-full"
             />
           </div>
