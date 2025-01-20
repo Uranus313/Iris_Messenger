@@ -21,5 +21,10 @@ const channelSchema  = new mongoose.Schema(
         
     }
 );
+channelSchema.virtual("status").get(() => {
+    return "channel";
+});
 
+channelSchema.set('toJSON',{virtuals: true});
+channelSchema.set('toObject',{virtuals: true});
 export const ChannelModel = mongoose.model("channels",channelSchema);

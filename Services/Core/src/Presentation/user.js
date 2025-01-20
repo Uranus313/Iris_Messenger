@@ -4,6 +4,7 @@ import multer from 'multer';
 import { blockUser, getBlockedUsers, unblockUser } from '../Application/block.js';
 import { getUsersByIds } from '../Application/message_brokers/rabbitmq-sender.js';
 import { addContact, removeContact , getMyContacts } from '../Application/contact.js';
+import { getMyAllConversations } from '../Application/user.js';
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 const router = express.Router();
@@ -13,6 +14,8 @@ router.get("/blockedUsers", getBlockedUsers);
 router.post("/addContact", addContact);
 router.delete("/removeContact/:userId", removeContact);
 router.get("/contacts", getMyContacts);
+router.get("/allConversations", getMyAllConversations);
+
 
 router.get("/test",async (req , res) =>{
     console.log("my test")

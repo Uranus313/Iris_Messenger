@@ -143,7 +143,7 @@ export const removeGroup = async (req , res) => {
 
 export const getMyGroups = async (req,res) =>{
     try {
-        const groups = await getGroupsForUser({userId: req.user.id });
+        const groups = await getGroupsForUser({userId: req.user.id,limit: req.query.limit,floor:req.query.floor });
         
         if (groups.error){
             res.status(400).send({message : groups.error});

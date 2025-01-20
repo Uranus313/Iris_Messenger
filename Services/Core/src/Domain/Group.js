@@ -27,5 +27,10 @@ const groupSchema  = new mongoose.Schema(
         
     }
 );
+groupSchema.virtual("status").get(() => {
+    return "group";
+});
 
+groupSchema.set('toJSON',{virtuals: true});
+groupSchema.set('toObject',{virtuals: true});
 export const GroupModel = mongoose.model("groups",groupSchema);

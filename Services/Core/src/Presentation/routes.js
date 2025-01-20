@@ -44,11 +44,11 @@ const combinedSwaggerDocs = {
     },
     servers: [
       {
-        url: 'https://192.168.129.23:3001',
+        url: 'https://192.168.151.23:3001',
         description: 'Service 1 (User Management)',
       },
       {
-        url: 'https://192.168.129.23:3003',
+        url: 'https://192.168.151.23:3003',
         description: 'Service 2 (Other Features)',
       },
     ],

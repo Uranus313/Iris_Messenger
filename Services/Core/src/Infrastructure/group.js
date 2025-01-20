@@ -1,4 +1,6 @@
 import { GroupModel } from "../Domain/Group.js";
+import { MessageModel } from "../Domain/Message.js";
+import { saveMessage } from "./message.js";
 
 export async function saveGroup(groupCreate){
     const result = {};
@@ -6,7 +8,7 @@ export async function saveGroup(groupCreate){
     const group = new GroupModel(groupCreate);
     const response = await group.save();
     result.response = response.toJSON();
-    saveMessage({messageType: "group",senderUserId : channelCreate.ownerId , text: "group created",groupId : result.response._id});
+    saveMessage({messageType: "group",senderUserId : groupCreate.ownerId , text: "group created",groupId : result.response._id});
     return result;
 }
 
@@ -168,71 +170,92 @@ export async function removeMemberFromGroup({ groupId, userId }) {
 
 
 export async function getGroupsForUser({
-  userId,
-  searchParams = {},
-  limit = 20,
-  floor = 0,
-  sort = "createdAt",
-  desc = false,
-  seeDeleted = false,
-}) {
-  const result = {};
-  const sortOrder = desc ? -1 : 1;
-
-  try {
-      // Base query to find groups where the user is a member
+    userId,
+    searchParams = {},
+    limit = 20,
+    floor = 0,
+    seeDeleted = false,
+  }) {
+    try {
+      // Step 1: Build the base query to find groups where the user is a member
       const baseQuery = {
-          "members.id": userId, // Check if the user is in the members array
-          ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted groups if necessary
+        "members.id": userId, // Check if the user is in the members array
+        ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted groups if necessary
+        ...searchParams, // Merge additional search parameters
       };
-      // console.log(userId)
-      // Merge with any additional search parameters
-      const finalQuery = { ...baseQuery, ...searchParams };
-
-      // Find the groups with pagination and sorting
-      const groups = await GroupModel.find(baseQuery)
-          .skip(floor)
-          .limit(limit)
-          .sort({ [sort]: sortOrder });
-      // console.log(groups)
-      // Format the response
-      const data = groups.map((group) => {
-          // Extract the member's details from the members array
-          const memberDetails = group.members.find((member) => member.id === userId);
-
-          return {
-              group: {
-                  id: group._id,
-                  name: group.name,
-                  description: group.description,
-                  type: group.type,
-                  profilePicture: group.profilePicture,
-                  createdAt: group.createdAt,
-                  isDeleted: group.isDeleted || false,
-              },
-              role: memberDetails.role, // User's role in the group
-              joinedAt: memberDetails.createdAt, // When the user joined the group
-          };
+  
+      // Step 2: Find groups matching the query
+      const groupIds = (
+        await GroupModel.find(baseQuery, { _id: 1 }) // Fetch only the IDs of matching groups
+      ).map((group) => group._id);
+  
+      // Step 3: Aggregate messages to find the most recent for each group
+      const recentMessages = await MessageModel.aggregate([
+        {
+          $match: {
+            groupId: { $in: groupIds }, // Filter messages by the matching group IDs
+            ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted messages
+          },
+        },
+        {
+          $sort: { createdAt: -1 }, // Sort messages by the most recent first
+        },
+        {
+          $group: {
+            _id: "$groupId", // Group by groupId
+            mostRecentMessage: { $first: "$$ROOT" }, // Capture the entire most recent message
+          },
+        },
+        {
+          $sort: { "mostRecentMessage.createdAt": -1 }, // Sort groups by the most recent message
+        },
+        {
+          $skip: floor, // Apply pagination
+        },
+        {
+          $limit: limit, // Limit results
+        },
+      ]);
+  
+      const sortedGroups = await GroupModel.find({
+        _id: { $in: recentMessages.map((message) => message._id) },
       });
-
-      // Count total matching groups for pagination
-      const totalMatchingGroups = await GroupModel.countDocuments(finalQuery);
-
-      // Check if there are more results
-      const hasMore = totalMatchingGroups > floor + limit;
-
-      result.response = {
+  
+      const data = recentMessages.map((messageGroup) => {
+        const group = sortedGroups.find((g) => g._id.equals(messageGroup._id));
+        const memberDetails = group.members.find((member) => member.id === userId);
+  
+        return {
+          group: {
+            id: group._id,
+            name: group.name,
+            description: group.description,
+            type: group.type,
+            profilePicture: group.profilePicture,
+            createdAt: group.createdAt,
+            isDeleted: group.isDeleted || false,
+          },
+          role: memberDetails.role, // User's role in the group
+          joinedAt: memberDetails.createdAt, // When the user joined the group
+          lastMessage: messageGroup.mostRecentMessage, // Include the most recent message
+        };
+      });  
+      const totalGroups = await GroupModel.countDocuments(baseQuery);
+      const hasMore = totalGroups > floor + limit;
+      return {
+        error: null,
+        response: {
           data,
           hasMore,
+        },
       };
-
-      return result;
-  } catch (error) {
-      result.error = error.message || "An error occurred while fetching groups.";
-      return result;
+    } catch (error) {
+      return {
+        error: error.message || "An error occurred while fetching groups.",
+      };
+    }
   }
-}
-
+  
 
 export async function getUsersInGroup({ groupId, floor = 0, limit = 20, sort = "createdAt", desc = false }) {
   const result = {};

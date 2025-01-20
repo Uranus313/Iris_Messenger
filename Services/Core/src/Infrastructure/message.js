@@ -92,3 +92,173 @@ export async function updateMessage(id,messageUpdate ){
     return(result);
 }
 
+export async function getAllConversationsForUser({
+    userId,
+    floor = 0,
+    limit = 20,
+    seeDeleted = false,
+  }) {
+    try {
+      const queryDeleted = seeDeleted ? {} : { isDeleted: { $ne: true } };
+  
+      // Aggregation for directs
+      const directsPipeline = [
+        {
+          $match: {
+            ...(queryDeleted),
+            $or: [{ senderId: userId }, { recipientId: userId }],
+            directId: { $exists: true },
+          },
+        },
+        { $sort: { createdAt: -1 } }, // Sort messages by creation date
+        {
+          $group: {
+            _id: "$directId",
+            mostRecentMessage: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $lookup: {
+            from: "directs", // Join with the directs collection
+            localField: "_id",
+            foreignField: "_id",
+            as: "direct",
+          },
+        },
+        { $unwind: "$direct" },
+        {
+          $addFields: {
+            type: "direct",
+            conversation: {
+              id: "$direct._id",
+              otherUser: {
+                $cond: [
+                  { $eq: ["$direct.firstUserId", userId] },
+                  "$direct.secondUserId",
+                  "$direct.firstUserId",
+                ],
+              },
+            },
+            lastMessage: "$mostRecentMessage",
+          },
+        },
+        { $project: { direct: 0 } }, // Exclude the joined `direct` field
+      ];
+  
+      // Aggregation for groups
+      const groupsPipeline = [
+        {
+          $match: {
+            ...(queryDeleted),
+            groupId: { $exists: true },
+          },
+        },
+        { $sort: { createdAt: -1 } },
+        {
+          $group: {
+            _id: "$groupId",
+            mostRecentMessage: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $lookup: {
+            from: "groups", // Join with the groups collection
+            localField: "_id",
+            foreignField: "_id",
+            as: "group",
+          },
+        },
+        { $unwind: "$group" },
+        {
+          $addFields: {
+            type: "group",
+            conversation: {
+              id: "$group._id",
+              name: "$group.name",
+              link: "$group.link",
+              profilePicture: "$group.profilePicture",
+              description: "$group.description"
+            },
+            lastMessage: "$mostRecentMessage",
+          },
+        },
+        { $project: { group: 0 } }, // Exclude the joined `group` field
+      ];
+  
+      // Aggregation for channels
+      const channelsPipeline = [
+        {
+          $match: {
+            ...(queryDeleted),
+            channelId: { $exists: true },
+          },
+        },
+        { $sort: { createdAt: -1 } },
+        {
+          $group: {
+            _id: "$channelId",
+            mostRecentMessage: { $first: "$$ROOT" },
+          },
+        },
+        {
+          $lookup: {
+            from: "channels", // Join with the channels collection
+            localField: "_id",
+            foreignField: "_id",
+            as: "channel",
+          },
+        },
+        { $unwind: "$channel" },
+        {
+          $addFields: {
+            type: "channel",
+            conversation: {
+              id: "$channel._id",
+              name: "$channel.name",
+              link: "$group.link",
+              profilePicture: "$group.profilePicture",
+              description: "$group.description"
+            },
+            lastMessage: "$mostRecentMessage",
+          },
+        },
+        { $project: { channel: 0 } }, // Exclude the joined `channel` field
+      ];
+  
+      // Combine all three pipelines with $unionWith and apply pagination
+      const combinedPipeline = [
+        { $unionWith: { coll: "messages", pipeline: directsPipeline } },
+        { $unionWith: { coll: "messages", pipeline: groupsPipeline } },
+        { $unionWith: { coll: "messages", pipeline: channelsPipeline } },
+        { $sort: { "lastMessage.createdAt": -1 } }, // Sort by the most recent message
+        { $skip: floor }, // Apply pagination (skip)
+        { $limit: limit }, // Apply pagination (limit)
+      ];
+  
+      // Run the aggregation to get the conversations
+      const conversations = await MessageModel.aggregate(combinedPipeline);
+  
+      // Run the aggregation again without pagination to get the total count
+      const totalConversations = await MessageModel.aggregate([
+        { $unionWith: { coll: "messages", pipeline: directsPipeline } },
+        { $unionWith: { coll: "messages", pipeline: groupsPipeline } },
+        { $unionWith: { coll: "messages", pipeline: channelsPipeline } },
+        { $count: "total" }, // Count the total number of conversations
+      ]);
+  
+      const hasMore = totalConversations.length > 0 && totalConversations[0].total > floor + limit;
+  
+      return {
+        error: null,
+        response: {
+          data: conversations,
+          hasMore,
+        },
+      };
+    } catch (error) {
+      return {
+        error: error.message || "An error occurred while fetching conversations.",
+      };
+    }
+  }
+  

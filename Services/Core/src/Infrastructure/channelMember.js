@@ -1,6 +1,7 @@
 import { ChannelModel } from "../Domain/Channel.js";
 import { ChannelMemberModel } from "../Domain/ChannelMember.js";
 import mongoose from 'mongoose';
+import { MessageModel } from "../Domain/Message.js";
 export async function saveChannelMember(channelMemberCreate){
     const result = {};
     const channelMember = new ChannelMemberModel(channelMemberCreate);
@@ -91,66 +92,105 @@ export async function getUserChannels(userId, { limit = 20, skip = 0, sort = "jo
 }
 
 export async function getChannelsForUser({
-  userId,
-  searchParams = {},
-  limit = 20,
-  floor = 0,
-  sort = "createdAt",
-  desc = false,
-  seeDeleted = false,
-}) {
-  const result = {};
-  const sortOrder = desc ? -1 : 1;
-
-  try {
-      // Base query for the channel members of the user
+    userId,
+    searchParams = {},
+    limit = 20,
+    floor = 0,
+    seeDeleted = false,
+  }) {
+    try {
+      // Step 1: Build the base query for the user's channel membership
       const baseQuery = {
-          "user.id": userId
+        "user.id": userId, // Check if the user is a member
       };
-
-      // Fetch channel members and populate channel details
-      const channelMembers = await ChannelMemberModel.find(baseQuery)
-          .populate({
-              path: "channelId", // Populate the channel details
-              match: {
-                  ...searchParams, // Apply search parameters on the populated channels
-                  ...(seeDeleted ? {} : { isDeleted: { $ne: true } }),
-              },
-          })
-          .skip(floor)
-          .limit(limit)
-          .sort({ [sort]: sortOrder });
-
-      // Filter out null channels (if populate doesn't find a matching channel)
-      const filteredChannels = channelMembers.filter((member) => member.channelId);
-
-      // Format the response
-      const data = filteredChannels.map((member) => ({
-          channel: member.channelId, // Populated channel details
-          role: member.user.role,
-          joinedAt: member.createdAt,
-      }));
-
-      // Count total documents for pagination
-      const totalMatchingChannels = await ChannelModel.countDocuments({
-          ...searchParams,
-          ...(seeDeleted ? {} : { isDeleted: { $ne: true } }),
-          _id: { $in: filteredChannels.map((member) => member.channelId._id) },
+  
+      // Step 2: Fetch the user's channel memberships
+      const channelMemberships = await ChannelMemberModel.find(baseQuery, { channelId: 1, user: 1, createdAt: 1 });
+      const channelIds = channelMemberships.map((membership) => membership.channelId);
+  
+      // Step 3: Aggregate messages to find the most recent for each channel
+      const recentMessages = await MessageModel.aggregate([
+        {
+          $match: {
+            channelId: { $in: channelIds }, // Filter messages by the user's channels
+            ...(seeDeleted ? {} : { isDeleted: { $ne: true } }), // Exclude deleted messages
+          },
+        },
+        {
+          $sort: { createdAt: -1 }, // Sort messages by the most recent first
+        },
+        {
+          $group: {
+            _id: "$channelId", // Group by channelId
+            mostRecentMessage: { $first: "$$ROOT" }, // Capture the entire most recent message
+          },
+        },
+        {
+          $lookup: {
+            from: "channels", // Join with the channels collection
+            localField: "_id",
+            foreignField: "_id",
+            as: "channelDetails",
+          },
+        },
+        {
+          $unwind: "$channelDetails", // Unwind the joined channel details
+        },
+        {
+          $match: {
+            ...searchParams, // Apply additional search parameters on the channel details
+            ...(seeDeleted ? {} : { "channelDetails.isDeleted": { $ne: true } }), // Exclude deleted channels
+          },
+        },
+        {
+          $sort: { "mostRecentMessage.createdAt": -1 }, // Sort channels by the most recent message
+        },
+        {
+          $skip: floor, // Apply pagination
+        },
+        {
+          $limit: limit, // Limit results
+        },
+      ]);
+  
+      // Step 4: Format the response with channel details and recent message
+      const data = recentMessages.map((messageGroup) => {
+        const membership = channelMemberships.find((m) => m.channelId.equals(messageGroup._id));
+  
+        return {
+          channel: {
+            id: messageGroup.channelDetails._id,
+            name: messageGroup.channelDetails.name,
+            description: messageGroup.channelDetails.description,
+            type: messageGroup.channelDetails.type,
+            profilePicture: messageGroup.channelDetails.profilePicture,
+            createdAt: messageGroup.channelDetails.createdAt,
+            isDeleted: messageGroup.channelDetails.isDeleted || false,
+          },
+          role: membership.user.role, // User's role in the channel
+          joinedAt: membership.createdAt, // When the user joined the channel
+          lastMessage: messageGroup.mostRecentMessage, // Include the most recent message
+        };
       });
-
-      const hasMore = totalMatchingChannels > floor + limit;
-
-      result.response = {
+  
+      // Step 5: Determine if there are more results for pagination
+      const totalChannels = await ChannelMemberModel.countDocuments(baseQuery);
+      const hasMore = totalChannels > floor + limit;
+  
+      return {
+        error: null,
+        response: {
           data,
           hasMore,
+        },
       };
-
-      return result;
-  } catch (error) {
-      result.error = error.message || "An error occurred while fetching channels.";
-      return result;
+    } catch (error) {
+      return {
+        error: error.message || "An error occurred while fetching channels.",
+      };
+    }
   }
-}
+  
 export async function addUserToChannel({ userId, role = "member", channelId }) {
   const result = {};
 

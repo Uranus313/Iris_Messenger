@@ -16,5 +16,10 @@ const directSchema  = new mongoose.Schema(
         
     }
 );
+directSchema.virtual("status").get(() => {
+    return "direct";
+});
 
+directSchema.set('toJSON',{virtuals: true});
+directSchema.set('toObject',{virtuals: true});
 export const DirectModel = mongoose.model("directs",directSchema);

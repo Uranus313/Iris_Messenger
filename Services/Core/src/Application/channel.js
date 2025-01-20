@@ -144,7 +144,7 @@ export const removeChannel = async (req , res) => {
 
 export const getMyChannels = async (req,res) =>{
     try {
-        const channels = await getChannelsForUser({userId: req.user.id });
+        const channels = await getChannelsForUser({userId: req.user.id ,limit: req.query.limit,floor:req.query.floor});
         
         if (channels.error){
             res.status(400).send({message : channels.error});
