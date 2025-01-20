@@ -7,6 +7,7 @@ import DbConnection from './DB/DbConnection.js';
 // import generalRouter from "./src/presentation/general.js";
 // import superAdminRouter from "./src/presentation/superAdmin.js";
 import routes from "./Presentation/routes.js";
+import { Server as SocketIO } from 'socket.io';
 
 
 
@@ -50,14 +51,38 @@ app.get('/', async (req,res,next) =>{
 
 
 app.use("",routes);
-// app.use("/general",generalRouter);
-// app.use("/superAdmin",superAdminRouter);
+
 app.use(error);
 
-const httpsServer = https.createServer(options, app);
+export const httpsServer = https.createServer(options, app);
 
 httpsServer.listen(port, async () =>{
     console.log("server listening on port " + port);
 })
 
-
+const io = new SocketIO(httpsServer, {
+    path: '/ws',
+  });
+  // Middleware to parse cookies
+//   io.use((socket, next) => {
+//     // You can access cookies from the socket request
+//     const token = socket.request.cookies['x-auth-token']; // Extract the token
+//     console.log(token);
+//     if (!token) {
+//       return next(new Error('Authentication error: Token missing'));
+//     }
+  
+  
+//     // Validate the JWT token
+   
+//       // Store the decoded user info in the socket for later use
+//   // Store user data from the token (e.g., userId)
+//       next(); // Proceed with the connection
+//   });
+  
+  // When the socket is connected
+  io.on('connection', (socket) => {
+    console.log(`User authenticated: ${socket.token}`); // You can access the user's info
+  
+    // Handle further socket events...
+  });
