@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { Media_api_Link } from "../../../../consts/APILink";
+import userContext from "../../../../contexts/userContext";
+import Autodownload from "./autodownload/Autodownload";
 import Editprofile from "./editprofile/Editprofile";
+import Generalsetting from "./generalsetting/Generalsetting";
+import Privacy from "./privacy/Privacy";
 
 interface Props {
   goBack: () => void;
 }
 const Setting = ({ goBack }: Props) => {
-  let [SidebarState, setSidebarState] = useState<"setting" | "edit">("setting");
+  let [SidebarState, setSidebarState] = useState<
+    "setting" | "edit" | "general" | "privacy" | "storage"
+  >("setting");
+  let { user } = useContext(userContext);
 
   return (
-    <>
+    <div className="max-w-sm flex w-full ">
       {SidebarState == "edit" && (
         <Editprofile goBack={() => setSidebarState("setting")} />
       )}
+      {SidebarState == "general" && (
+        <Generalsetting goBack={() => setSidebarState("setting")} />
+      )}
+      {SidebarState == "privacy" && (
+        <Privacy goBack={() => setSidebarState("setting")} />
+      )}
+      {SidebarState == "storage" && (
+        <Autodownload goBack={() => setSidebarState("setting")} />
+      )}
       {SidebarState == "setting" && (
-        <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center px-4 py-6">
+        <div className=" bg-base-300 text-white flex flex-col items-center px-4 py-6">
           {/* Header */}
           <div className="w-full flex items-center mb-6">
             {/* Back Button */}
@@ -42,16 +59,25 @@ const Setting = ({ goBack }: Props) => {
 
           {/* Profile Section */}
           <div className="w-full flex flex-col items-center bg-gray-800 rounded-lg p-4 mb-6">
-            <div className="avatar mb-4">
-              <div className="w-24 rounded-full">
-                <img src="https://via.placeholder.com/150" alt="User Profile" />
-              </div>
+            <div className="mb-4">
+              {user?.profilePicture ? (
+                <img
+                  src={Media_api_Link + "file/" + user.profilePicture}
+                  alt="Profile"
+                  className=" w-20 h-30  rounded-full bg-gray-700 mb-4 flex items-center justify-center"
+                />
+              ) : (
+                <div className="w-30 h-30  rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+                  <span className="text-gray-400 absolute top-6 left-2 ">
+                    No Image
+                  </span>
+                </div>
+              )}
             </div>
-            <h2 className="text-xl font-semibold">AmizZa</h2>
+            <h2 className="text-xl font-semibold">
+              {(user?.firstName + " " + user?.lastName).trim()}
+            </h2>
             <p className="text-gray-400 text-sm">last seen just now</p>
-            <button className="btn btn-primary btn-circle mt-4">
-              <i className="fas fa-camera"></i>
-            </button>
           </div>
 
           {/* Contact Info */}
@@ -59,48 +85,67 @@ const Setting = ({ goBack }: Props) => {
             <div className="flex items-center justify-between text-gray-400 py-2">
               <i className="fas fa-at"></i>
               <div className="flex-1 ml-4">
-                <p className="text-white font-medium">amir@gmail.com</p>
+                <p className="text-white font-medium">{user?.email}</p>
                 <p className="text-gray-500 text-sm">Email</p>
               </div>
             </div>
-            <div className="flex items-center justify-between text-gray-400 py-2">
-              <i className="fas fa-phone"></i>
-              <div className="flex-1 ml-4">
-                <p className="text-white font-medium">+98 935 790 1713</p>
-                <p className="text-gray-500 text-sm">Phone</p>
+            {user?.phoneNumber && (
+              <div className="flex items-center justify-between text-gray-400 py-2">
+                <i className="fas fa-phone"></i>
+                <div className="flex-1 ml-4">
+                  <p className="text-white font-medium">{user?.phoneNumber}</p>
+                  <p className="text-gray-500 text-sm">Phone</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center justify-between text-gray-400 py-2">
-              <i className="fas fa-at"></i>
-              <div className="flex-1 ml-4">
-                <p className="text-white font-medium">@AmirGhz17</p>
-                <p className="text-gray-500 text-sm">Username</p>
+            )}
+
+            {user?.username && (
+              <div className="flex items-center justify-between text-gray-400 py-2">
+                <i className="fas fa-at"></i>
+                <div className="flex-1 ml-4">
+                  <p className="text-white font-medium">{user?.username}</p>
+                  <p className="text-gray-500 text-sm">Username</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Settings Options */}
           <div className="w-full">
             <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
-              <i className="fas fa-bell"></i>
-              <span className="ml-4 flex-1">Notifications and Sounds</span>
-            </div>
-            <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-database"></i>
-              <span className="ml-4 flex-1">Data and Storage</span>
+              <button
+                onClick={() => setSidebarState("storage")}
+                className="ml-4 flex-1 text-left"
+              >
+                Data and Storage
+              </button>
             </div>
             <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-lock"></i>
-              <span className="ml-4 flex-1">Privacy and Security</span>
+              <button
+                onClick={() => setSidebarState("privacy")}
+                className="ml-4 flex-1 text-left"
+              >
+                Privacy and Security
+              </button>
             </div>
             <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-cogs"></i>
-              <span className="ml-4 flex-1">General Settings</span>
+              <button
+                onClick={() => setSidebarState("general")}
+                className="ml-4 flex-1 text-left"
+              >
+                General Settings
+              </button>
             </div>
           </div>
+          <p className=" text-sm text-base-300">
+            Updated 10.4 September 29, 2024 Improved structure
+          </p>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

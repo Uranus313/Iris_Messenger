@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-const Generalsetting = () => {
+interface Props {
+  goBack: () => void;
+}
+
+const Generalsetting = ({ goBack }: Props) => {
   // States for settings
   const [notifications, setNotifications] = useState(true);
   const [fontSize, setFontSize] = useState("medium");
@@ -15,14 +19,17 @@ const Generalsetting = () => {
   };
 
   return (
-    <div className=" bg-gray-900 text-white">
+    <div className=" bg-base-300 text-white">
       {/* Content Section */}
-      <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div className="bg-gray-800 rounded-lg p-4 shadow-lg">
         {/* Header */}
         <div className="flex items-center  mb-6">
           {/* Back Button */}
-          <button className="btn btn-ghost text-lg text-white me-3">
-            <i className="fas fa-arrow-left"></i>
+          <button
+            onClick={() => goBack()}
+            className="btn btn-ghost text-lg text-white me-3"
+          >
+            <i className="fas fa-arrow-left"></i>back
           </button>
           <h1 className="text-xl font-bold">General Settings</h1>
         </div>
@@ -108,6 +115,9 @@ const Generalsetting = () => {
           </div>
         </div>
       </div>
+      <p className=" text-sm text-base-300">
+            Updated 10.4 September 29, 2024 Improved structure
+          </p>
     </div>
   );
 };

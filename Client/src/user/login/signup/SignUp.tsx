@@ -15,7 +15,6 @@ const SignUp = ({ email }: Props) => {
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { setUser } = useContext(userContext);
-  console.log("testtingggggg");
   const navigate = useNavigate();
   const signUpMutate = useMutation({
     mutationFn: async (formData: FormData) => {

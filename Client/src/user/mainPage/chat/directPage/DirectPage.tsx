@@ -1,21 +1,18 @@
 import { useState } from "react";
-import sth from "./assets/Background.png";
+import sth from "../../../../assets/Background.png";
 
-// interface Props {
-//   selectedChat: string | null;
-//   showChatList: () => void;
-// }
+interface Props {
+  showChatList: () => void;
+}
 
-const DirectPage = () => {
+const DirectPage = ({ showChatList }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
 
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
 
-  // return user1 ? (
-  // return selectedChat == "group" ? (
-    return  (
+  return  (
     <div
       className="min-h-screen flex flex-col"
       style={{
@@ -27,7 +24,7 @@ const DirectPage = () => {
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-base-200">
-        <button className="block md:hidden p-2" >
+        <button className="block md:hidden p-2" onClick={showChatList}>
           back
         </button>
         <button onClick={toggleRightMenu}>
@@ -38,8 +35,8 @@ const DirectPage = () => {
               </div>
             </div>
             <div>
-              <h1 className="text-lg font-bold">Soft</h1>
-              <p className="text-xs text-gray-400">members 0</p>
+              <h1 className="text-lg font-bold">Masoud Salehi</h1>
+              <p className="text-xs text-gray-400">last seen recently</p>
             </div>
           </div>
         </button>
@@ -68,71 +65,57 @@ const DirectPage = () => {
             ✕
           </button>
           <h2 className="text-lg font-bold mb-4">Menu</h2>
-          <div className="flex flex-col w-full  h-screen bg-base-200 shadow-lg relative">
+          <div className="flex flex-col w-full md:w-1/3 h-screen bg-base-200 shadow-lg relative">
             {/* User Avatar and Name */}
-            <div className="p-4 flex flex-col">
-              <div className="avatar">
-                <div className="w-56 h-52 rounded-md ">
+            <div className="p-4 flex flex-col items-center">
+              <div className="avatar ms-32">
+                <div className="w-32 h-32 rounded-full ">
                   <img className="" src={sth} alt="" />
                 </div>
               </div>
-              <div className="">
-                <h2 className="mt-5 text-xl font-bold text-base-content">
+              <div className="ms-32">
+                <h2 className="mt-4 text-xl font-bold text-base-content">
                   amir
                 </h2>
-                <div className="w-full flex gap-2">
-                  <p className="text-sm w-full text-gray-500 ">members </p>
-                  <p className="text-sm w-full text-gray-500">0</p>
-                </div>
+                <p className="text-sm text-gray-500">now</p>
               </div>
             </div>
 
             {/* User Info */}
-            <div className="p-4 space-y-4 ">
+            <div className="p-4 space-y-4 ms-12 ">
               {/* Phone */}
               <div className="flex items-center">
                 <i className="fas fa-phone text-xl text-gray-500"></i>
-                <div className="">
-                  <p className="text-base-content font-medium">Link</p>
-                  <p className="text-sm text-gray-500">esxcfguujouydg</p>
+                <div className="ml-4">
+                  <p className="text-base-content font-medium">0935</p>
+                  <p className="text-sm text-gray-500">Phone</p>
                 </div>
               </div>
+
+              {/* Username */}
+              <div className="flex items-center">
+                <i className="fas fa-at text-xl text-gray-500"></i>
+                <div className="ml-4">
+                  <p className="text-base-content font-medium">@amir</p>
+                  <p className="text-sm text-gray-500">Username</p>
+                </div>
+              </div>
+
               {/* Bio */}
               <div className="flex items-center">
                 <i className="fas fa-info-circle text-xl text-gray-500"></i>
-                <div className="">
-                  <p className="text-base-content font-medium text-ellipsis overflow-hidden w-fit">
-                    aesrtdi fghdjg xfhvcjh dhchvf vhvvv gdhcfcj chcfh
-                  </p>
-                  <p className="text-sm text-gray-500">Description</p>
+                <div className="ml-4">
+                  <p className="text-base-content font-medium">...</p>
+                  <p className="text-sm text-gray-500">Bio</p>
                 </div>
               </div>
             </div>
-            <div className="flex  w-full ml-4">
+            <div className="flex ms-10 w-full">
               <div className="">
-                <button className="btn btn-sm bg-red-500 text-gray">
-                  Leave
-                </button>
+                <button className="btn btn-sm ">Block User</button>
               </div>
-            </div>
-            {/* Members List */}
-            <div className="flex-1 overflow-y-auto px-4 py-2">
-              <div className="flex items-center justify-between py-3 border-b border-base-200">
-                <div className="flex items-center p-3 justify-between">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full">
-                      <img
-                        src="https://via.placeholder.com/150" // Replace with the member avatar
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                  <div className="ml-3 text-xs">
-                    <p className="text-xs font-medium">amirreza</p>
-                    <p className="text-xs text-gray-500">online</p>
-                  </div>
-                  <span className="text-xs text-gray-400 ms-6">owner</span>
-                </div>
+              <div>
+                <button className="btn btn-sm ">Delete Chat</button>
               </div>
             </div>
           </div>
@@ -202,12 +185,7 @@ const DirectPage = () => {
         </button>
       </div>
     </div>
-    )
-  // ) : (
-  //   <div className="flex justify-center items-center h-screen">
-  //     No Chat Selected...
-  //   </div>
-  // );
+  );
 };
 
 export default DirectPage;
