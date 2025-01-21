@@ -40,10 +40,10 @@ const AdminList: React.FC = () => {
     },
   });
 
-  // Fetch all admins on component mount
-  useEffect(() => {
-    getAdmins.mutate(); // Fetch all admins when the component mounts
-  }, []);
+  // // Fetch all admins on component mount
+  // useEffect(() => {
+  //   getAdmins.mutate(); // Fetch all admins when the component mounts
+  // }, []);
 
   // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

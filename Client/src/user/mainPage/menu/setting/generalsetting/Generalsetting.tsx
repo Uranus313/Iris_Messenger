@@ -8,7 +8,7 @@ const Generalsetting = ({ goBack }: Props) => {
   // States for settings
   const [notifications, setNotifications] = useState(true);
   const [fontSize, setFontSize] = useState("medium");
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
   const [background, setBackground] = useState<string | null>(null);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
