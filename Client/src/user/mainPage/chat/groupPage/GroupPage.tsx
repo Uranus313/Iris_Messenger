@@ -23,7 +23,6 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
   const { user } = useContext(userContext);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-
   const { register, handleSubmit } = useForm();
   const [media, setMedia] = useState<File | null>(null);
   const toggleRightMenu = () => {

@@ -16,7 +16,7 @@ const ChannelMember = ({ channel }: Props) => {
       )}
       {data?.data.length! > 0 &&
         data?.data.map((userData, index) => (
-          <div key={index} className="flex-1 overflow-y-auto px-4 py-2">
+          <div key={index} className="flex-1 overflow-scroll px-4 py-2">
             <div className="flex items-center justify-between py-3 border-b border-base-200">
               <div className="flex items-center p-3 justify-between">
                 <div className="avatar">
