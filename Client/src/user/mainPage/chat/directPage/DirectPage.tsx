@@ -4,14 +4,14 @@ import sth from "../../../../assets/Background.png";
 import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import userContext from "../../../../contexts/userContext";
 import { Direct } from "../../../../interfaces/interfaces";
-import { KeyType, serializeKey } from "../../MainPage";
+import { serializeKey } from "../../MainPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import DirectMessage from "./directMessage/DirectMessage";
 
 interface Props {
   showChatList: () => void;
   direct: Direct;
-  messageMap: Map<KeyType, any[]>;
+  messageMap: Map<string, any[]>;
   sendMessage: (message: any) => void;
 }
 
@@ -28,7 +28,6 @@ const DirectPage = ({
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const { handleSubmit } = useForm();
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
@@ -75,7 +74,8 @@ const DirectPage = ({
     // setText("");
     // setTargetUserId("");
     // setFile(null);
-  };  const banUserMutate = useMutation({
+  };
+  const banUserMutate = useMutation({
     mutationFn: async (data: { targetUserId: number }) => {
       const result = await fetch(Core_api_Link + `users/blockUser`, {
         method: "POST",
@@ -237,16 +237,18 @@ const DirectPage = ({
         </div>
       </div>
 
-      {messageMap.get(serializeKey({ _id: direct._id, type: "direct" }))?.map((message) => {
-        return (
-          <DirectMessage
-            content={message.text}
-            time={message.createdAt}
-            isSender={user?.id == message.sender.id}
-            key={message._id}
-          />
-        );
-      })}
+      {messageMap
+        .get(serializeKey({ _id: direct._id, type: "direct" }))
+        ?.map((message) => {
+          return (
+            <DirectMessage
+              content={message.text}
+              time={message.createdAt}
+              isSender={user?.id == message.sender.id}
+              key={message._id}
+            />
+          );
+        })}
       <div className="flex flex-col items-center">
         {media ? (
           <img

@@ -14,7 +14,13 @@ interface Props {
     nextState: "group" | "channel" | "direct" | null
   ) => void;
   setSidebarState: (
-    nextState: "settings" | "contacts" | "addGroup" | "addChannel"
+    nextState:
+      | "settings"
+      | "contacts"
+      | "addGroup"
+      | "addChannel"
+      | "joinChannel"
+      | "joinGroup"
   ) => void;
 }
 
@@ -30,7 +36,7 @@ const ChatList = ({
   const [searchValue, setSearchValue] = useState("");
   const [selectedTab, setSelectedTab] = useState<
     "directs" | "channels" | "groups" | "all"
-  >("all");
+  >("directs");
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -165,7 +171,7 @@ const ChatList = ({
         </div>
         {/* Tabs */}
         <div className="bg-base-100 flex justify-around border-b border-base-200 py-2">
-          <button
+          {/* <button
             onClick={() => {
               setSelectedTab("all");
               setChannelsSearched([]);
@@ -173,7 +179,7 @@ const ChatList = ({
             }}
           >
             All
-          </button>
+          </button> */}
           <button
             onClick={() => {
               setSelectedTab("directs");
@@ -217,6 +223,7 @@ const ChatList = ({
           )}
           {selectedTab == "channels" && (
             <ChannelsChat
+              setSidebarState={setSidebarState}
               setSelectedChat={setSelectedChat}
               userChannelsSearched={userChannelsSearched}
               setSelectedChatStatus={setSelectedChatStatus}
@@ -224,6 +231,7 @@ const ChatList = ({
           )}
           {selectedTab == "groups" && (
             <GroupsChat
+              setSidebarState={setSidebarState}
               setSelectedChat={setSelectedChat}
               userGroupsSearched={userGroupsSearched}
               setSelectedChatStatus={setSelectedChatStatus}
