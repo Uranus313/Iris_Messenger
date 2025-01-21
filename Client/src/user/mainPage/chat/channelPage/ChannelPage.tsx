@@ -6,7 +6,8 @@ import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import userContext from "../../../../contexts/userContext";
 import { Channel } from "../../../../interfaces/interfaces";
 import ChannelMember from "./channelMember/ChannelMember";
-
+import ChannelMessage from "./channelMessage/ChannelMessage";
+import { serializeKey } from "../../MainPage";
 interface Props {
   showChatList: () => void;
   channel: Channel;
@@ -14,14 +15,20 @@ interface Props {
   sendMessage: (message: any) => void;
 }
 
-const ChannelPage = ({ showChatList, channel,messageMap,sendMessage }: Props) => {
+const ChannelPage = ({
+  showChatList,
+  channel,
+  messageMap,
+  sendMessage,
+}: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const { user } = useContext(userContext);
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const { handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
+  const [media, setMedia] = useState<File | null>(null);
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
@@ -90,6 +97,52 @@ const ChannelPage = ({ showChatList, channel,messageMap,sendMessage }: Props) =>
     setDeleteLoading(true);
     deleteChannel.mutate(channel._id);
   };
+
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMedia(file);
+    }
+  };
+
+  const handleSendMessage = async (formData: any) => {
+    if (!formData.text && !media) {
+      alert("Please enter a message or select a file.");
+      return;
+    }
+
+    // Prepare file buffer if a file is provided
+    let fileBuffer = null;
+    let fileName = null;
+    if (media) {
+      const arrayBuffer = await media.arrayBuffer();
+      fileBuffer = Array.from(new Uint8Array(arrayBuffer));
+      fileName = media.name;
+    }
+
+    // Prepare data to emit
+    const data = {
+      text: formData.text,
+      messageType: "channel",
+      chennelId: channel._id,
+    };
+
+    const payload = {
+      data,
+      filename: fileName,
+      fileBuffer, // File buffer or null
+    };
+
+    // Emit data to the server
+    console.log("Sending message...");
+    sendMessage(payload);
+
+    // Reset form
+    // setText("");
+    // setTargetUserId("");
+    // setFile(null);
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -235,6 +288,20 @@ const ChannelPage = ({ showChatList, channel,messageMap,sendMessage }: Props) =>
           </div>
         </div>
       </div>
+
+      {messageMap
+        .get(serializeKey({ _id: channel._id, type: "channel" }))
+        ?.map((message) => {
+          return (
+            <ChannelMessage
+              message={message.text}
+              time={message.createdAt}
+              key={message._id}
+            />
+          );
+        })}
+
+
       {/* Input Field */}
       {user?.id == channel.ownerId && (
         <form

@@ -46,18 +46,18 @@ const GroupMesssage = ({
           <div className="font-bold text-sm">
             {name}{" "}
             {senderTag && (
-              <span className="text-xs text-gray-400">{senderTag}</span>
+              <span className="text-xs text-white">{senderTag}</span>
             )}
           </div>
         )}
         <div className="">
 
           <p className="text-sm">{message}</p>
-          <span className="text-xs text-gray-400 mt-1 ml-2">{time}</span>
+          <span className="text-xs text-white mt-1 ml-2">{time}</span>
         </div>
 
         {isSender && senderTag && (
-          <div className="text-xs text-gray-400 mt-1">{senderTag}</div>
+          <div className="text-xs text-white mt-1">{senderTag}</div>
         )}
       </div>
 

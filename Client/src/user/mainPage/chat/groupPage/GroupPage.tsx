@@ -23,7 +23,6 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
   const { user } = useContext(userContext);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-
   const { register, handleSubmit } = useForm();
   const [media, setMedia] = useState<File | null>(null);
   const toggleRightMenu = () => {
@@ -298,28 +297,7 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
             />
           );
         })}
-      <div className="flex flex-col items-center">
-        {media ? (
-          <img
-            src={URL.createObjectURL(media as Blob)}
-            alt="Profile"
-            className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-indigo-500"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
-            <span className="text-gray-400">No Image</span>
-          </div>
-        )}
-        <label className="btn btn-sm btn-outline">
-          Upload Picture
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-          />
-        </label>
-      </div>
+
       {/* Input Field (Sticky at Bottom) */}
       <form
 

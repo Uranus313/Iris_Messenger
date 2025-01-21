@@ -13,7 +13,7 @@ import Setting from "./menu/setting/Setting";
 import { io, Socket } from "socket.io-client";
 import { Web_Socket_Link } from "../../consts/APILink";
 import JoinChannel from "./menu/addChannel/joinChannel/JoinChannel";
-import JoinGroup from "./chatList/groupsChat/joinGroup/JoinGroup";
+import JoinGroup from "./menu/addGroup/joinGroup/JoinGroup";
 export interface KeyType {
   _id: string;
   type: string;
@@ -219,6 +219,8 @@ const MainPage = () => {
         {selectedChatStatus == "channel" && (
           <ChannelPage
             channel={selectedChat as Channel}
+            messageMap={messageMap}
+            sendMessage={sendMessage}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
