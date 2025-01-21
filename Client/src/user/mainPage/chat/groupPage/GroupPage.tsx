@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import sth from "../../../../assets/Background.png";
 import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
@@ -8,15 +8,23 @@ import { Group } from "../../../../interfaces/interfaces";
 import GroupMember from "./groupMember/GroupMember";
 import GroupMesssage from "./groupMessage/groupMessage";
 import { serializeKey } from "../../MainPage";
+import useGetGroupMessages from "../../../../hooks/useGetGroupMessages";
 
 interface Props {
   showChatList: () => void;
   group: Group;
   messageMap: Map<KeyType, any[]>;
   sendMessage: (message: any) => void;
+  setMessageMap: any;
 }
 
-const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
+const GroupPage = ({
+  showChatList,
+  group,
+  messageMap,
+  sendMessage,
+  setMessageMap,
+}: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
@@ -24,11 +32,34 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm();
+  const { data } = useGetGroupMessages(group._id);
   const [media, setMedia] = useState<File | null>(null);
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
+  useEffect(() => {
+    const serializedKey = serializeKey({ _id: group._id, type: "group" });
+    // Add a value to the map
+    setMessageMap((prevMap: any) => {
+      // Clone the previous Map
+      if (!data?.data || data.data.length == 0) {
+        return prevMap;
+      }
+      const newMap = new Map(prevMap);
+      // console.log(newMap);
+      // const ne
+      // // Get the existing messages or initialize an empty array
+      const oldMessages = newMap.get(serializedKey) || [];
+      if (oldMessages) {
+        newMap.set(serializedKey, [...oldMessages, ...data?.data]);
+      } else {
+        newMap.set(serializedKey, oldMessages);
+      }
+      // Add the new message
 
+      return newMap; // Update the state with the new Map
+    });
+  }, [data]);
   const leaveGroup = useMutation({
     mutationFn: async (groupId: string) => {
       const result = await fetch(

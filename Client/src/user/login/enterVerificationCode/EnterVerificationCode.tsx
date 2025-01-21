@@ -158,7 +158,7 @@ const EnterVerificationCode = ({
         <div className="flex justify-center mb-4">
           <img
             title="code image"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9BiGKA1arud9vvdIknRtvD1ZvlR1Gek7HKw&s"
+            src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Iris_-_the_Greek_goddess_of_the_rainbow_and_messenger_of_the_gods.jpg"
             className="w-40 h-40 rounded-full"
           />
         </div>

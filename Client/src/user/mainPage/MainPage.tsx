@@ -208,6 +208,7 @@ const MainPage = () => {
           <GroupPage
             group={selectedChat as Group}
             messageMap={messageMap}
+            setMessageMap={setMessageMap}
             sendMessage={sendMessage}
             showChatList={() => {
               setChatList(true);

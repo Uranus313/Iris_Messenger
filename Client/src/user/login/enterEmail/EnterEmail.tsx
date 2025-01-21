@@ -2,58 +2,54 @@ import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useRef, useState } from "react";
 import { IAM_api_Link } from "../../../consts/APILink";
 
-
-
-interface Props{
-  goToNextStage : () => void,
-  setEmail : (email :string) => void;
+interface Props {
+  goToNextStage: () => void;
+  setEmail: (email: string) => void;
 }
 
-const EnterEmail = ({goToNextStage , setEmail } : Props) => {
+const EnterEmail = ({ goToNextStage, setEmail }: Props) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-  const [error , setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const emailMutate = useMutation({
-    mutationFn: async (emailObject : {email : string }) => {
-       
-        const result = await fetch(IAM_api_Link + `users/createOTP`, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(emailObject),
+    mutationFn: async (emailObject: { email: string }) => {
+      const result = await fetch(IAM_api_Link + `users/createOTP`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailObject),
       });
       const jsonResult = await result.json();
-      setEmail(emailObject.email)
+      setEmail(emailObject.email);
 
-    //   console.log(jsonResult)
-      if(result.ok){
-          return jsonResult;
-      }else{
-          throw new Error(jsonResult.message);
+      //   console.log(jsonResult)
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
       }
     },
-    onSuccess: ( result,sentData) =>{
-        console.log(sentData);
-        console.log(result);
-        goToNextStage();
+    onSuccess: (result, sentData) => {
+      console.log(sentData);
+      console.log(result);
+      goToNextStage();
     },
-    onError: (error) =>{
-        setError(error.message)  
-        setSubmitLoading(false);
-    }
-}); 
+    onError: (error) => {
+      setError(error.message);
+      setSubmitLoading(false);
+    },
+  });
 
   const handleEmailSend = (e: FormEvent) => {
     e.preventDefault();
     setSubmitLoading(true);
-    console.log("test email")
-    if(!emailRef.current?.value){
+    console.log("test email");
+    if (!emailRef.current?.value) {
       return;
     }
-    emailMutate.mutate({email : emailRef.current?.value });
-
+    emailMutate.mutate({ email: emailRef.current?.value });
   };
 
   return (
@@ -70,27 +66,30 @@ const EnterEmail = ({goToNextStage , setEmail } : Props) => {
           Please enter your email address to log in.
         </p>
       </div>
-        {error && error}
+      {error && error}
       {/* Form */}
       <form
-        onSubmit={ submitLoading? (e) => { e.preventDefault()}:handleEmailSend}
+        onSubmit={
+          submitLoading
+            ? (e) => {
+                e.preventDefault();
+              }
+            : handleEmailSend
+        }
         className="mt-8 bg-gray-800 rounded-lg shadow-md p-6 w-full max-w-md space-y-6"
       >
         {/* Email */}
         <div>
-          <label
-            className="block text-sm font-medium text-gray-300 mb-3"
-          >
+          <label className="block text-sm font-medium text-gray-300 mb-3">
             Email Address
-          <input
-            type="email"
-            placeholder="you@example.com"
-            required
-            ref={emailRef}
-            className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+            <input
+              type="email"
+              placeholder="you@example.com"
+              required
+              ref={emailRef}
+              className="input input-bordered w-full bg-gray-700 text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </label>
-
         </div>
 
         {/* Remember Me */}
@@ -112,7 +111,11 @@ const EnterEmail = ({goToNextStage , setEmail } : Props) => {
           type="submit"
           className="btn btn-primary w-full bg-indigo-600 text-white hover:bg-indigo-500"
         >
-          {submitLoading? <span className="loading loading-spinner loading-md"></span>:"Next"}
+          {submitLoading ? (
+            <span className="loading loading-spinner loading-md"></span>
+          ) : (
+            "Next"
+          )}
         </button>
       </form>
     </div>

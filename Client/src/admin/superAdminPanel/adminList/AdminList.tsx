@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { IAM_api_Link } from "../../../consts/APILink";
 
@@ -17,13 +17,16 @@ const AdminList: React.FC = () => {
   const getAdmins = useMutation({
     mutationFn: async (email?: string) => {
       const query = email ? `?search=${email}` : "";
-      const result = await fetch(IAM_api_Link + `/admins/getAllAdmins${query}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const result = await fetch(
+        IAM_api_Link + `/admins/getAllAdmins${query}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const jsonResult = await result.json();
       if (result.ok) {
         return jsonResult;
