@@ -8,6 +8,7 @@ import { KeyType, serializeKey } from "../../MainPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DirectMessage from "./directMessage/DirectMessage";
 
+import DirectMessage from "./directMessage/DirectMessage";
 
 interface Props {
   showChatList: () => void;
@@ -238,16 +239,18 @@ const DirectPage = ({
         </div>
       </div>
 
-      {messageMap.get(serializeKey({ _id: direct._id, type: "direct" }))?.map((message) => {
-        return (
-          <DirectMessage
-            content={message.text}
-            time={message.createdAt}
-            isSender={user?.id == message.sender.id}
-            key={message._id}
-          />
-        );
-      })}
+      {messageMap
+        .get(serializeKey({ _id: direct._id, type: "direct" }))
+        ?.map((message) => {
+          return (
+            <DirectMessage
+              content={message.text}
+              time={message.createdAt}
+              isSender={user?.id == message.sender.id}
+              key={message._id}
+            />
+          );
+        })}
 
       {/* Input Field */}
       <form

@@ -12,6 +12,8 @@ import Setting from "./menu/setting/Setting";
 
 import { io, Socket } from "socket.io-client";
 import { Web_Socket_Link } from "../../consts/APILink";
+import JoinChannel from "./menu/addChannel/joinChannel/JoinChannel";
+import JoinGroup from "./chatList/groupsChat/joinGroup/JoinGroup";
 export interface KeyType {
   _id: string;
   type: string;
@@ -19,7 +21,7 @@ export interface KeyType {
 export const serializeKey = (key: KeyType): string => `${key.type}:${key._id}`;
 const MainPage = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [connected, setConnected] = useState(false);
+  // const [connected, setConnected] = useState(false);
   let [chatList, setChatList] = useState<boolean>(true);
   let [selectedChat, setSelectedChat] = useState<
     Group | Channel | Direct | null
@@ -28,7 +30,13 @@ const MainPage = () => {
     "group" | "channel" | "direct" | null
   >(null);
   let [SidebarState, setSidebarState] = useState<
-    "chatlist" | "settings" | "contacts" | "addChannel" | "addGroup"
+    | "chatlist"
+    | "settings"
+    | "contacts"
+    | "addChannel"
+    | "addGroup"
+    | "joinGroup"
+    | "joinChannel"
   >("chatlist");
   let [messageMap, setMessageMap] = useState<Map<string, any[]>>(new Map());
   useEffect(() => {
@@ -41,15 +49,15 @@ const MainPage = () => {
     });
 
     // Event listeners
-    newSocket.on("connect", () => {
-      console.log("Connected to WebSocket server");
-      setConnected(true);
-    });
+    // newSocket.on("connect", () => {
+    //   console.log("Connected to WebSocket server");
+    //   setConnected(true);
+    // });
 
-    newSocket.on("disconnect", () => {
-      console.log("Disconnected from WebSocket server");
-      setConnected(false);
-    });
+    // newSocket.on("disconnect", () => {
+    //   console.log("Disconnected from WebSocket server");
+    //   setConnected(false);
+    // });
 
     newSocket.on("newMessage", (data: any) => {
       console.log("Message received:", data);
@@ -129,16 +137,50 @@ const MainPage = () => {
           />
         )}
         {SidebarState == "settings" && (
-          <Setting goBack={() => setSidebarState("chatlist")} />
+          <Setting
+            goBack={() => {
+              setSidebarState("chatlist");
+            }}
+          />
         )}
         {SidebarState == "contacts" && (
-          <Contact goBack={() => setSidebarState("chatlist")} />
+          <Contact
+            goBack={() => {
+              setSidebarState("chatlist");
+            }}
+          />
         )}
         {SidebarState == "addGroup" && (
-          <AddGroup goBack={() => setSidebarState("chatlist")} />
+          <AddGroup
+            goBack={() => {
+              setSidebarState("chatlist");
+            }}
+          />
         )}
         {SidebarState == "addChannel" && (
-          <AddChannel goBack={() => setSidebarState("chatlist")} />
+          <AddChannel
+            goBack={() => {
+              setSidebarState("chatlist");
+            }}
+          />
+        )}
+        {SidebarState == "joinChannel" && (
+          <JoinChannel
+            channel={selectedChat as Channel}
+            goBack={() => {
+              setSidebarState("chatlist");
+              setSelectedChat(null);
+            }}
+          />
+        )}
+        {SidebarState == "joinGroup" && (
+          <JoinGroup
+            group={selectedChat as Group}
+            goBack={() => {
+              setSidebarState("chatlist");
+              setSelectedChat(null);
+            }}
+          />
         )}
       </div>
       {/* Main Chat Area */}

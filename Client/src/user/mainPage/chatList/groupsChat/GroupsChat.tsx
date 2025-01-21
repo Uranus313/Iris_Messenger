@@ -8,12 +8,22 @@ interface Props {
   setSelectedChatStatus: (
     nextState: "group" | "channel" | "direct" | null
   ) => void;
+  setSidebarState: (
+    nextState:
+      | "settings"
+      | "contacts"
+      | "addGroup"
+      | "addChannel"
+      | "joinChannel"
+      | "joinGroup"
+  ) => void;
 }
 
 const GroupsChat = ({
   setSelectedChat,
   userGroupsSearched,
   setSelectedChatStatus,
+  setSidebarState,
 }: Props) => {
   let { data, error, isLoading } = useGetGroups();
   return (
@@ -25,7 +35,13 @@ const GroupsChat = ({
         <div className="divide-y divide-base-200">
           {userGroupsSearched.length > 0 ? (
             userGroupsSearched.map((group, index) => (
-              <div key={index}>
+              <div
+                key={index}
+                onClick={() => {
+                  setSidebarState("joinGroup");
+                  setSelectedChat(group);
+                }}
+              >
                 <GroupsChatItem key={index} group={group} lastMessage={null} />
               </div>
             ))

@@ -113,7 +113,7 @@ const UserList = () => {
             </li>
           ))
         ) : (
-          <div>No Users</div>
+          <div>No User</div>
         )}
       </ul>
     </div>
