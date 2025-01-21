@@ -8,7 +8,7 @@ import { KeyType, serializeKey } from "../../MainPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DirectMessage from "./directMessage/DirectMessage";
 
-import DirectMessage from "./directMessage/DirectMessage";
+
 
 interface Props {
   showChatList: () => void;
