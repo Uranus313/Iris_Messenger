@@ -73,11 +73,11 @@ const SuperAdminLogin = () => {
           {/* Email Input */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text text-gray-400">Email Address</span>
+              <p className="label-text text-gray-400 pr-8">Email</p>
             <input
               type="email"
               placeholder="Enter your email"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("email")}
               required
             />
@@ -88,11 +88,11 @@ const SuperAdminLogin = () => {
           {/* Password Input */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text text-gray-400">Password</span>
+              <span className="label-text text-gray-400 mr-2">Password</span>
             <input
               type="password"
               placeholder="Enter your password"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("password")}
               required
             />

@@ -62,7 +62,7 @@ const AdminLogIn = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
         {/* Title */}
         <h1 className="text-3xl font-bold text-center mb-6 text-yellow-400">
           Admin Login
@@ -71,13 +71,13 @@ const AdminLogIn = () => {
         {/* Login Form */}
         <form onSubmit={submitLoading ?(e)=> e.preventDefault() : handleSubmit(handleAdminLogIn)} className="space-y-6">
           {/* Email Input */}
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text text-gray-400">Email Address</span>
+          <div className="form-control tex">
+            <label className="label ">
+              <p className="text-sm label-text text-gray-400 pr-8">Email</p>
             <input
               type="email"
               placeholder="Enter your email"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("email")}
               required
             />
@@ -88,11 +88,11 @@ const AdminLogIn = () => {
           {/* Password Input */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text text-gray-400">Password</span>
+              <span className="label-text text-gray-400 mr-2">Password</span>
             <input
               type="password"
               placeholder="Enter your password"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("password")}
               required
             />

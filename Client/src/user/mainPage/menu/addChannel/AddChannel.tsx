@@ -65,6 +65,7 @@ const AddChannel = ({ goBack }: Props) => {
     addChannelMutate.mutate(formData);
   };
 
+  
   return (
     <div className="min-h-screen bg-base-300 text-base-content flex flex-col">
       {/* Header */}

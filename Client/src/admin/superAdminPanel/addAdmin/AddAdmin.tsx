@@ -1,11 +1,9 @@
-
-
 import { useMutation } from "@tanstack/react-query";
 import { FormEvent, useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { IAM_api_Link } from "../../consts/APILink"
+import { IAM_api_Link } from "../../../consts/APILink"
 import { useNavigate } from "react-router-dom";
-import userContext from "../../contexts/userContext";
+import userContext from "../../../contexts/userContext";
 
 
 
@@ -79,7 +77,7 @@ const AddAdmin = () => {
             <input
               type="text"
               placeholder="Enter admin name"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("firstName")}
               required
             />
@@ -93,7 +91,7 @@ const AddAdmin = () => {
             <input
               
               placeholder="Enter admin email"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("email")}
               required
             />
@@ -107,7 +105,7 @@ const AddAdmin = () => {
             <input
               
               placeholder="Enter admin password"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full text-white"
               {...register("password")}
               required
             />
@@ -125,7 +123,6 @@ const AddAdmin = () => {
         )}
 
         {/* Success Message */}
-        
 
         {/* Footer */}
         <p className="mt-6 text-center text-sm text-gray-500">
@@ -137,5 +134,3 @@ const AddAdmin = () => {
 };
 
 export default AddAdmin;
-
-
