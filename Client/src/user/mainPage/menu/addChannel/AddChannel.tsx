@@ -71,7 +71,7 @@ const AddChannel = ({ goBack }: Props) => {
       {/* Header */}
       <div className="flex items-center p-4 bg-base-100 shadow-md">
         <button onClick={goBack} className="btn btn-ghost btn-sm mr-4">
-          <i className="fas fa-arrow-left"></i>
+          <p className="">B</p>
         </button>
         <h1 className="text-xl font-bold">New Channel</h1>
       </div>

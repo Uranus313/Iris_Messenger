@@ -6,23 +6,30 @@ import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import userContext from "../../../../contexts/userContext";
 import { Group } from "../../../../interfaces/interfaces";
 import GroupMember from "./groupMember/GroupMember";
+import GroupMesssage from "./groupMessage/groupMessage";
+import { serializeKey } from "../../MainPage";
 
 interface Props {
   showChatList: () => void;
   group: Group;
+  messageMap: Map<KeyType, any[]>;
+  sendMessage: (message: any) => void;
 }
 
-const GroupPage = ({ showChatList, group }: Props) => {
+const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const { user } = useContext(userContext);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const { handleSubmit } = useForm();
+
+  const { register, handleSubmit } = useForm();
+  const [media, setMedia] = useState<File | null>(null);
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
+
   const leaveGroup = useMutation({
     mutationFn: async (groupId: string) => {
       const result = await fetch(
@@ -88,6 +95,52 @@ const GroupPage = ({ showChatList, group }: Props) => {
     setDeleteLoading(true);
     deleteGroup.mutate(group._id);
   };
+
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMedia(file);
+    }
+  };
+
+  const handleSendMessage = async (formData: any) => {
+    if (!formData.text && !media) {
+      alert("Please enter a message or select a file.");
+      return;
+    }
+
+    // Prepare file buffer if a file is provided
+    let fileBuffer = null;
+    let fileName = null;
+    if (media) {
+      const arrayBuffer = await media.arrayBuffer();
+      fileBuffer = Array.from(new Uint8Array(arrayBuffer));
+      fileName = media.name;
+    }
+
+    // Prepare data to emit
+    const data = {
+      text: formData.text,
+      messageType: "group",
+      groupId: group._id,
+    };
+
+    const payload = {
+      data,
+      filename: fileName,
+      fileBuffer, // File buffer or null
+    };
+
+    // Emit data to the server
+    console.log("Sending message...");
+    sendMessage(payload);
+
+    // Reset form
+    // setText("");
+    // setTargetUserId("");
+    // setFile(null);
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col "
@@ -232,20 +285,79 @@ const GroupPage = ({ showChatList, group }: Props) => {
           </div>
         </div>
       </div>
-
-      {/* Input Field (Sticky at Bottom) */}
-      <div className="bg-base-200 p-4 right-0 w-full bottom-0 fixed">
-        <div className="flex items-center">
-          <input
-            type="text"
-            placeholder="Message"
-            className="input input-bordered flex-1"
+      {messageMap
+        .get(serializeKey({ _id: group._id, type: "group", }))
+        ?.map((message) => {
+          return (
+            <GroupMesssage
+              message={message.text}
+              time={message.createdAt}
+              isSender={user?.id == message.sender.id}
+              key={message._id}
+              name={message.name}
+            />
+          );
+        })}
+      <div className="flex flex-col items-center">
+        {media ? (
+          <img
+            src={URL.createObjectURL(media as Blob)}
+            alt="Profile"
+            className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-indigo-500"
           />
-          <button className="btn btn-ghost btn-circle ml-2">
-            <p className="">send</p>
-          </button>
-        </div>
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+            <span className="text-gray-400">No Image</span>
+          </div>
+        )}
+        <label className="btn btn-sm btn-outline">
+          Upload Picture
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+        </label>
       </div>
+      {/* Input Field (Sticky at Bottom) */}
+      <form
+
+        onSubmit={handleSubmit(handleSendMessage)}
+        className="flex items-center bg-base-200 p-4 fixed bottom-0"
+      >
+      <div className="flex items-center bg-base-200 p-4">
+        <input
+          type="text"
+          placeholder="Type a message"
+          className="input input-bordered flex-1"
+          {...register("text")}
+        />
+        <button className="btn btn-primary ml-2">Send</button>
+      </div>
+      <div className="flex flex-col items-center">
+        {media ? (
+          <img
+            src={URL.createObjectURL(media as Blob)}
+            alt="Profile"
+            className="w-10 h-10 rounded-full mb-4 object-cover border-2 border-indigo-500"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+            <span className="text-gray-400 text-xs ml-1">No Image</span>
+          </div>
+        )}
+        <label className="btn btn-sm btn-outline text-xs">
+          Upload Picture
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+        </label>
+      </div>
+      </form>
     </div>
   );
 };

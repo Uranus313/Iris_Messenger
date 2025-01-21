@@ -146,8 +146,8 @@ const MainPage = () => {
       <div
         className={
           !chatList
-            ? "flex-grow  bg-base-200  md:block md:basis-3/4"
-            : "flex-grow bg-base-200  md:block " + "hidden"
+            ? "flex-grow  overflow-scroll  bg-base-200  md:block md:basis-3/4"
+            : "flex-grow  overflow-scroll bg-base-200  md:block " + "hidden"
         }
       >
         {selectedChatStatus == "direct" && (
@@ -165,6 +165,8 @@ const MainPage = () => {
         {selectedChatStatus == "group" && (
           <GroupPage
             group={selectedChat as Group}
+            messageMap={messageMap}
+            sendMessage={sendMessage}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);

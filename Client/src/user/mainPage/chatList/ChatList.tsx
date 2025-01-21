@@ -145,8 +145,8 @@ const ChatList = ({
           </div>
           {/* Search Bar */}
           {selectedTab != "directs" && selectedTab != "all" && (
-            <div className="px-4 py-2 mt-2 ">
-              <input
+            <div className="px-4 py-2 mt-2 text-white">
+              <input 
                 value={searchValue}
                 onChange={
                   selectedTab == "groups"
@@ -157,14 +157,14 @@ const ChatList = ({
                 }
                 type="text"
                 placeholder="Search"
-                className="input input-bordered "
+                className="input input-bordered text-white"
               />
             </div>
           )}
-          <h1 className="text-xl font-bold">Chats</h1>
+          <h1 className="text-xl font-bold text-white">Chats</h1>
         </div>
         {/* Tabs */}
-        <div className="bg-base-100 flex justify-around border-b border-base-200 py-2">
+        <div className="bg-base-100 flex justify-around border-b border-base-200 py-2 text-white">
           <button
             onClick={() => {
               setSelectedTab("all");

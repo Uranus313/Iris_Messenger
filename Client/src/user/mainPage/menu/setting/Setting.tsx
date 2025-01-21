@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { Media_api_Link } from "../../../../consts/APILink";
 import userContext from "../../../../contexts/userContext";
-import Autodownload from "./autodownload/Autodownload";
+// import Autodownload from "./autodownload/Autodownload";
 import Editprofile from "./editprofile/Editprofile";
 import Generalsetting from "./generalsetting/Generalsetting";
-import Privacy from "./privacy/Privacy";
+// import Privacy from "./privacy/Privacy";
 
 interface Props {
   goBack: () => void;
@@ -23,12 +23,12 @@ const Setting = ({ goBack }: Props) => {
       {SidebarState == "general" && (
         <Generalsetting goBack={() => setSidebarState("setting")} />
       )}
-      {SidebarState == "privacy" && (
+      {/* {SidebarState == "privacy" && (
         <Privacy goBack={() => setSidebarState("setting")} />
       )}
       {SidebarState == "storage" && (
         <Autodownload goBack={() => setSidebarState("setting")} />
-      )}
+      )} */}
       {SidebarState == "setting" && (
         <div className=" bg-base-300 text-white flex flex-col items-center px-4 py-6">
           {/* Header */}
@@ -36,9 +36,9 @@ const Setting = ({ goBack }: Props) => {
             {/* Back Button */}
             <button
               onClick={goBack}
-              className="btn btn-ghost text-lg me-3 bg-white"
+              className="btn text-lg me-3 "
             >
-              <i className="fas fa-arrow-left"></i>
+              <p className="">B</p>
             </button>
             {/* Title */}
             <h1 className="text-xl font-bold pe-3">Settings</h1>
@@ -47,12 +47,9 @@ const Setting = ({ goBack }: Props) => {
             <div className="ml-auto flex">
               <button
                 onClick={() => setSidebarState("edit")}
-                className="btn btn-ghost text-lg bg-white"
+                className="btn btn-ghost text-lg "
               >
-                <i className="fas fa-ellipsis-v"></i>
-              </button>
-              <button className="btn btn-ghost text-lg bg-white ms-3">
-                <i className="fas fa-ellipsis-v"></i>
+                <p className="">Edit</p>
               </button>
             </div>
           </div>
@@ -77,7 +74,6 @@ const Setting = ({ goBack }: Props) => {
             <h2 className="text-xl font-semibold">
               {(user?.firstName + " " + user?.lastName).trim()}
             </h2>
-            <p className="text-gray-400 text-sm">last seen just now</p>
           </div>
 
           {/* Contact Info */}
@@ -111,8 +107,8 @@ const Setting = ({ goBack }: Props) => {
           </div>
 
           {/* Settings Options */}
-          <div className="w-full">
-            <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
+          <div className="w-full h-full">
+            {/* <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-database"></i>
               <button
                 onClick={() => setSidebarState("storage")}
@@ -120,8 +116,8 @@ const Setting = ({ goBack }: Props) => {
               >
                 Data and Storage
               </button>
-            </div>
-            <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
+            </div> */}
+            {/* <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-lock"></i>
               <button
                 onClick={() => setSidebarState("privacy")}
@@ -129,7 +125,7 @@ const Setting = ({ goBack }: Props) => {
               >
                 Privacy and Security
               </button>
-            </div>
+            </div> */}
             <div className="flex items-center justify-between py-3 text-gray-400 hover:text-white">
               <i className="fas fa-cogs"></i>
               <button
@@ -140,8 +136,8 @@ const Setting = ({ goBack }: Props) => {
               </button>
             </div>
           </div>
-          <p className=" text-sm text-base-300">
-            Updated 10.4 September 29, 2024 Improved structure
+          <p className="text-sm text-base-300 mt-4">
+            Up da ted 10 .4 Sept em be r 29, 20 24 I mp ro v ed stru ctu re
           </p>
         </div>
       )}

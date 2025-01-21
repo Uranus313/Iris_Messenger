@@ -6,7 +6,8 @@ import userContext from "../../../../contexts/userContext";
 import { Direct } from "../../../../interfaces/interfaces";
 import { KeyType, serializeKey } from "../../MainPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import DirectMessage from "./directMessage/DirectMessage";
+
 
 interface Props {
   showChatList: () => void;
@@ -28,7 +29,7 @@ const DirectPage = ({
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const { handleSubmit } = useForm();
+  
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
@@ -247,19 +248,35 @@ const DirectPage = ({
           />
         );
       })}
+
+      {/* Input Field */}
+      <form
+
+        onSubmit={handleSubmit(handleSendMessage)}
+        className="flex items-center bg-base-200 p-4 fixed bottom-0"
+      >
+      <div className="flex items-center bg-base-200 p-4">
+        <input
+          type="text"
+          placeholder="Type a message"
+          className="input input-bordered flex-1"
+          {...register("text")}
+        />
+        <button className="btn btn-primary ml-2">Send</button>
+      </div>
       <div className="flex flex-col items-center">
         {media ? (
           <img
             src={URL.createObjectURL(media as Blob)}
             alt="Profile"
-            className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-indigo-500"
+            className="w-10 h-10 rounded-full mb-4 object-cover border-2 border-indigo-500"
           />
         ) : (
-          <div className="w-20 h-20 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
-            <span className="text-gray-400">No Image</span>
+          <div className="w-10 h-10 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+            <span className="text-gray-400 text-xs ml-1">No Image</span>
           </div>
         )}
-        <label className="btn btn-sm btn-outline">
+        <label className="btn btn-sm btn-outline text-xs">
           Upload Picture
           <input
             type="file"
@@ -269,20 +286,6 @@ const DirectPage = ({
           />
         </label>
       </div>
-      {/* Input Field */}
-      <form
-        onSubmit={handleSubmit(handleSendMessage)}
-        className="flex items-center bg-base-200 p-4 fixed bottom-0"
-      >
-        <input
-          type="text"
-          placeholder="Message"
-          className="input input-bordered flex-1"
-          {...register("text")}
-        />
-        <button type="submit" className="btn btn-ghost btn-circle ml-2">
-          <i className="fas fa-paper-plane"></i>
-        </button>
       </form>
     </div>
   );

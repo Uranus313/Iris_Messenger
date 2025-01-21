@@ -1,18 +1,20 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import sth from "../../../../assets/Background.png";
 import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
+import userContext from "../../../../contexts/userContext";
 import { Channel } from "../../../../interfaces/interfaces";
 import ChannelMember from "./channelMember/ChannelMember";
-import userContext from "../../../../contexts/userContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
 
 interface Props {
   showChatList: () => void;
   channel: Channel;
+  messageMap: Map<KeyType, any[]>;
+  sendMessage: (message: any) => void;
 }
 
-const ChannelPage = ({ showChatList, channel }: Props) => {
+const ChannelPage = ({ showChatList, channel,messageMap,sendMessage }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
   const { user } = useContext(userContext);
   const [error, setError] = useState<string | null>();
@@ -235,19 +237,42 @@ const ChannelPage = ({ showChatList, channel }: Props) => {
       </div>
       {/* Input Field */}
       {user?.id == channel.ownerId && (
-        <div className="flex items-center bg-base-200 p-4">
-          <button className="btn btn-ghost btn-circle mr-2">
-            <i className="fas fa-smile"></i>
-          </button>
-          <input
-            type="text"
-            placeholder="Message"
-            className="input input-bordered flex-1"
-          />
-          <button className="btn btn-ghost btn-circle ml-2">
-            <i className="fas fa-paper-plane"></i>
-          </button>
-        </div>
+        <form
+          onSubmit={handleSubmit(handleSendMessage)}
+          className="flex items-center bg-base-200 p-4 fixed bottom-0"
+        >
+          <div className="flex items-center bg-base-200 p-4">
+            <input
+              type="text"
+              placeholder="Type a message"
+              className="input input-bordered flex-1"
+              {...register("text")}
+            />
+            <button className="btn btn-primary ml-2">Send</button>
+          </div>
+          <div className="flex flex-col items-center">
+            {media ? (
+              <img
+                src={URL.createObjectURL(media as Blob)}
+                alt="Profile"
+                className="w-10 h-10 rounded-full mb-4 object-cover border-2 border-indigo-500"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+                <span className="text-gray-400 text-xs ml-1">No Image</span>
+              </div>
+            )}
+            <label className="btn btn-sm btn-outline text-xs">
+              Upload Picture
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+        </form>
       )}
     </div>
   );

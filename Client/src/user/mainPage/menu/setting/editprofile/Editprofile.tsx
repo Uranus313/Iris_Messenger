@@ -148,9 +148,9 @@ const Editprofile = ({ goBack }: Props) => {
           {/* Back Icon */}
           <button
             onClick={goBack}
-            className="btn btn-ghost bg-white text-gray-800 me-3 text-lg"
+            className="btn  text-gray me-3 text-lg"
           >
-            <i className="fas fa-arrow-left"></i>
+            <p className="">B</p>
           </button>
           {/* Title */}
           <h2 className="text-xl font-bold text-white">Edit Profile</h2>

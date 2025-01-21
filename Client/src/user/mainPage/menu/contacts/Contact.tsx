@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import React, { useState } from "react";
 import { IAM_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import useGetContacts from "../../../../hooks/useGetContacts";
 import { User } from "../../../../interfaces/interfaces";
@@ -57,7 +57,7 @@ const Contact = ({ goBack }: Props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-base-300 text-white">
       {selectedContact ? (
         // AddContact Component
         <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -160,6 +160,9 @@ const Contact = ({ goBack }: Props) => {
           </ul>
         </>
       )}
+      <p className="text-sm text-base-300 mt-4">
+        Up da ted 10 .4 Sept em be r 29, 20 24 I mp ro v ed stru ctu re
+      </p>
     </div>
   );
 };
