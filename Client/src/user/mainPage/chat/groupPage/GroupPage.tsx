@@ -286,10 +286,12 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
         </div>
       </div>
       {messageMap
-        .get(serializeKey({ _id: group._id, type: "group", }))
+        .get(serializeKey({ _id: group._id, type: "group" }))
         ?.map((message) => {
+          console.log(message);
           return (
             <GroupMesssage
+              avatarUrl={message.sender.profilePicture}
               message={message.text}
               time={message.createdAt}
               isSender={user?.id == message.sender.id}
@@ -298,65 +300,42 @@ const GroupPage = ({ showChatList, group, messageMap, sendMessage }: Props) => {
             />
           );
         })}
-      <div className="flex flex-col items-center">
-        {media ? (
-          <img
-            src={URL.createObjectURL(media as Blob)}
-            alt="Profile"
-            className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-indigo-500"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
-            <span className="text-gray-400">No Image</span>
-          </div>
-        )}
-        <label className="btn btn-sm btn-outline">
-          Upload Picture
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-          />
-        </label>
-      </div>
       {/* Input Field (Sticky at Bottom) */}
       <form
-
         onSubmit={handleSubmit(handleSendMessage)}
         className="flex items-center bg-base-200 p-4 fixed bottom-0"
       >
-      <div className="flex items-center bg-base-200 p-4">
-        <input
-          type="text"
-          placeholder="Type a message"
-          className="input input-bordered flex-1"
-          {...register("text")}
-        />
-        <button className="btn btn-primary ml-2">Send</button>
-      </div>
-      <div className="flex flex-col items-center">
-        {media ? (
-          <img
-            src={URL.createObjectURL(media as Blob)}
-            alt="Profile"
-            className="w-10 h-10 rounded-full mb-4 object-cover border-2 border-indigo-500"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
-            <span className="text-gray-400 text-xs ml-1">No Image</span>
-          </div>
-        )}
-        <label className="btn btn-sm btn-outline text-xs">
-          Upload Picture
+        <div className="flex items-center bg-base-200 p-4">
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
+            type="text"
+            placeholder="Type a message"
+            className="input input-bordered flex-1"
+            {...register("text")}
           />
-        </label>
-      </div>
+          <button className="btn btn-primary ml-2">Send</button>
+        </div>
+        <div className="flex flex-col items-center">
+          {media ? (
+            <img
+              src={URL.createObjectURL(media as Blob)}
+              alt="Profile"
+              className="w-10 h-10 rounded-full mb-4 object-cover border-2 border-indigo-500"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+              <span className="text-gray-400 text-xs ml-1">No Image</span>
+            </div>
+          )}
+          <label className="btn btn-sm btn-outline text-xs">
+            Upload Picture
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
+          </label>
+        </div>
       </form>
     </div>
   );

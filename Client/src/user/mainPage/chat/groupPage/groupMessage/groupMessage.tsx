@@ -1,3 +1,5 @@
+import { Media_api_Link } from "../../../../../consts/APILink";
+
 interface Props {
   isSender: boolean;
   name?: string;
@@ -15,6 +17,7 @@ const GroupMesssage = ({
   time,
   senderTag,
 }: Props) => {
+  console.log(avatarUrl);
   return (
     <div
       className={`flex items-start ${
@@ -22,15 +25,18 @@ const GroupMesssage = ({
       } mb-4`}
     >
       {/* Avatar */}
-      {avatarUrl ? (
-        <div className="avatar">
-          <div className="w-10 h-10 rounded-full">
-            <img src={avatarUrl} alt={`${name || "User"}'s avatar`} />
-          </div>
-        </div>
-      ) : (
+      {!avatarUrl && !isSender ? (
         <div className="avatar bg-blue-500 text-white w-10 h-10 flex items-center justify-center rounded-full font-bold">
           {name ? name.charAt(0).toUpperCase() : "?"}
+        </div>
+      ) : !avatarUrl || isSender ? null : (
+        <div className="avatar">
+          <div className="w-10 h-10 rounded-full">
+            <img
+              src={Media_api_Link + "file/" + avatarUrl}
+              alt={`${name || "User"}'s avatar`}
+            />
+          </div>
         </div>
       )}
 
@@ -51,7 +57,6 @@ const GroupMesssage = ({
           </div>
         )}
         <div className="">
-
           <p className="text-sm">{message}</p>
           <span className="text-xs text-gray-400 mt-1 ml-2">{time}</span>
         </div>
