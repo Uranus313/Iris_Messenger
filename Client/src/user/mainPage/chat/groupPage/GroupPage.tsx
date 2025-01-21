@@ -1,11 +1,11 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import sth from "../../../../assets/Background.png";
 import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
+import userContext from "../../../../contexts/userContext";
 import { Group } from "../../../../interfaces/interfaces";
 import GroupMember from "./groupMember/GroupMember";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import userContext from "../../../../contexts/userContext";
 
 interface Props {
   showChatList: () => void;
@@ -90,7 +90,7 @@ const GroupPage = ({ showChatList, group }: Props) => {
   };
   return (
     <div
-      className="min-h-screen flex flex-col"
+      className="min-h-screen flex flex-col "
       style={{
         backgroundImage: `url(${sth})`,
         backgroundSize: "cover",
@@ -233,19 +233,18 @@ const GroupPage = ({ showChatList, group }: Props) => {
         </div>
       </div>
 
-      {/* Input Field */}
-      <div className="flex items-center bg-base-200 p-4">
-        <button className="btn btn-ghost btn-circle mr-2">
-          <i className="fas fa-smile"></i>
-        </button>
-        <input
-          type="text"
-          placeholder="Message"
-          className="input input-bordered flex-1"
-        />
-        <button className="btn btn-ghost btn-circle ml-2">
-          <i className="fas fa-paper-plane"></i>
-        </button>
+      {/* Input Field (Sticky at Bottom) */}
+      <div className="bg-base-200 p-4 right-0 w-full bottom-0 fixed">
+        <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Message"
+            className="input input-bordered flex-1"
+          />
+          <button className="btn btn-ghost btn-circle ml-2">
+            <p className="">send</p>
+          </button>
+        </div>
       </div>
     </div>
   );

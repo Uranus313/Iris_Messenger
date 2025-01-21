@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { useForm } from "react-hook-form";
 import sth from "../../../../assets/Background.png";
 import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
+import userContext from "../../../../contexts/userContext";
 import { Direct } from "../../../../interfaces/interfaces";
+import { KeyType, serializeKey } from "../../MainPage";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 interface Props {
   showChatList: () => void;
   direct: Direct;
+  messageMap: Map<KeyType, any[]>;
+  sendMessage: (message: any) => void;
 }
 
-const DirectPage = ({ showChatList, direct }: Props) => {
+const DirectPage = ({
+  showChatList,
+  direct,
+  messageMap,
+  sendMessage,
+}: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
+  const { register, handleSubmit } = useForm();
+  const [media, setMedia] = useState<File | null>(null);
+  const { user } = useContext(userContext);
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
@@ -19,7 +32,50 @@ const DirectPage = ({ showChatList, direct }: Props) => {
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
-  const banUserMutate = useMutation({
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMedia(file);
+    }
+  };
+
+  const handleSendMessage = async (formData: any) => {
+    if (!formData.text && !media) {
+      alert("Please enter a message or select a file.");
+      return;
+    }
+
+    // Prepare file buffer if a file is provided
+    let fileBuffer = null;
+    let fileName = null;
+    if (media) {
+      const arrayBuffer = await media.arrayBuffer();
+      fileBuffer = Array.from(new Uint8Array(arrayBuffer));
+      fileName = media.name;
+    }
+
+    // Prepare data to emit
+    const data = {
+      text: formData.text,
+      messageType: "direct",
+      directId: direct._id,
+    };
+
+    const payload = {
+      data,
+      filename: fileName,
+      fileBuffer, // File buffer or null
+    };
+
+    // Emit data to the server
+    console.log("Sending message...");
+    sendMessage(payload);
+
+    // Reset form
+    // setText("");
+    // setTargetUserId("");
+    // setFile(null);
+  };  const banUserMutate = useMutation({
     mutationFn: async (data: { targetUserId: number }) => {
       const result = await fetch(Core_api_Link + `users/blockUser`, {
         method: "POST",
@@ -119,8 +175,8 @@ const DirectPage = ({ showChatList, direct }: Props) => {
                   />
                 </div>
               </div>
-              <div className="ms-32">
-                <h2 className="mt-4 text-xl font-bold text-base-content">
+              <div className="">
+                <h2 className="mt-5 text-xl font-bold text-base-content">
                   {direct.user.firstName + " " + direct.user.firstName}
                 </h2>
                 <p className="text-sm text-gray-500">{direct.user.isOnline}</p>
@@ -128,11 +184,11 @@ const DirectPage = ({ showChatList, direct }: Props) => {
             </div>
 
             {/* User Info */}
-            <div className="p-4 space-y-4 ms-12 ">
+            <div className="p-4 space-y-4 ">
               {/* Phone */}
               <div className="flex items-center">
                 <i className="fas fa-phone text-xl text-gray-500"></i>
-                <div className="ml-4">
+                <div className="">
                   <p className="text-base-content font-medium">
                     {direct.user.phoneNumber}
                   </p>
@@ -143,7 +199,7 @@ const DirectPage = ({ showChatList, direct }: Props) => {
               {/* Username */}
               <div className="flex items-center">
                 <i className="fas fa-at text-xl text-gray-500"></i>
-                <div className="ml-4">
+                <div className="">
                   <p className="text-base-content font-medium">
                     {direct.user.username}
                   </p>
@@ -181,20 +237,53 @@ const DirectPage = ({ showChatList, direct }: Props) => {
         </div>
       </div>
 
+      {messageMap.get(serializeKey({ _id: direct._id, type: "direct" }))?.map((message) => {
+        return (
+          <DirectMessage
+            content={message.text}
+            time={message.createdAt}
+            isSender={user?.id == message.sender.id}
+            key={message._id}
+          />
+        );
+      })}
+      <div className="flex flex-col items-center">
+        {media ? (
+          <img
+            src={URL.createObjectURL(media as Blob)}
+            alt="Profile"
+            className="w-20 h-20 rounded-full mb-4 object-cover border-2 border-indigo-500"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-gray-700 mb-4 flex items-center justify-center">
+            <span className="text-gray-400">No Image</span>
+          </div>
+        )}
+        <label className="btn btn-sm btn-outline">
+          Upload Picture
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+        </label>
+      </div>
       {/* Input Field */}
-      <div className="flex items-center bg-base-200 p-4">
-        <button className="btn btn-ghost btn-circle mr-2">
-          <i className="fas fa-smile"></i>
-        </button>
+      <form
+        onSubmit={handleSubmit(handleSendMessage)}
+        className="flex items-center bg-base-200 p-4 fixed bottom-0"
+      >
         <input
           type="text"
           placeholder="Message"
           className="input input-bordered flex-1"
+          {...register("text")}
         />
-        <button className="btn btn-ghost btn-circle ml-2">
+        <button type="submit" className="btn btn-ghost btn-circle ml-2">
           <i className="fas fa-paper-plane"></i>
         </button>
-      </div>
+      </form>
     </div>
   );
 };
