@@ -4,9 +4,17 @@ import GroupsChatItem from "./groupsChatItem/GroupsChatItem";
 
 interface Props {
   setSelectedChat: (nextState: Group | Channel | Direct | null) => void;
+  userGroupsSearched: Group[];
+  setSelectedChatStatus: (
+    nextState: "group" | "channel" | "direct" | null
+  ) => void;
 }
 
-const GroupsChat = ({ setSelectedChat }: Props) => {
+const GroupsChat = ({
+  setSelectedChat,
+  userGroupsSearched,
+  setSelectedChatStatus,
+}: Props) => {
   let { data, error, isLoading } = useGetGroups();
   return (
     <div className="w-full max-w-lg bg-base-300 rounded-lg shadow-lg">
@@ -15,9 +23,21 @@ const GroupsChat = ({ setSelectedChat }: Props) => {
         <span className="loading loading-spinner loading-md"></span>
       ) : (
         <div className="divide-y divide-base-200">
-          {data?.data.length! > 0 ? (
-            data?.data?.map((groupData, index) => (
-              <div key={index} onClick={() => setSelectedChat(groupData.group)}>
+          {userGroupsSearched.length > 0 ? (
+            userGroupsSearched.map((group, index) => (
+              <div key={index}>
+                <GroupsChatItem key={index} group={group} lastMessage={null} />
+              </div>
+            ))
+          ) : data?.data.length! > 0 ? (
+            data?.data.map((groupData, index) => (
+              <div
+                key={index}
+                onClick={() => {
+                  setSelectedChat(groupData.group);
+                  setSelectedChatStatus(groupData.group.status);
+                }}
+              >
                 <GroupsChatItem
                   key={index}
                   group={groupData.group}

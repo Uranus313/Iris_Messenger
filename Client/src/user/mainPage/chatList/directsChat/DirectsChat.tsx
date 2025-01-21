@@ -3,10 +3,13 @@ import { Channel, Direct, Group } from "../../../../interfaces/interfaces";
 import DirectsChatItem from "./directsChatItem/DirectsChatItem";
 
 interface Props {
+  setSelectedChatStatus: (
+    nextState: "group" | "channel" | "direct" | null
+  ) => void;
   setSelectedChat: (nextState: Group | Channel | Direct | null) => void;
 }
 
-const DirectsChat = ({ setSelectedChat }: Props) => {
+const DirectsChat = ({ setSelectedChat, setSelectedChatStatus }: Props) => {
   let { data, error, isLoading } = useGetDirects();
   return (
     <div className="w-full max-w-lg bg-base-300 rounded-lg shadow-lg">
@@ -19,7 +22,10 @@ const DirectsChat = ({ setSelectedChat }: Props) => {
             data?.data?.map((directData, index) => (
               <div
                 key={index}
-                onClick={() => setSelectedChat(directData.direct)}
+                onClick={() => {
+                  setSelectedChat(directData.direct);
+                  setSelectedChatStatus(directData.direct.status);
+                }}
               >
                 <DirectsChatItem
                   key={index}

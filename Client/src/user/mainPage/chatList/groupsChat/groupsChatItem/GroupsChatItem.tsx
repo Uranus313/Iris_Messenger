@@ -3,7 +3,7 @@ import { Group, GroupMessage } from "../../../../../interfaces/interfaces";
 
 interface Props {
   group: Group;
-  lastMessage: GroupMessage;
+  lastMessage: GroupMessage | null;
 }
 
 const GroupsChatItem = ({ group, lastMessage }: Props) => {
@@ -13,7 +13,8 @@ const GroupsChatItem = ({ group, lastMessage }: Props) => {
       <div className="flex items-center">
         <div className=" rounded-full">
           <div className="w-12 h-12 rounded-full">
-            <img className=" rounded-full w-12 h-12 "
+            <img
+              className=" rounded-full w-12 h-12 "
               src={
                 group.profilePicture
                   ? Media_api_Link + "file/" + group.profilePicture
@@ -25,7 +26,7 @@ const GroupsChatItem = ({ group, lastMessage }: Props) => {
         </div>
         <div className="ml-3">
           <h2 className="font-bold text-base-content">{group.name}</h2>
-          <p className="text-sm">{lastMessage.text}</p>
+          <p className="text-sm">{lastMessage?.text}</p>
         </div>
       </div>
     </div>

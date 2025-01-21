@@ -1,20 +1,93 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import sth from "../../../../assets/Background.png";
-import { Media_api_Link } from "../../../../consts/APILink";
+import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import { Group } from "../../../../interfaces/interfaces";
+import GroupMember from "./groupMember/GroupMember";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import userContext from "../../../../contexts/userContext";
 
 interface Props {
   showChatList: () => void;
   group: Group;
 }
 
-const DirectPage = ({ showChatList, group }: Props) => {
+const GroupPage = ({ showChatList, group }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
-
+  const [error, setError] = useState<string | null>();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const { user } = useContext(userContext);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { handleSubmit } = useForm();
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
-
+  const leaveGroup = useMutation({
+    mutationFn: async (groupId: string) => {
+      const result = await fetch(
+        Core_api_Link + `groups/` + `${groupId}` + `/leave`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setSubmitLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setSubmitLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleLeave = () => {
+    setSubmitLoading(true);
+    leaveGroup.mutate(group._id);
+  };
+  const deleteGroup = useMutation({
+    mutationFn: async (groupId: string) => {
+      const result = await fetch(Core_api_Link + `groups/` + `${groupId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setDeleteLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setDeleteLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleDletet = () => {
+    setDeleteLoading(true);
+    deleteGroup.mutate(group._id);
+  };
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -52,15 +125,6 @@ const DirectPage = ({ showChatList, group }: Props) => {
             </div>
           </div>
         </button>
-        {/* <div className="relative">
-          <button className="btn btn-sm">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://icon-library.com/images/android-3-dot-menu-icon/android-3-dot-menu-icon-0.jpg"
-              alt=""
-            />
-          </button>
-        </div> */}
       </div>
 
       {/* Right Menu */}
@@ -128,32 +192,43 @@ const DirectPage = ({ showChatList, group }: Props) => {
               </div>
             </div>
             <div className="flex  w-full ml-4">
-              <div className="">
+              <form
+                onSubmit={
+                  submitLoading
+                    ? (e) => e.preventDefault()
+                    : handleSubmit(handleLeave)
+                }
+                className=""
+              >
                 <button className="btn btn-sm bg-red-500 text-gray">
-                  Leave
+                  {submitLoading ? (
+                    <span className="loading loading-spinner loading-md"></span>
+                  ) : (
+                    "Leave"
+                  )}
                 </button>
-              </div>
+              </form>
+              {user?.id == group.ownerId && (
+                <form
+                  onSubmit={
+                    deleteLoading
+                      ? (e) => e.preventDefault()
+                      : handleSubmit(handleDletet)
+                  }
+                  className=""
+                >
+                  <button className="btn btn-sm bg-red-500 text-gray">
+                    {deleteLoading ? (
+                      <span className="loading loading-spinner loading-md"></span>
+                    ) : (
+                      "Delete"
+                    )}
+                  </button>
+                </form>
+              )}
+              {error && error}
             </div>
-            {/* Members List */}
-            <div className="flex-1 overflow-y-auto px-4 py-2">
-              <div className="flex items-center justify-between py-3 border-b border-base-200">
-                <div className="flex items-center p-3 justify-between">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full">
-                      <img
-                        src="https://via.placeholder.com/150" // Replace with the member avatar
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                  <div className="ml-3 text-xs">
-                    <p className="text-xs font-medium">amirreza</p>
-                    <p className="text-xs text-gray-500">online</p>
-                  </div>
-                  <span className="text-xs text-gray-400 ms-6">owner</span>
-                </div>
-              </div>
-            </div>
+            <GroupMember group={group} />
           </div>
         </div>
       </div>
@@ -224,4 +299,4 @@ const DirectPage = ({ showChatList, group }: Props) => {
   );
 };
 
-export default DirectPage;
+export default GroupPage;

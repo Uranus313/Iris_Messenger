@@ -15,12 +15,17 @@ const MainPage = () => {
   let [selectedChat, setSelectedChat] = useState<
     Group | Channel | Direct | null
   >(null);
+  let [selectedChatStatus, setSelectedChatStatus] = useState<
+    "group" | "channel" | "direct" | null
+  >(null);
   let [SidebarState, setSidebarState] = useState<
     "chatlist" | "settings" | "contacts" | "addChannel" | "addGroup"
   >("chatlist");
   useEffect(() => {
     if (selectedChat) {
       setChatList(false);
+      console.log(selectedChatStatus);
+      console.log(selectedChat);
     }
   }, [selectedChat]);
   return (
@@ -37,6 +42,7 @@ const MainPage = () => {
           <ChatList
             setSidebarState={setSidebarState}
             setSelectedChat={setSelectedChat}
+            setSelectedChatStatus={setSelectedChatStatus}
           />
         )}
         {SidebarState == "settings" && (
@@ -61,30 +67,33 @@ const MainPage = () => {
             : "flex-grow bg-base-200  md:block " + "hidden"
         }
       >
-        {selectedChat?.status == "direct" && (
+        {selectedChatStatus == "direct" && (
           <DirectPage
             direct={selectedChat as Direct}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
+              setSelectedChatStatus(null);
             }}
           />
         )}
-        {selectedChat?.status == "group" && (
+        {selectedChatStatus == "group" && (
           <GroupPage
             group={selectedChat as Group}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
+              setSelectedChatStatus(null);
             }}
           />
         )}
-        {selectedChat?.status == "channel" && (
+        {selectedChatStatus == "channel" && (
           <ChannelPage
             channel={selectedChat as Channel}
             showChatList={() => {
               setChatList(true);
               setSelectedChat(null);
+              setSelectedChatStatus(null);
             }}
           />
         )}
@@ -102,7 +111,6 @@ const MainPage = () => {
           </div>
         )}
       </div>
-      
     </div>
   );
 };

@@ -54,7 +54,7 @@ const Editprofile = ({ goBack }: Props) => {
       username?: string;
       bio?: string;
     }) => {
-      const result = await fetch(IAM_api_Link + `users/updateProfilePictur`, {
+      const result = await fetch(IAM_api_Link + `users/editUser`, {
         method: "PATCH",
         credentials: "include",
         headers: {

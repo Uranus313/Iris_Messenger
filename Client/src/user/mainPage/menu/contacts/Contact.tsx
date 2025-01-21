@@ -110,8 +110,8 @@ const Contact = ({ goBack }: Props) => {
         )}
       </ul>
       <p className=" text-sm text-base-300">
-          Up dated 10 . 4 Sep tem ber 29 , 20 24 Imp roved struc ture
-        </p>
+        Up dated 10 . 4 Sep tem ber 29 , 20 24 Imp roved struc ture
+      </p>
       {/* Add Contact Button
       <button className="btn btn-circle btn-primary fixed bottom-5 right-5">
         <i className="fas fa-plus"></i>

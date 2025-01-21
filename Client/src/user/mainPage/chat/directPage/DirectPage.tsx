@@ -128,9 +128,6 @@ const DirectPage = ({ showChatList, direct }: Props) => {
               <div className="">
                 <button className="btn btn-sm ">Block User</button>
               </div>
-              <div>
-                <button className="btn btn-sm ">Delete Chat</button>
-              </div>
             </div>
           </div>
         </div>
@@ -170,7 +167,6 @@ const DirectPage = ({ showChatList, direct }: Props) => {
           <i className="fas fa-paper-plane"></i>
         </button>
       </div>
-      
     </div>
   );
 };
