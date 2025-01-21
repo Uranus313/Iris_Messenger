@@ -9,22 +9,23 @@ interface Props {
   selectedContact: User;
 }
 
-const AddContact = ({ goBack, selectedContact }: Props) => {
-  const [error, setError] = useState<string | null>(null);
+const RemoveContact = ({ goBack, selectedContact }: Props) => {
+  const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const { handleSubmit } = useForm();
-
-  const addContactMutate = useMutation({
-    mutationFn: async (data: { targetUserId: number }) => {
-      const result = await fetch(Core_api_Link + `users/addContact`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+  const removeContactMutate = useMutation({
+    mutationFn: async (contactId: number) => {
+      const result = await fetch(
+        Core_api_Link + `users/removeContact/${contactId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const jsonResult = await result.json();
       if (result.ok) {
         return jsonResult;
@@ -37,30 +38,21 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
       queryClient.invalidateQueries({ queryKey: ["contacts"] });
       goBack();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       setSubmitLoading(false);
       setError(error.message);
     },
   });
-
-  const handleAdd = () => {
+  const handleRemove = () => {
     setSubmitLoading(true);
     if (selectedContact.id) {
-      addContactMutate.mutate({ targetUserId: selectedContact.id });
+      removeContactMutate.mutate(selectedContact.id);
     }
   };
-
   return (
-    <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
-      <div className="bg-base-200 shadow-lg rounded-lg w-full max-w-md p-6">
-        {/* Back Button */}
-        <button
-          onClick={goBack}
-          className="btn btn-sm btn-outline mb-4 flex items-center"
-        >
-          <p className=" mr-1">B</p> 
-        </button>
-
+    <div className="min-h-screen bg-base-100 flex items-center justify-center">
+      <button onClick={goBack}>Back</button>
+      <div className="bg-base-200 shadow-lg rounded-lg w-full max-w-sm p-6">
         {/* Profile Picture */}
         <div className="flex flex-col items-center">
           <div
@@ -68,48 +60,30 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
             style={{
               backgroundImage: selectedContact.profilePicture
                 ? `url(${Media_api_Link}file/${selectedContact.profilePicture})`
-                : "",
+                : "", // Placeholder image
             }}
-          >
-            {!selectedContact.profilePicture && (
-              <div className="h-full flex items-center justify-center text-gray-400">
-                No Image
-              </div>
-            )}
-          </div>
+          ></div>
         </div>
 
         {/* Profile Information */}
         <div className="text-center">
-          <h2 className="text-xl font-bold text-primary mb-2">
-            {selectedContact.firstName} {selectedContact.lastName}
-          </h2>
+          <h2 className="text-xl font-bold text-primary mb-2"></h2>
           <p className="text-gray-600 mb-4">{selectedContact.email}</p>
 
-          {/* Form Submission */}
           <form
             onSubmit={
               submitLoading
                 ? (e) => e.preventDefault()
-                : handleSubmit(handleAdd)
+                : handleSubmit(handleRemove)
             }
-            className="space-y-4"
           >
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
-            )}
-
+            {error && error}
             {/* Submit Button */}
-            <button
-              type="submit"
-              className={`btn btn-primary w-full ${
-                submitLoading && "btn-disabled"
-              }`}
-            >
+            <button className="btn btn-sm bg-red-500 text-gray">
               {submitLoading ? (
                 <span className="loading loading-spinner loading-md"></span>
               ) : (
-                "Add Contact"
+                "Remove"
               )}
             </button>
           </form>
@@ -119,4 +93,4 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
   );
 };
 
-export default AddContact;
+export default RemoveContact;
