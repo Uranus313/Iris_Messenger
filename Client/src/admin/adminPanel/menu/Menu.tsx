@@ -5,7 +5,7 @@ interface Props {
   setActiveTab: React.Dispatch<React.SetStateAction<"users" | "reports" | "channels" | "groups">>;
 }
 
-const Menu: React.FC<Props> = ({ activeTab, setActiveTab }) => {
+const Menu=({ activeTab, setActiveTab }: Props) => {
   return (
     <div className="bg-gray-800 w-60 min-h-screen p-4">
       <h2 className="text-2xl font-bold text-yellow-400 mb-6">Admin Panel</h2>

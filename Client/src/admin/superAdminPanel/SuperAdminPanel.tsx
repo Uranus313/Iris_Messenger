@@ -1,81 +1,76 @@
 import React, { useState } from "react";
-import AddAdmin from "../addAdmin/AddAdmin";
+import AddAdmin from "./addAdmin/AddAdmin";
+import AdminList from "./adminList/AdminList";
 
 const SuperAdminPanel: React.FC = () => {
-  const [activePage, setActivePage] = useState<string>("dashboard");
-
-  // Menu Options
-  const menuItems = [
-    { id: "dashboard", label: "Dashboard" },
-    { id: "add-admin", label: "Add Admin" },
-  ];
-
-  // Add Admin Form State
-  const [adminData, setAdminData] = useState({
-    name: "",
-    email: "",
-    role: "",
-  });
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setAdminData({ ...adminData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!adminData.name || !adminData.email || !adminData.role) {
-      alert("Please fill all fields.");
-      return;
-    }
-    alert(
-      `Admin ${adminData.name} added successfully with role: ${adminData.role}`
-    );
-    setAdminData({ name: "", email: "", role: "" });
-  };
+  const [activeTab, setActiveTab] = useState<"addAdmin" | "adminList">("addAdmin");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="flex bg-gray-900 text-white min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white flex flex-col">
-        <h1 className="text-2xl font-bold p-4 border-b border-gray-700 text-center">
-          Admin Panel
-        </h1>
-        <nav className="flex-grow">
-          <ul className="menu p-4">
-            {menuItems.map((item) => (
-              <li
-                key={item.id}
-                className={
-                  activePage === item.id ? "bg-gray-700 rounded-lg" : ""
-                }
+      <div
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 transition-transform duration-300 ease-in-out z-50`}
+      >
+        <div className="p-4">
+          <h1 className="text-2xl font-bold mb-6 text-center">Super Admin Panel</h1>
+          <button
+            className="md:hidden absolute top-4 right-4 text-white text-xl"
+            onClick={() => setMenuOpen(false)}
+          >
+            &times;
+          </button>
+        </div>
+        <nav>
+          <ul className="space-y-4 p-4">
+            <li>
+              <button
+                onClick={() => {
+                  setActiveTab("addAdmin");
+                  setMenuOpen(false);
+                }}
+                className={`block text-left w-full ${
+                  activeTab === "addAdmin" ? "text-blue-500" : "text-white"
+                } hover:text-gray-300`}
               >
-                <button
-                  className="text-left w-full p-2 hover:bg-gray-700 rounded-lg"
-                  onClick={() => setActivePage(item.id)}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
+                Add Admin
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  setActiveTab("adminList");
+                  setMenuOpen(false);
+                }}
+                className={`block text-left w-full ${
+                  activeTab === "adminList" ? "text-blue-500" : "text-white"
+                } hover:text-gray-300`}
+              >
+                Admin List
+              </button>
+            </li>
           </ul>
         </nav>
-      </aside>
+      </div>
 
       {/* Main Content */}
-      <main className="flex-grow p-6">
-        {activePage === "dashboard" && (
-          <h2 className="text-3xl font-bold mb-4">Welcome to the Dashboard!</h2>
-        )}
+      <div className="flex-1 md:ml-64 p-4">
+        {/* Hamburger Menu Button */}
+        <button
+          className="md:hidden fixed top-4 left-4 z-50 text-white text-2xl"
+          onClick={() => setMenuOpen(true)}
+        >
+          &#9776;
+        </button>
 
-        {activePage === "add-admin" && (
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
-            <AddAdmin />
-          </div>
-        )}
-
-      </main>
+        {/* Active Tab Content */}
+        <div className="mt-16">
+          {activeTab === "addAdmin" && <AddAdmin />}
+          {activeTab === "adminList" && <AdminList />}
+        </div>
+      </div>
     </div>
   );
 };

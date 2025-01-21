@@ -10,13 +10,14 @@ import UserHomeLayout from "../layouts/UserHomeLayout";
 import Login from "../user/login/login";
 import MainPage from "../user/mainPage/MainPage";
 import App from "../App";
+import Menu from "../App";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <OuterLayout />,
     children: [
-      { path: "kir/", element: <App message={"esrdtfguh gchjvkj hvkhk "} time={"14:97"}/> },
+      { path: "kir/", element: <SuperAdminPanel/> },
 
       {
         path: "user/",
