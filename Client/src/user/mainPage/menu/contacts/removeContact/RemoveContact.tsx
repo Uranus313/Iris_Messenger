@@ -9,21 +9,23 @@ interface Props {
   selectedContact: User;
 }
 
-const AddContact = ({ goBack, selectedContact }: Props) => {
+const RemoveContact = ({ goBack, selectedContact }: Props) => {
   const [error, setError] = useState<string | null>();
   const [submitLoading, setSubmitLoading] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const { handleSubmit } = useForm();
-  const addContactMutate = useMutation({
-    mutationFn: async (data: { targetUserId: number }) => {
-      const result = await fetch(Core_api_Link + `users/addContact`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+  const removeContactMutate = useMutation({
+    mutationFn: async (contactId: number) => {
+      const result = await fetch(
+        Core_api_Link + `users/removeContact/${contactId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const jsonResult = await result.json();
       if (result.ok) {
         return jsonResult;
@@ -41,10 +43,10 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
       setError(error.message);
     },
   });
-  const handleAdd = () => {
+  const handleRemove = () => {
     setSubmitLoading(true);
     if (selectedContact.id) {
-      addContactMutate.mutate({ targetUserId: selectedContact.id });
+      removeContactMutate.mutate(selectedContact.id);
     }
   };
   return (
@@ -72,16 +74,16 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
             onSubmit={
               submitLoading
                 ? (e) => e.preventDefault()
-                : handleSubmit(handleAdd)
+                : handleSubmit(handleRemove)
             }
           >
             {error && error}
             {/* Submit Button */}
-            <button className="btn btn-sm bg-blue-500 text-gray">
+            <button className="btn btn-sm bg-red-500 text-gray">
               {submitLoading ? (
                 <span className="loading loading-spinner loading-md"></span>
               ) : (
-                "Submit"
+                "Remove"
               )}
             </button>
           </form>
@@ -91,4 +93,4 @@ const AddContact = ({ goBack, selectedContact }: Props) => {
   );
 };
 
-export default AddContact;
+export default RemoveContact;

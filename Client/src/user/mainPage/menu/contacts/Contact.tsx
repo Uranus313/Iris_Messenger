@@ -4,6 +4,7 @@ import { IAM_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import useGetContacts from "../../../../hooks/useGetContacts";
 import { User } from "../../../../interfaces/interfaces";
 import AddContact from "./addContact/AddContact";
+import RemoveContact from "./removeContact/RemoveContact";
 
 interface Props {
   goBack: () => void;
@@ -14,6 +15,7 @@ const Contact = ({ goBack }: Props) => {
   const [userSearched, setUsersSearched] = useState<User[]>([]);
   const [showError, setShowError] = useState<string | null>();
   const [selectedContact, setSelectedContact] = useState<User | null>(null); // State for selected contact
+  const [selectedUser, setSelectedUser] = useState<User | null>(null); // State for selected user
 
   const getUserBySearch = useMutation({
     mutationFn: async (email: string) => {
@@ -49,16 +51,35 @@ const Contact = ({ goBack }: Props) => {
     }
   };
 
+  const handleUserClick = (contact: User) => {
+    setSelectedUser(contact);
+  };
+
   const handleContactClick = (contact: User) => {
     setSelectedContact(contact);
   };
 
   return (
     <div className="min-h-screen bg-base-300 text-white">
-      {selectedContact ? (
+      {error && error.message}
+      {showError && showError}
+      {isLoading && (
+        <span className="loading loading-spinner loading-md"></span>
+      )}
+      {selectedUser ? (
         <AddContact
           goBack={() => {
+            setSelectedUser(null);
             setSelectedContact(null);
+            setUsersSearched([]);
+          }}
+          selectedContact={selectedUser}
+        />
+      ) : selectedContact ? (
+        <RemoveContact
+          goBack={() => {
+            setSelectedContact(null);
+            setSelectedUser(null);
             setUsersSearched([]);
           }}
           selectedContact={selectedContact}
@@ -89,7 +110,7 @@ const Contact = ({ goBack }: Props) => {
                 <li
                   key={contact.id}
                   className="flex items-center gap-4 bg-gray-800 p-3 rounded-lg cursor-pointer"
-                  onClick={() => handleContactClick(contact)} // Set selected contact on click
+                  onClick={() => handleUserClick(contact)} // Set selected contact on click
                 >
                   <img
                     src={
@@ -110,6 +131,7 @@ const Contact = ({ goBack }: Props) => {
               contacts?.map((contact) => (
                 <li
                   key={contact.id}
+                  onClick={() => handleContactClick(contact)}
                   className="flex items-center gap-4 bg-gray-800 p-3 rounded-lg cursor-pointer"
                 >
                   <img
@@ -134,7 +156,7 @@ const Contact = ({ goBack }: Props) => {
         </>
       )}
       <p className="text-sm text-base-300 mt-4">
-        Up da ted 10 .4 Sept em be r 29, 20 24 I mp ro v ed stru ctu re
+        Updated 10.4 September 29, 2024 - Improved structure
       </p>
     </div>
   );
