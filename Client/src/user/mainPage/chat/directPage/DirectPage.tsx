@@ -1,8 +1,9 @@
 import { useState } from "react";
 import sth from "../../../../assets/Background.png";
-import { Media_api_Link } from "../../../../consts/APILink";
+import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import { Direct } from "../../../../interfaces/interfaces";
-import DirectMessage from "./directMessage/DirectMessage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 
 interface Props {
   showChatList: () => void;
@@ -11,11 +12,46 @@ interface Props {
 
 const DirectPage = ({ showChatList, direct }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
-
+  const [error, setError] = useState<string | null>();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { handleSubmit } = useForm();
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
-
+  const banUserMutate = useMutation({
+    mutationFn: async (data: { targetUserId: number }) => {
+      const result = await fetch(Core_api_Link + `users/blockUser`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log(data);
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setSubmitLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["directs"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setSubmitLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleBan = () => {
+    setSubmitLoading(true);
+    banUserMutate.mutate({ targetUserId: direct.user.id });
+  };
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -124,11 +160,23 @@ const DirectPage = ({ showChatList, direct }: Props) => {
                 </div>
               </div>
             </div>
-            <div className="flex ms-10 w-full">
-              <div className="">
-                <button className="btn btn-sm ">Block User</button>
-              </div>
-            </div>
+            <form
+              onSubmit={
+                submitLoading
+                  ? (e) => e.preventDefault()
+                  : handleSubmit(handleBan)
+              }
+              className="flex ms-10 w-full"
+            >
+              <button className="">
+                {submitLoading ? (
+                  <span className="loading loading-spinner loading-md"></span>
+                ) : (
+                  "Block User"
+                )}
+              </button>
+              {error && error}
+            </form>
           </div>
         </div>
       </div>
