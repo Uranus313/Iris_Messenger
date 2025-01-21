@@ -40,6 +40,7 @@ const GroupsChat = ({
                 onClick={() => {
                   setSidebarState("joinGroup");
                   setSelectedChat(group);
+                  setSelectedChatStatus(null);
                 }}
               >
                 <GroupsChatItem key={index} group={group} lastMessage={null} />

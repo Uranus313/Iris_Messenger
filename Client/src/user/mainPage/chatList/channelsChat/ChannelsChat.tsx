@@ -40,6 +40,7 @@ const ChannelsChat = ({
                 onClick={() => {
                   setSidebarState("joinChannel");
                   setSelectedChat(channel);
+                  setSelectedChatStatus(null);
                 }}
               >
                 <ChannelsChatItem
