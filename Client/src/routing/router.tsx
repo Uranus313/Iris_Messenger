@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <OuterLayout />,
     children: [
-      { path: "kir/", element: <SuperAdminPanel/> },
+      { path: "kir/", element: <MainPage/> },
 
       {
         path: "user/",
