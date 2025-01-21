@@ -3,7 +3,7 @@ import { Channel, ChannelMessage } from "../../../../../interfaces/interfaces";
 
 interface Props {
   channel: Channel;
-  lastMessage: ChannelMessage;
+  lastMessage: ChannelMessage | null;
 }
 
 const ChannelsChatItem = ({ channel, lastMessage }: Props) => {
@@ -13,9 +13,10 @@ const ChannelsChatItem = ({ channel, lastMessage }: Props) => {
       <div className="flex items-center">
         <div className=" rounded-full">
           <div className="w-12 h-12 rounded-full">
-            <img className=" rounded-full w-12 h-12 "
+            <img
+              className=" rounded-full w-12 h-12 "
               src={
-                channel.profilePicture
+                channel.profilePicture!
                   ? Media_api_Link + "file/" + channel.profilePicture
                   : ""
               }
@@ -25,7 +26,7 @@ const ChannelsChatItem = ({ channel, lastMessage }: Props) => {
         </div>
         <div className="ml-3">
           <h2 className="font-bold text-base-content">{channel.name}</h2>
-          <p className="text-sm">{lastMessage.text}</p>
+          <p className="text-sm">{lastMessage?.text}</p>
         </div>
       </div>
     </div>

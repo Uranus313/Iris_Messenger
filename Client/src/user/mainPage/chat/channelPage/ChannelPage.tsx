@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import sth from "../../../../assets/Background.png";
-import { Media_api_Link } from "../../../../consts/APILink";
+import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import { Channel } from "../../../../interfaces/interfaces";
+import ChannelMember from "./channelMember/ChannelMember";
+import userContext from "../../../../contexts/userContext";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 
 interface Props {
   showChatList: () => void;
@@ -10,12 +14,80 @@ interface Props {
 
 const ChannelPage = ({ showChatList, channel }: Props) => {
   const [isRightMenuOpen, setIsRightMenuOpen] = useState(false);
-
+  const { user } = useContext(userContext);
+  const [error, setError] = useState<string | null>();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { handleSubmit } = useForm();
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
-
-  // return user1 ? (
+  const leaveChannel = useMutation({
+    mutationFn: async (channelId: string) => {
+      const result = await fetch(
+        Core_api_Link + `channels/` + `${channelId}` + `/leave`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setSubmitLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setSubmitLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleLeave = () => {
+    setSubmitLoading(true);
+    leaveChannel.mutate(channel._id);
+  };
+  const deleteChannel = useMutation({
+    mutationFn: async (channelId: string) => {
+      const result = await fetch(Core_api_Link + `channels/` + `${channelId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setDeleteLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setDeleteLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleDletet = () => {
+    setDeleteLoading(true);
+    deleteChannel.mutate(channel._id);
+  };
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -53,15 +125,6 @@ const ChannelPage = ({ showChatList, channel }: Props) => {
             </div>
           </div>
         </button>
-        {/* <div className="relative">
-          <button className="btn btn-sm">
-            <img
-              className="w-8 h-8 rounded-full"
-              src="https://icon-library.com/images/android-3-dot-menu-icon/android-3-dot-menu-icon-0.jpg"
-              alt=""
-            />
-          </button>
-        </div> */}
       </div>
 
       {/* Right Menu */}
@@ -129,98 +192,63 @@ const ChannelPage = ({ showChatList, channel }: Props) => {
               </div>
             </div>
             <div className="flex  w-full ml-4">
-              <div className="">
+              <form
+                onSubmit={
+                  submitLoading
+                    ? (e) => e.preventDefault()
+                    : handleSubmit(handleLeave)
+                }
+                className=""
+              >
                 <button className="btn btn-sm bg-red-500 text-gray">
-                  Leave
+                  {submitLoading ? (
+                    <span className="loading loading-spinner loading-md"></span>
+                  ) : (
+                    "Leave"
+                  )}
                 </button>
-              </div>
+              </form>
+              {user?.id == channel.ownerId && (
+                <form
+                  onSubmit={
+                    deleteLoading
+                      ? (e) => e.preventDefault()
+                      : handleSubmit(handleDletet)
+                  }
+                  className=""
+                >
+                  <button className="btn btn-sm bg-red-500 text-gray">
+                    {deleteLoading ? (
+                      <span className="loading loading-spinner loading-md"></span>
+                    ) : (
+                      "Delete"
+                    )}
+                  </button>
+                </form>
+              )}
+
+              {error && error}
             </div>
-            {/* Members List */}
-            <div className="flex-1 overflow-y-auto px-4 py-2">
-              <div className="flex items-center justify-between py-3 border-b border-base-200">
-                <div className="flex items-center p-3 justify-between">
-                  <div className="avatar">
-                    <div className="w-10 h-10 rounded-full">
-                      <img
-                        src="https://via.placeholder.com/150" // Replace with the member avatar
-                        alt=""
-                      />
-                    </div>
-                  </div>
-                  <div className="ml-3 text-xs">
-                    <p className="text-xs font-medium">amirreza</p>
-                    <p className="text-xs text-gray-500">online</p>
-                  </div>
-                  <span className="text-xs text-gray-400 ms-6">owner</span>
-                </div>
-              </div>
-            </div>
+            {user?.id == channel.ownerId && <ChannelMember channel={channel} />}
           </div>
         </div>
       </div>
-
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
-        {/* Date Separator */}
-        <div className="text-center my-2 text-xs text-gray-500">January 5</div>
-
-        {/* Message Bubble */}
-        <div className="flex justify-end mb-4">
-          <div className="bg-primary text-primary-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">خروجی پروژه‌ها جبر چه درصدایی باید باشه؟</p>
-            <span className="text-xs text-gray-300 block text-right mt-1">
-              22:40
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">سلام ممنونم تو خوبی</p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:39
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">
-              ببین برای کی میز. استاد گفت که 20 درصد اوکیه به بالا برای رگرسیون.
-            </p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:41
-            </span>
-          </div>
-        </div>
-
-        {/* Date Separator */}
-        <div className="text-center my-2 text-xs text-gray-500">January 6</div>
-
-        <div className="flex justify-end mb-4">
-          <div className="bg-primary text-primary-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">آها حله مرسی</p>
-            <span className="text-xs text-gray-300 block text-right mt-1">
-              00:00
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Input Field */}
-      <div className="flex items-center bg-base-200 p-4">
-        <button className="btn btn-ghost btn-circle mr-2">
-          <i className="fas fa-smile"></i>
-        </button>
-        <input
-          type="text"
-          placeholder="Message"
-          className="input input-bordered flex-1"
-        />
-        <button className="btn btn-ghost btn-circle ml-2">
-          <i className="fas fa-paper-plane"></i>
-        </button>
-      </div>
+      {user?.id == channel.ownerId && (
+        <div className="flex items-center bg-base-200 p-4">
+          <button className="btn btn-ghost btn-circle mr-2">
+            <i className="fas fa-smile"></i>
+          </button>
+          <input
+            type="text"
+            placeholder="Message"
+            className="input input-bordered flex-1"
+          />
+          <button className="btn btn-ghost btn-circle ml-2">
+            <i className="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

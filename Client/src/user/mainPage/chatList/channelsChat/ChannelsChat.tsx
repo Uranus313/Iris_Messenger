@@ -4,9 +4,17 @@ import ChannelsChatItem from "./channelsChatItem/ChannelsChatItem";
 
 interface Props {
   setSelectedChat: (nextState: Group | Channel | Direct | null) => void;
+  userChannelsSearched: Channel[];
+  setSelectedChatStatus: (
+    nextState: "group" | "channel" | "direct" | null
+  ) => void;
 }
 
-const ChannelsChat = ({ setSelectedChat }: Props) => {
+const ChannelsChat = ({
+  setSelectedChat,
+  userChannelsSearched,
+  setSelectedChatStatus,
+}: Props) => {
   let { data, error, isLoading } = useGetChannels();
   return (
     <div className="w-full max-w-lg bg-base-300 rounded-lg shadow-lg">
@@ -15,11 +23,24 @@ const ChannelsChat = ({ setSelectedChat }: Props) => {
         <span className="loading loading-spinner loading-md"></span>
       ) : (
         <div className="divide-y divide-base-200">
-          {data?.data.length! > 0 ? (
-            data?.data?.map((channelData, index) => (
+          {userChannelsSearched.length > 0 ? (
+            userChannelsSearched.map((channel, index) => (
+              <div key={index}>
+                <ChannelsChatItem
+                  key={index}
+                  channel={channel}
+                  lastMessage={null}
+                />
+              </div>
+            ))
+          ) : data?.data.length! > 0 ? (
+            data?.data.map((channelData, index) => (
               <div
                 key={index}
-                onClick={() => setSelectedChat(channelData.channel)}
+                onClick={() => {
+                  setSelectedChat(channelData.channel);
+                  setSelectedChatStatus(channelData.channel.status);
+                }}
               >
                 <ChannelsChatItem
                   key={index}
@@ -29,7 +50,7 @@ const ChannelsChat = ({ setSelectedChat }: Props) => {
               </div>
             ))
           ) : (
-            <div>No Channels</div>
+            <div>No Channel</div>
           )}
         </div>
       )}

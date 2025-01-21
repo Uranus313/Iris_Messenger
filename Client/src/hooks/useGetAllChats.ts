@@ -1,20 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { Core_api_Link } from "../consts/APILink";
-import { Direct, DirectMessage } from "../interfaces/interfaces";
+import {
+  Channel,
+  ChannelMessage,
+  Direct,
+  DirectMessage,
+  Group,
+  GroupMessage,
+} from "../interfaces/interfaces";
 
-function useGetDirects() {
+function useGetAllChats() {
   return useQuery({
-    queryKey: ["directs"],
+    queryKey: ["allChats"],
     queryFn: async () => {
-      const result = await fetch(Core_api_Link + "directs/my-directs", {
+      const result = await fetch(Core_api_Link + "users/allConversations", {
         credentials: "include",
       });
       const jsonResult = await result.json();
       if (result.ok) {
         return jsonResult as {
           data: {
-            direct: Direct;
-            lastMessage: DirectMessage;
+            conversation: Direct | Channel | Group;
+            type: "channel" | "group" | "direct";
+            lastMessage: ChannelMessage | GroupMessage | DirectMessage;
           }[];
           hasMore: boolean;
         };
@@ -27,4 +35,4 @@ function useGetDirects() {
     retry: 1,
   });
 }
-export default useGetDirects;
+export default useGetAllChats;

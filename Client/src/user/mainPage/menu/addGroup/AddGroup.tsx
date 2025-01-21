@@ -30,6 +30,7 @@ const AddGroup = ({ goBack }: Props) => {
     onSuccess: () => {
       setSubmitLoading(false);
       queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
       goBack();
     },
     onError: (error) => {
@@ -82,7 +83,11 @@ const AddGroup = ({ goBack }: Props) => {
         <div className="flex flex-col items-center mt-6 px-4">
           <div className="mb-4">
             {profilePicture ? (
-              <img className="w-24 h-24 rounded-full" src={URL.createObjectURL(profilePicture as Blob)} alt="" />
+              <img
+                className="w-24 h-24 rounded-full"
+                src={URL.createObjectURL(profilePicture as Blob)}
+                alt=""
+              />
             ) : (
               <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center text-primary-content"></div>
             )}
