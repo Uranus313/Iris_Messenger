@@ -9,15 +9,17 @@ import SuperAdminHomeLayout from "../layouts/SuperAdminHomeLayout";
 import UserHomeLayout from "../layouts/UserHomeLayout";
 import Login from "../user/login/login";
 import MainPage from "../user/mainPage/MainPage";
-import App from "../App";
-import Menu from "../App";
+import ChatMessages from "../user/mainPage/chat/groupPage/GroupPage";
+import AddContact from "../user/mainPage/menu/contacts/addContact/AddContact";
+import GroupPage from "../user/mainPage/chat/groupPage/GroupPage";
+import ChannelPage from "../user/mainPage/chat/channelPage/ChannelPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <OuterLayout />,
     children: [
-      { path: "kir/", element: <MainPage/> },
+      { path: "amir/", element: <MainPage /> },
 
       {
         path: "user/",

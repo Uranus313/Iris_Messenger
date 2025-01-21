@@ -17,18 +17,6 @@ const Privacy = ({ goBack }: Props) => {
             <button className="btn btn-warning btn-sm">Manage (196)</button>
           </div>
 
-          {/* Two-Step Verification */}
-          <div className="flex justify-between items-center mt-4">
-            <span>Two-Step Verification</span>
-            <button className="btn btn-success btn-sm">View</button>
-          </div>
-
-          {/* Active Sessions */}
-          <div className="flex justify-between items-center mt-4">
-            <span>Active Sessions</span>
-            <button className="btn btn-info btn-sm">View (3)</button>
-          </div>
-
           <hr className="my-4 border-gray-700" />
         </div>
         <p className=" text-sm text-base-300">
