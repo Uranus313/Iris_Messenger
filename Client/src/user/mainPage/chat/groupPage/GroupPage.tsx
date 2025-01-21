@@ -233,54 +233,6 @@ const GroupPage = ({ showChatList, group }: Props) => {
         </div>
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
-        {/* Date Separator */}
-        <div className="text-center my-2 text-xs text-gray-500">January 5</div>
-
-        {/* Message Bubble */}
-        <div className="flex justify-end mb-4">
-          <div className="bg-primary text-primary-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">خروجی پروژه‌ها جبر چه درصدایی باید باشه؟</p>
-            <span className="text-xs text-gray-300 block text-right mt-1">
-              22:40
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">سلام ممنونم تو خوبی</p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:39
-            </span>
-          </div>
-        </div>
-
-        <div className="flex justify-start mb-4">
-          <div className="bg-base-300 text-base-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">
-              ببین برای کی میز. استاد گفت که 20 درصد اوکیه به بالا برای رگرسیون.
-            </p>
-            <span className="text-xs text-gray-400 block text-left mt-1">
-              23:41
-            </span>
-          </div>
-        </div>
-
-        {/* Date Separator */}
-        <div className="text-center my-2 text-xs text-gray-500">January 6</div>
-
-        <div className="flex justify-end mb-4">
-          <div className="bg-primary text-primary-content px-4 py-2 rounded-lg max-w-xs">
-            <p className="text-sm">آها حله مرسی</p>
-            <span className="text-xs text-gray-300 block text-right mt-1">
-              00:00
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* Input Field */}
       <div className="flex items-center bg-base-200 p-4">
         <button className="btn btn-ghost btn-circle mr-2">

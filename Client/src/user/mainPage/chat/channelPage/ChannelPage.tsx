@@ -233,6 +233,22 @@ const ChannelPage = ({ showChatList, channel }: Props) => {
           </div>
         </div>
       </div>
+      {/* Input Field */}
+      {user?.id == channel.ownerId && (
+        <div className="flex items-center bg-base-200 p-4">
+          <button className="btn btn-ghost btn-circle mr-2">
+            <i className="fas fa-smile"></i>
+          </button>
+          <input
+            type="text"
+            placeholder="Message"
+            className="input input-bordered flex-1"
+          />
+          <button className="btn btn-ghost btn-circle ml-2">
+            <i className="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
