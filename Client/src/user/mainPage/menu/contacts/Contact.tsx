@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { IAM_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import useGetContacts from "../../../../hooks/useGetContacts";
 import { User } from "../../../../interfaces/interfaces";
+import AddContact from "./addContact/AddContact";
 
 interface Props {
   goBack: () => void;
@@ -49,46 +50,19 @@ const Contact = ({ goBack }: Props) => {
   };
 
   const handleContactClick = (contact: User) => {
-    setSelectedContact(contact); // Set the selected contact
-  };
-
-  const handleBackToList = () => {
-    setSelectedContact(null); // Reset the selected contact to return to the list
+    setSelectedContact(contact);
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {selectedContact ? (
-        // AddContact Component
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-          <div className="bg-white shadow-lg rounded-lg w-full max-w-md p-6">
-            <button
-              onClick={handleBackToList}
-              className="btn btn-circle btn-outline mb-4"
-            >
-              <i className="fas fa-arrow-left"></i>
-            </button>
-            <h1 className="text-2xl font-bold text-center mb-6">Add Contact</h1>
-            <div className="space-y-4">
-              <div className="text-center">
-                <img
-                  src={
-                    selectedContact?.profilePicture ||
-                    "https://via.placeholder.com/150"
-                  }
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full mx-auto object-cover"
-                />
-                <h2 className="text-xl font-semibold mt-2">
-                  {selectedContact?.firstName}
-                </h2>
-                <p className="text-gray-600">
-                  {selectedContact?.email || "No email provided"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AddContact
+          goBack={() => {
+            setSelectedContact(null);
+            setUsersSearched([]);
+          }}
+          selectedContact={selectedContact}
+        />
       ) : (
         // Contact List
         <>
@@ -103,7 +77,7 @@ const Contact = ({ goBack }: Props) => {
             <input
               type="text"
               placeholder="Search"
-              className="input input-bordered w-full text-black"
+              className="input input-bordered w-full"
               onChange={handleSearch}
             />
           </div>
@@ -137,7 +111,6 @@ const Contact = ({ goBack }: Props) => {
                 <li
                   key={contact.id}
                   className="flex items-center gap-4 bg-gray-800 p-3 rounded-lg cursor-pointer"
-                  onClick={() => handleContactClick(contact)} // Set selected contact on click
                 >
                   <img
                     src={
