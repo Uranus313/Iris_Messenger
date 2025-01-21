@@ -110,7 +110,7 @@ const ChannelList = () => {
             </li>
           ))
         ) : (
-          <div>No Group</div>
+          <div>No Channel</div>
         )}
       </ul>
     </div>
