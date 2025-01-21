@@ -2,7 +2,6 @@ import { useState } from "react";
 import ChannelList from "./menu/channelList/ChannelList";
 import GroupList from "./menu/groupList/GroupList";
 import Menu from "./menu/Menu";
-import ReportList from "./menu/reportList/ReportList";
 import UserList from "./menu/userList/UserList";
 
 const AdminPanel: React.FC = () => {
@@ -31,7 +30,7 @@ const AdminPanel: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 p-4 bg-gray-900 text-white mt-16 overflow-scroll">
         {/* Hamburger Menu Button */}
-        <div className="bg-gray-900 block z-0 overflow-scroll fixed">
+        <div className="block z-0 overflow-scroll fixed">
           <button
             className="md:hidden fixed top-4 left-4 text-white text-2xl mb-2"
             onClick={() => setMenuOpen(true)}
@@ -42,7 +41,6 @@ const AdminPanel: React.FC = () => {
 
         {/* Dynamic Content */}
         {activeTab === "users" && <UserList />}
-        {activeTab === "reports" && <ReportList />}
         {activeTab === "channels" && <ChannelList />}
         {activeTab === "groups" && <GroupList />}
       </div>

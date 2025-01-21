@@ -205,7 +205,7 @@ const ChatList = ({
           </button>
         </div>
       </div>
-
+      {error && error}
       {/* Chat List */}
       <div className="flex-1 overflow-y-auto">
         <div className="flex items-center hover:bg-base-100">

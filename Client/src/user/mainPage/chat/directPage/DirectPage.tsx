@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import sth from "../../../../assets/Background.png";
-import { Media_api_Link } from "../../../../consts/APILink";
+import { Core_api_Link, Media_api_Link } from "../../../../consts/APILink";
 import userContext from "../../../../contexts/userContext";
 import { Direct } from "../../../../interfaces/interfaces";
 import { KeyType, serializeKey } from "../../MainPage";
-import DirectMessage from "./directMessage/DirectMessage";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 
 interface Props {
   showChatList: () => void;
@@ -24,7 +25,10 @@ const DirectPage = ({
   const { register, handleSubmit } = useForm();
   const [media, setMedia] = useState<File | null>(null);
   const { user } = useContext(userContext);
-
+  const [error, setError] = useState<string | null>();
+  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { handleSubmit } = useForm();
   const toggleRightMenu = () => {
     setIsRightMenuOpen(!isRightMenuOpen);
   };
@@ -71,6 +75,38 @@ const DirectPage = ({
     // setText("");
     // setTargetUserId("");
     // setFile(null);
+  };  const banUserMutate = useMutation({
+    mutationFn: async (data: { targetUserId: number }) => {
+      const result = await fetch(Core_api_Link + `users/blockUser`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log(data);
+      const jsonResult = await result.json();
+      if (result.ok) {
+        return jsonResult;
+      } else {
+        throw new Error(jsonResult.message);
+      }
+    },
+    onSuccess: () => {
+      setSubmitLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["directs"] });
+      queryClient.invalidateQueries({ queryKey: ["allChats"] });
+      showChatList();
+    },
+    onError: (error) => {
+      setSubmitLoading(false);
+      setError(error.message);
+    },
+  });
+  const handleBan = () => {
+    setSubmitLoading(true);
+    banUserMutate.mutate({ targetUserId: direct.user.id });
   };
   return (
     <div
@@ -180,11 +216,23 @@ const DirectPage = ({
                 </div>
               </div>
             </div>
-            <div className="flex ml-4 w-full">
-              <div className="">
-                <button className="btn btn-sm ">Block User</button>
-              </div>
-            </div>
+            <form
+              onSubmit={
+                submitLoading
+                  ? (e) => e.preventDefault()
+                  : handleSubmit(handleBan)
+              }
+              className="flex ms-10 w-full"
+            >
+              <button className="">
+                {submitLoading ? (
+                  <span className="loading loading-spinner loading-md"></span>
+                ) : (
+                  "Block User"
+                )}
+              </button>
+              {error && error}
+            </form>
           </div>
         </div>
       </div>
